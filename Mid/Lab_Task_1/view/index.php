@@ -38,7 +38,7 @@
             <td>
                 <input type="checkbox" name="lang">English
                 <input type="checkbox" name="lang">Bangla
-                <input type="checkbox" name="lang">Arabic
+                <input type="checkbox" name="lang">Hindi
             </td>
         </tr>
         <tr>
