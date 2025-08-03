@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: rgb(224, 224, 224);
+    font-family: Helvetica;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h2 {
+    color: red;
+}
+
+form {
+    background: white;
+    width: 100%;
+    max-width: 700px;
+    padding: 20px;
+    border-radius: 15px;
+    filter: drop-shadow(2px 2px 5px rgb(186, 186, 186));
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="radio"] + label {
+    font-weight: normal;
+}
+
+form select, form input[type="text"], form input[type="password"], form input[type="email"], form input[type="number"], form input[type="tel"], textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid rgb(222, 222, 222);
+}
+
+input[type="submit"], input[type="reset"] {
+    padding: 10px 15px;
+}

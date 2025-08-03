@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donation Form</title>
+    <link rel="stylesheet" href="../CSS/task_3_style.css">
+</head>
+<body>
+    <form name="donationForm" onsubmit="return validateForm()">
+        <h2 class="header">Donor Information</h2>
+
+        <label for="firstName">First Name</label><br>
+        <input type="text" id="firstName" name="firstName"><br><br>
+
+        <label for="lastName">Last Name</label><br>
+        <input type="text" id="lastName" name="lastName"><br><br>
+
+        <label for="address">Address</label><br>
+        <input type="text" id="address" name="address"><br><br>
+
+        <label for="city">City</label><br>
+        <input type="text" id="city" name="city"><br><br>
+
+        <label for="state">State</label><br>
+        <select id="state" name="state">
+            <option value="">Select a State</option>
+            <option value="state1">Dhaka</option>
+            <option value="state2">Chittagong</option>
+            <option value="state3">Khulna</option>
+        </select><br><br>
+
+        <label for="phone">Phone</label><br>
+        <input type="tel" id="phone" name="phone" maxlength="11"><br><br>
+
+        <label for="email">Email</label><br>
+        <input type="email" id="email" name="email"><br><br>
+
+        <label for="password">Create Password (min 8 characters)</label><br>
+        <input type="password" id="password" name="password"><br><br>
+
+        <label for="confirmPassword">Confirm Password</label><br>
+        <input type="password" id="confirmPassword" name="confirmPassword"><br><br>
+
+        <label for="donationAmount">Donation Amount</label><br>
+        <input type="radio" id="none" name="donationAmount" value="None">
+        <label for="none">None</label>
+        <input type="radio" id="500" name="donationAmount" value="500">
+        <label for="500">500 BDT</label>
+        <input type="radio" id="1000" name="donationAmount" value="1000">
+        <label for="1000">1000 BDT</label>
+        <input type="radio" id="2000" name="donationAmount" value="2000">
+        <label for="2000">2000 BDT</label>
+        <input type="radio" id="3000" name="donationAmount" value="3000">
+        <label for="3000">3000 BDT</label>
+        <input type="radio" id="other" name="donationAmount" value="Other">
+        <label for="other">Other</label><br><br>
+        
+        <label for="otherAmount">Other Amount:</label><br>
+        <input type="number" id="otherAmount" name="otherAmount"><br><br>
+        
+        <input type="checkbox" id="regularBasis" name="regularBasis">
+        <label for="regularBasis">I am interested in giving on a regular basis.</label><br><br>
+
+        <h2 class="header">Additional Information</h2>
+        <input type="checkbox" id="anonymous" name="anonymous">
+        <label for="anonymous">I would like my gift to remain anonymous.</label><br>
+        <input type="checkbox" id="matchingGift" name="matchingGift">
+        <label for="matchingGift">My employer offers a matching gift program.</label><br>
+        <input type="checkbox" id="noThankYou" name="noThankYou">
+        <label for="noThankYou">Please don't send a thank you letter.</label><br><br>
+
+        <label for="comments">Comments</label><br>
+        <textarea id="comments" name="comments" rows="4" cols="50"></textarea><br><br>
+
+        <input type="reset" value="Reset">
+        <input type="submit" value="Submit">
+    </form>
+    <script src="../JS/task_3_valid.js"></script>
+</body>
+</html>
