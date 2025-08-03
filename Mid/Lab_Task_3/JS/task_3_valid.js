@@ -145,7 +145,7 @@ function validateForm() {
     var noThankYou = document.getElementById("noThankYou").checked;
 
     var comments = document.getElementById("comments").value;
-    
-    alert("Form submitted successfully!");
+
+    alert(`Name: ${firstName} ${lastName}\nPhone: ${phone}\nEmail: ${email}\nPassword: ${password}\nState: ${state}\nDonation Amount: ${amountSelected ? "Selected - " + donationAmount.value : "Custom - " + otherAmount}\nRegular Basis: ${regular ? "Yes" : "No"}\nAnonymous: ${ann ? "Yes" : "No"}\nMatching Gift: ${gift ? "Yes" : "No"}\nNo Thank You: ${noThankYou ? "Yes" : "No"}\nComments: ${comments}`);
     return true;
 }
