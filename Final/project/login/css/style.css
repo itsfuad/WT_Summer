@@ -1,0 +1,189 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.form-group input.error {
+    border-color: #ff4757;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container input {
+    padding-right: 45px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    font-size: 16px;
+}
+
+.password-toggle:hover {
+    color: #333;
+}
+
+.error-message {
+    color: #ff4757;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: #5a67d8;
+}
+
+.signup-links {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.signup-links p {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.role-links {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.role-link {
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    border: 1px solid;
+    transition: all 0.3s ease;
+}
+
+.admin-link {
+    color: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.admin-link:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.fundraiser-link {
+    color: #3498db;
+    border-color: #3498db;
+}
+
+.fundraiser-link:hover {
+    background: #3498db;
+    color: white;
+}
+
+.backer-link {
+    color: #27ae60;
+    border-color: #27ae60;
+}
+
+.backer-link:hover {
+    background: #27ae60;
+    color: white;
+}
+
+.guest-link {
+    color: #9b59b6;
+    border-color: #9b59b6;
+}
+
+.guest-link:hover {
+    background: #9b59b6;
+    color: white;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
