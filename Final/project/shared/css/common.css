@@ -1,0 +1,319 @@
+/* ==========================================
+   COMMON STYLES FOR CROWDFUNDING PLATFORM
+   Modern, Consistent Design System
+   ========================================== */
+
+/* Clean Modern Design System - Vercel/shadcn Style */
+:root {
+    /* Clean Color Palette */
+    --primary: #000000;        /* Pure black like Vercel */
+    --secondary: #666666;      /* Clean gray */
+    --success: #00C851;        /* Clean green */
+    --error: #FF4444;          /* Clean red */
+    --warning: #FF8800;        /* Clean orange */
+    
+    /* Neutral Colors */
+    --white: #ffffff;
+    --gray-50: #fafafa;        /* Very light gray */
+    --gray-100: #f4f4f5;      /* Light background */
+    --gray-200: #e4e4e7;      /* Border color */
+    --gray-400: #a1a1aa;      /* Muted text */
+    --gray-600: #52525b;      /* Secondary text */
+    --gray-900: #18181b;      /* Primary text */
+    
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-sm: 14px;
+    --font-base: 16px;
+    --font-lg: 18px;
+    
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    
+    /* Clean Design Elements */
+    --radius: 6px;             /* Subtle radius like shadcn */
+    --border: 1px solid var(--gray-200);
+    --shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --transition: 150ms ease;
+    /* Legacy variable aliases for compatibility with older page CSS */
+    --primary-color: var(--primary);
+    --primary-dark: #111111;
+    --secondary-color: var(--secondary);
+    --success-color: var(--success);
+    --error-color: var(--error);
+    --success-light: #ecfdf5;
+    --radius-md: var(--radius);
+    --spacing-1: var(--space-1);
+    --spacing-2: var(--space-2);
+    --spacing-3: var(--space-3);
+    --spacing-4: var(--space-4);
+    --spacing-6: var(--space-6);
+    --spacing-8: var(--space-8);
+    --font-size-xs: 12px;
+    --font-size-sm: var(--font-sm);
+    --font-size-base: var(--font-base);
+    --transition-normal: var(--transition);
+    --shadow-lg: var(--shadow);
+    --gray-500: var(--gray-400);
+    --gray-700: var(--gray-600);
+}
+
+/* Clean Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.5;
+    color: var(--gray-900);
+    background-color: var(--white);
+    min-height: 100vh;
+    font-size: var(--font-base);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Clean Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+}
+
+h1 { font-size: 30px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
+h4 { font-size: var(--font-lg); }
+
+p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-4);
+}
+
+/* Clean Form Elements */
+.form-group {
+    margin-bottom: var(--space-6);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-weight: 500;
+    color: var(--gray-900);
+    font-size: var(--font-sm);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius);
+    font-size: var(--font-base);
+    transition: all var(--transition);
+    background-color: var(--white);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.form-control.error {
+    border-color: var(--error);
+}
+
+/* Clean Checkbox */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+}
+
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkmark {
+    width: 16px;
+    height: 16px;
+    background: var(--white);
+    border: var(--border);
+    border-radius: 3px;
+    transition: all var(--transition);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.checkbox-container:hover .checkmark {
+    border-color: var(--primary);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 3px;
+    height: 7px;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-label {
+    font-size: var(--font-sm);
+    color: var(--gray-900);
+}
+
+/* Clean Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-sm);
+    font-weight: 500;
+    border: var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition);
+    background: var(--white);
+    color: var(--gray-900);
+}
+
+.btn:hover {
+    background: var(--gray-50);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--gray-900);
+    border-color: var(--gray-900);
+}
+
+.btn-success {
+    background: var(--success);
+    color: var(--white);
+    border-color: var(--success);
+}
+
+.btn-success:hover {
+    opacity: 0.9;
+}
+
+/* Clean Messages */
+.message-success {
+    background: var(--gray-50);
+    color: var(--gray-900);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: var(--border);
+    margin-bottom: var(--space-6);
+}
+
+.message-error {
+    background: var(--gray-50);
+    color: var(--error);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--error);
+    margin-bottom: var(--space-6);
+}
+
+.error-message {
+    color: var(--error);
+    font-size: var(--font-sm);
+    margin-top: var(--space-2);
+}
+
+/* Clean Card */
+.card {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.card:hover {
+    box-shadow: var(--shadow);
+}
+
+/* Clean Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+}
+
+/* Page Layout */
+.page-container {
+    min-height: 100vh;
+    background: var(--gray-50);
+    padding: var(--space-8) 0;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    padding: var(--space-4);
+}
+
+/* Clean Auth Forms */
+.auth-card {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow);
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-sm { font-size: var(--font-sm); }
+.text-muted { color: var(--gray-400); }
+.flex { display: flex; }
+.gap-2 { gap: var(--space-2); }
+.gap-4 { gap: var(--space-4); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+
+/* Focus States */
+*:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}

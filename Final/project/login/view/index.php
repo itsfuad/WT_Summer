@@ -15,6 +15,12 @@
         </div>
 
         <?php
+        // Check for signup success parameter
+        $signupSuccess = "";
+        if (isset($_GET['signup']) && $_GET['signup'] === 'success') {
+            $signupSuccess = "Account created successfully! You can now login with your credentials.";
+        }
+        
         // Define variables
         $email = $password = "";
         $emailErr = $passwordErr = $loginErr = "";
@@ -34,35 +40,43 @@
             }
 
             // Validate password
-            if (empty($_POST["password"])) {
+            $password = trim($_POST["password"]);
+            if (empty($password)) {
                 $passwordErr = "Password is required";
-            } else {
-                $password = trim($_POST["password"]);
-                if (strlen($password) < 6) {
-                    $passwordErr = "Password must be at least 6 characters";
-                }
+            } elseif (strlen($password) < 6) {
+                $passwordErr = "Password must be at least 6 characters";
             }
 
             // If no errors, check login
             if (empty($emailErr) && empty($passwordErr)) {
                 
-                $users = array(
-                    "admin@crowdfund.com" => array("password" => "admin123", "role" => "admin", "name" => "Fuad Hasan"),
-                    "fundraiser@crowdfund.com" => array("password" => "fundraiser123", "role" => "fundraiser", "name" => "Sakib Samad"),
-                    "backer@crowdfund.com" => array("password" => "backer123", "role" => "backer", "name" => "Mahtab Habib")
-                );
+                // Authenticate using database
+                require_once '../../includes/functions.php';
+                require_once '../../includes/session.php';
+                $userManager = new UserManager();
 
-                // Check if user exists and password matches
-                if (isset($users[$email]) && $users[$email]["password"] == $password) {
-                    $userRole = $users[$email]["role"];
-                    $userName = $users[$email]["name"];
-                    $loginSuccess = "Login successful! Welcome " . $userName;
+                $user = $userManager->authenticate($email, $password);
+                
+                if ($user) {
+                    // Start session and store user data
+                    loginUser($user);
+                    
+                    // Redirect based on user role
+                    $redirectUrl = redirectBasedOnRole();
+                    header("Location: $redirectUrl");
+                    exit();
                 } else {
                     $loginErr = "Invalid email or password";
                 }
             }
         }
         ?>
+
+        <?php if (!empty($signupSuccess)): ?>
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i> <?php echo $signupSuccess; ?>
+            </div>
+        <?php endif; ?>
 
         <?php if (!empty($loginSuccess)): ?>
             <div class="success-message">
@@ -73,8 +87,8 @@
         <form method="post" action="">
             <div class="form-group">
                 <label for="email"><i class="fas fa-envelope"></i> Email:</label>
-                <input type="email" id="email" name="email" value="<?php echo $email; ?>" 
-                       class="<?php echo !empty($emailErr) ? 'error' : ''; ?>">
+                <input type="email" id="email" name="email" value="<?php echo $email; ?>"
+                       class="form-control <?php echo !empty($emailErr) ? 'error' : ''; ?>">
                 <?php if (!empty($emailErr)): ?>
                     <span class="error-message"><?php echo $emailErr; ?></span>
                 <?php endif; ?>
@@ -84,7 +98,7 @@
                 <label for="password"><i class="fas fa-lock"></i> Password:</label>
                 <div class="password-container">
                     <input type="password" id="password" name="password"
-                           class="<?php echo !empty($passwordErr) ? 'error' : ''; ?>">
+                           class="form-control <?php echo !empty($passwordErr) ? 'error' : ''; ?>">
                     <i class="fas fa-eye password-toggle" onclick="togglePassword('password')" id="password-toggle"></i>
                 </div>
                 <?php if (!empty($passwordErr)): ?>
@@ -113,5 +127,7 @@
             </div>
         </div>
     </div>
+    
+    <script src="../js/script.js"></script>
 </body>
 </html>
