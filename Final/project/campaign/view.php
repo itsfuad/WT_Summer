@@ -134,19 +134,28 @@
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <?php if ($userRole === 'guest'): ?>
-                            <a href="../login/view/index.php" class="btn btn-primary btn-large">
+                            <a href="../login/view/index.php" class="btn btn-primary">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Login to donate
                             </a>
+                        <?php elseif ($userRole === 'admin'): ?>
+                            <button class="btn <?php echo $fund['featured'] ? 'btn-outline' : 'btn-primary'; ?>" onclick="toggleFeature(<?php echo $fund['id']; ?>)" id="feature-btn">
+                                <i class="fas fa-star"></i>
+                                <?php echo $fund['featured'] ? 'Unfeature' : 'Mark as Featured'; ?>
+                            </button>
+                            <button class="btn btn-danger" onclick="toggleFreeze(<?php echo $fund['id']; ?>)" id="freeze-btn">
+                                <i class="fas fa-pause"></i>
+                                <?php echo $fund['status'] === 'frozen' ? 'Unfreeze' : 'Freeze'; ?>
+                            </button>
                         <?php elseif ($userRole === 'backer' || ($userRole === 'fundraiser' && $fund['fundraiser_id'] != $user['id'])): ?>
-                            <button class="btn btn-primary btn-large" onclick="openDonateModal()">
+                            <button class="btn btn-primary" onclick="openDonateModal()">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Donate
                             </button>
                         <?php endif; ?>
                         
                         <?php if ($userRole === 'fundraiser' && $fund['fundraiser_id'] == $user['id']): ?>
-                            <a href="../fundraiser/view/edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-primary btn-large">
+                            <a href="../fundraiser/view/edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
                                 <i class="fas fa-edit"></i>
                                 Edit Campaign
                             </a>
@@ -168,10 +177,12 @@
                             <i class="fas fa-share"></i>
                             Share
                         </button>
+                        <?php if ($userRole != 'admin'): ?>
                         <button class="btn btn-outline" onclick="openReportModal()" <?php echo !$user ? 'disabled title="Login required"' : ''; ?>>
                             <i class="fas fa-flag"></i>
                             Report
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -852,6 +863,62 @@
         window.addEventListener('pagehide', stopTimeUpdates);
         
         // Also start immediately if DOM is already loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startTimeUpdates);
+        } else {
+            startTimeUpdates();
+        }
+
+        // Admin functions
+        function toggleFeature(fundId) {
+            fetch('../admin/ajax/toggle_feature.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `fund_id=${fundId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const btn = document.getElementById('feature-btn');
+                    if (data.featured) {
+                        btn.className = 'btn btn-outline';
+                        btn.innerHTML = '<i class="fas fa-star"></i> Unfeature';
+                    } else {
+                        btn.className = 'btn btn-primary';
+                        btn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                    }
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification('Error: ' + data.message, 'error');
+                }
+            });
+        }
+
+        function toggleFreeze(fundId) {
+            const btn = document.getElementById('freeze-btn');
+            const action = btn.innerHTML.includes('Freeze') ? 'freeze' : 'unfreeze';
+            
+            if (!confirm(`Are you sure you want to ${action} this campaign?`)) return;
+            
+            fetch('../admin/ajax/toggle_freeze.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `fund_id=${fundId}&action=${action}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.status === 'frozen') {
+                        btn.innerHTML = '<i class="fas fa-play"></i> Unfreeze';
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-pause"></i> Freeze';
+                    }
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification('Error: ' + data.message, 'error');
+                }
+            });
+        }
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', startTimeUpdates);
         } else {

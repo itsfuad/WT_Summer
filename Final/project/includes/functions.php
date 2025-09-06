@@ -56,10 +56,15 @@ class FundManager {
         $limit = (int)$limit;
         $offset = ($page - 1) * $limit;
         
-        $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
+        // Base conditions - show only frozen campaigns for 'frozen' category, otherwise only active
+        if ($category === 'frozen') {
+            $conditions = ["f.status = 'frozen'", "f.end_date >= CURDATE()"];
+        } else {
+            $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
+        }
         $params = [];
         
-        if ($category) {
+        if ($category && $category !== 'frozen') {
             $conditions[] = "f.category_id = ?";
             $params[] = $category;
         }
@@ -123,6 +128,12 @@ class FundManager {
             LIMIT $limit OFFSET $offset
         ";
         
+        // Debug: Log the query if category is frozen
+        if ($category === 'frozen') {
+            error_log("Frozen query: " . $sql);
+            error_log("Frozen params: " . json_encode($params));
+        }
+        
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -132,10 +143,15 @@ class FundManager {
      * Get total count of active funds
      */
     public function getTotalFundsCount($category = null, $search = null, $excludeFeatured = false) {
-        $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
+        // Base conditions - show only frozen campaigns for 'frozen' category, otherwise only active
+        if ($category === 'frozen') {
+            $conditions = ["f.status = 'frozen'", "f.end_date >= CURDATE()"];
+        } else {
+            $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
+        }
         $params = [];
         
-        if ($category) {
+        if ($category && $category !== 'frozen') {
             $conditions[] = "f.category_id = ?";
             $params[] = $category;
         }
@@ -261,6 +277,16 @@ class FundManager {
      * Update an existing fund
      */
     public function updateFund($fund_id, $data) {
+        // Get current fund status to prevent unauthorized status changes
+        $currentStmt = $this->pdo->prepare("SELECT status FROM funds WHERE id = ?");
+        $currentStmt->execute([$fund_id]);
+        $currentStatus = $currentStmt->fetchColumn();
+        
+        // If fund is in admin-controlled status (frozen/removed), preserve it
+        if (in_array($currentStatus, ['frozen', 'removed'])) {
+            $data['status'] = $currentStatus;
+        }
+        
         $stmt = $this->pdo->prepare("
             UPDATE funds SET 
                 title = ?, short_description = ?, description = ?, 
@@ -735,6 +761,131 @@ class FundManager {
             LIMIT " . (int)$limit . "
         ");
         $stmt->execute([$user_id]);
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Admin Functions
+     */
+    
+    /**
+     * Get platform statistics for admin dashboard
+     */
+    public function getPlatformStats() {
+        $stats = [];
+        
+        // Total raised
+        $stmt = $this->pdo->query("SELECT SUM(current_amount) FROM funds WHERE status != 'cancelled'");
+        $stats['total_raised'] = $stmt->fetchColumn() ?: 0;
+        
+        // Total funds
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM funds WHERE status != 'cancelled'");
+        $stats['total_funds'] = $stmt->fetchColumn();
+        
+        // Active funds
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM funds WHERE status = 'active'");
+        $stats['active_funds'] = $stmt->fetchColumn();
+        
+        // Total users
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM users WHERE role != 'admin'");
+        $stats['total_users'] = $stmt->fetchColumn();
+        
+        // Pending reports
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM reports WHERE status = 'pending'");
+        $stats['pending_reports'] = $stmt->fetchColumn();
+        
+        return $stats;
+    }
+    
+    /**
+     * Get top performing campaigns
+     */
+    public function getTopCampaigns($limit = 5) {
+        $limit = intval($limit); // Ensure it's an integer
+        $stmt = $this->pdo->query("
+            SELECT f.*, u.name as fundraiser_name, c.name as category_name,
+                   (f.current_amount / f.goal_amount * 100) as progress_percentage,
+                   COUNT(d.id) as donation_count
+            FROM funds f
+            LEFT JOIN users u ON f.fundraiser_id = u.id
+            LEFT JOIN categories c ON f.category_id = c.id
+            LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
+            WHERE f.status IN ('active', 'completed')
+            GROUP BY f.id
+            ORDER BY f.current_amount DESC
+            LIMIT $limit
+        ");
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get monthly platform donation data
+     */
+    public function getMonthlyPlatformData() {
+        $stmt = $this->pdo->query("
+            SELECT 
+                DATE_FORMAT(created_at, '%Y-%m') as month,
+                SUM(amount) as total_donations,
+                COUNT(*) as donation_count
+            FROM donations 
+            WHERE payment_status = 'completed' 
+            AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+            ORDER BY month ASC
+        ");
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get fund reports for admin
+     */
+    public function getFundReports($status = 'pending') {
+        $stmt = $this->pdo->prepare("
+            SELECT r.*, f.title as fund_title, f.current_amount, f.goal_amount,
+                   u.name as reporter_name, fr.name as fundraiser_name
+            FROM reports r
+            LEFT JOIN funds f ON r.fund_id = f.id
+            LEFT JOIN users u ON r.reported_by = u.id
+            LEFT JOIN users fr ON f.fundraiser_id = fr.id
+            WHERE r.fund_id IS NOT NULL AND r.status = ?
+            ORDER BY r.created_at DESC
+        ");
+        $stmt->execute([$status]);
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get comment reports for admin
+     */
+    public function getCommentReports($status = 'pending') {
+        $stmt = $this->pdo->prepare("
+            SELECT r.*, c.comment as comment_content, f.title as fund_title,
+                   u.name as reporter_name, cu.name as commenter_name
+            FROM reports r
+            LEFT JOIN comments c ON r.comment_id = c.id
+            LEFT JOIN funds f ON c.fund_id = f.id
+            LEFT JOIN users u ON r.reported_by = u.id
+            LEFT JOIN users cu ON c.user_id = cu.id
+            WHERE r.comment_id IS NOT NULL AND r.status = ?
+            ORDER BY r.created_at DESC
+        ");
+        $stmt->execute([$status]);
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get funds for feature management
+     */
+    public function getFundsForFeatureManagement($limit = 50) {
+        $stmt = $this->pdo->prepare("
+            SELECT f.*, u.name as fundraiser_name
+            FROM funds f
+            LEFT JOIN users u ON f.fundraiser_id = u.id
+            WHERE f.status IN ('active', 'paused', 'frozen')
+            ORDER BY f.status = 'frozen' ASC, f.featured DESC, f.current_amount DESC
+            LIMIT " . (int)$limit . "
+        ");
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 }

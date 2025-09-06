@@ -85,7 +85,7 @@ try {
             fundraiser_id INT NOT NULL,
             category_id INT DEFAULT NULL,
             image_url VARCHAR(255) DEFAULT NULL,
-            status ENUM('active', 'paused', 'completed', 'cancelled', 'removed') DEFAULT 'active',
+            status ENUM('active', 'paused', 'completed', 'cancelled', 'removed', 'frozen') DEFAULT 'active',
             start_date DATE NOT NULL,
             end_date DATE NOT NULL,
             featured BOOLEAN DEFAULT FALSE,

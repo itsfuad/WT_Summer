@@ -11,13 +11,19 @@ try {
     
     // Get parameters
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-    $category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
+    $category = isset($_GET['category']) ? $_GET['category'] : '';
     $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
     $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     $limit = 6;
     
     // Modify search/category parameters for getAllFunds method
-    $categoryParam = $category > 0 ? $category : null;
+    if ($category === 'frozen') {
+        $categoryParam = 'frozen';
+    } elseif ($category !== '' && is_numeric($category)) {
+        $categoryParam = (int)$category;
+    } else {
+        $categoryParam = null;
+    }
     
     // Build proper WHERE conditions for database filtering
     $excludeFeatured = ($sort !== 'featured');
@@ -58,6 +64,13 @@ try {
                 $campaignsHtml .= "
                 <div class='featured-badge'>
                     <i class='fas fa-star'></i> Featured
+                </div>";
+            }
+            
+            if ($campaign['status'] === 'frozen') {
+                $campaignsHtml .= "
+                <div class='frozen-badge'>
+                    <i class='fas fa-pause'></i> Frozen
                 </div>";
             }
             
@@ -186,6 +199,21 @@ try {
             'searchFields' => !empty($search) ? 'title, description, fundraiser_name, category_name' : 'N/A',
             'categoryFilter' => $category > 0 ? $category : 'All Categories',
             'sortBy' => $sort
+        ],
+        'debug' => [
+            'category' => $category,
+            'categoryParam' => $categoryParam,
+            'excludeFeatured' => $excludeFeatured,
+            'totalFunds' => $totalFunds,
+            'campaignsFound' => count($campaigns),
+            'queryParams' => [
+                'page' => $page,
+                'limit' => $limit,
+                'category' => $categoryParam,
+                'search' => $search,
+                'sort' => $sort,
+                'excludeFeatured' => $excludeFeatured
+            ]
         ]
     ]);
     

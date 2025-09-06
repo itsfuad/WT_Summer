@@ -20,6 +20,8 @@ if ($fund_id <= 0 || !in_array($action, ['freeze', 'unfreeze'])) {
 try {
     require_once '../../config/database.php';
     
+    $pdo->beginTransaction();
+    
     // Get current status
     $stmt = $pdo->prepare("SELECT status FROM funds WHERE id = ?");
     $stmt->execute([$fund_id]);
@@ -31,9 +33,17 @@ try {
     }
     
     // Set new status based on action
-    $new_status = ($action === 'freeze') ? 'paused' : 'active';
+    $new_status = ($action === 'freeze') ? 'frozen' : 'active';
     $stmt = $pdo->prepare("UPDATE funds SET status = ? WHERE id = ?");
     $stmt->execute([$new_status, $fund_id]);
+    
+    // If freezing, also resolve any pending reports for this fund
+    if ($action === 'freeze') {
+        $stmt = $pdo->prepare("UPDATE reports SET status = 'resolved' WHERE fund_id = ? AND status = 'pending'");
+        $stmt->execute([$fund_id]);
+    }
+    
+    $pdo->commit();
     
     echo json_encode([
         'success' => true,
@@ -42,6 +52,7 @@ try {
     ]);
     
 } catch (Exception $e) {
+    $pdo->rollback();
     echo json_encode(['success' => false, 'message' => 'Database error occurred']);
 }
 ?>

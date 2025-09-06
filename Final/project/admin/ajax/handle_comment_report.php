@@ -3,7 +3,7 @@ require_once '../../includes/session.php';
 requireLogin();
 requireRole('admin');
 
-require_once '../../config/database.php';
+require_once '../../includes/functions.php';
 
 header('Content-Type: application/json');
 
@@ -14,26 +14,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $report_id = isset($_POST['report_id']) ? (int)$_POST['report_id'] : 0;
 $action = isset($_POST['action']) ? trim($_POST['action']) : '';
-$fund_id = isset($_POST['fund_id']) ? (int)$_POST['fund_id'] : 0;
+$comment_id = isset($_POST['comment_id']) ? (int)$_POST['comment_id'] : 0;
 
-if (!$report_id || !in_array($action, ['freeze', 'dismiss'])) {
+if (!$report_id || !in_array($action, ['delete', 'dismiss'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
     exit;
 }
 
 try {
+    $fundManager = new FundManager();
+    $pdo = $fundManager->getPdo();
+    
     $pdo->beginTransaction();
     
-    if ($action === 'freeze' && $fund_id) {
-        // Freeze the campaign
-        $stmt = $pdo->prepare("UPDATE funds SET status = 'frozen' WHERE id = ?");
-        $stmt->execute([$fund_id]);
+    if ($action === 'delete' && $comment_id) {
+        // Delete the comment
+        $fundManager->deleteComment($comment_id);
         
         // Mark report as resolved
         $stmt = $pdo->prepare("UPDATE reports SET status = 'resolved' WHERE id = ?");
         $stmt->execute([$report_id]);
         
-        $message = 'Campaign has been frozen and report marked as resolved';
+        $message = 'Comment has been deleted and report marked as resolved';
         
     } elseif ($action === 'dismiss') {
         // Mark report as dismissed
@@ -42,7 +44,7 @@ try {
         
         $message = 'Report has been dismissed';
     } else {
-        throw new Exception('Invalid action or missing fund ID');
+        throw new Exception('Invalid action or missing comment ID');
     }
     
     $pdo->commit();

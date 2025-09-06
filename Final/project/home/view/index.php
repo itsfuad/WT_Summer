@@ -63,7 +63,7 @@ $totalPages = ceil($totalFunds / $limit);
                 <a href="../../login/view/index.php" class="btn btn-secondary">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
-                <a href="../../signup/view/index.php" class="btn btn-success">
+                <a href="../../signup/view/index.php" class="btn btn-primary">
                     <i class="fas fa-user-plus"></i> Sign Up
                 </a>
             <?php endif; ?>
@@ -115,6 +115,9 @@ $totalPages = ceil($totalFunds / $limit);
                                         <?php echo htmlspecialchars($cat['name']); ?>
                                     </option>
                                 <?php endforeach; ?>
+                                <?php if ($isLoggedIn && $user['role'] === 'admin'): ?>
+                                    <option value="frozen" <?php echo $category === 'frozen' ? 'selected' : ''; ?>>Frozen Campaigns</option>
+                                <?php endif; ?>
                             </select>
                         </div>
 
@@ -129,11 +132,11 @@ $totalPages = ceil($totalFunds / $limit);
                         </div>
 
                         <div class="filter-actions">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary btn-large">
                                 <i class="fas fa-search"></i> Search
                             </button>
                             <?php if ($search || $category || $sort !== 'newest'): ?>
-                                <button type="button" id="clearFilters" class="btn btn-secondary">
+                                <button type="button" id="clearFilters" class="btn btn-large btn-secondary">
                                     <i class="fas fa-times"></i> Clear
                                 </button>
                             <?php endif; ?>
@@ -172,6 +175,11 @@ $totalPages = ceil($totalFunds / $limit);
                             <?php if ($fund['featured']): ?>
                                 <div class="featured-badge">
                                     <i class="fas fa-star"></i> Featured
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($fund['status'] === 'frozen'): ?>
+                                <div class="frozen-badge">
+                                    <i class="fas fa-pause"></i> Frozen
                                 </div>
                             <?php endif; ?>
                             <div class="campaign-header">

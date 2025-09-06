@@ -104,6 +104,22 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.frozen-badge {
+    position: relative;
+    right: -100%;
+    translate: -100%;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 999px;
+    width: max-content;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+}
+
 /* Browse Section */
 .browse-section {
     background: var(--white);
@@ -523,6 +539,8 @@ body {
     background: var(--gray-900);
     color: var(--white);
     border-color: var(--gray-900);
+    transform: none;
+    box-shadow: none;
 }
 
 .pagination-info {
@@ -550,33 +568,6 @@ body {
 
 .guest-notice a:hover {
     color: var(--primary);
-}
-
-/* No Campaigns State */
-.no-campaigns {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 60px 20px;
-    background: var(--gray-50);
-    border-radius: var(--radius);
-    border: 2px dashed var(--gray-200);
-}
-
-.no-campaigns i {
-    font-size: 48px;
-    color: var(--gray-300);
-    margin-bottom: var(--space-4);
-}
-
-.no-campaigns h3 {
-    color: var(--gray-900);
-    margin-bottom: var(--space-2);
-}
-
-.no-campaigns p {
-    color: var(--gray-600);
-    font-size: var(--font-base);
-    margin-bottom: var(--space-4);
 }
 
 /* Loading States */
@@ -625,6 +616,12 @@ body {
     border: 2px dashed var(--gray-200);
 }
 
+.no-campaigns p {
+    color: var(--gray-600);
+    font-size: var(--font-base);
+    margin-bottom: var(--space-4);
+}
+
 .no-campaigns i {
     font-size: 3rem;
     color: var(--gray-400);
@@ -635,12 +632,6 @@ body {
     color: var(--gray-600);
     margin-bottom: var(--space-2);
     font-size: 1.5rem;
-}
-
-.no-campaigns p {
-    color: var(--gray-500);
-    margin-bottom: var(--space-4);
-    font-size: var(--font-base);
 }
 
 /* Enhanced Pagination */
@@ -654,11 +645,6 @@ body {
 .page-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.page-number.active {
-    transform: none;
-    box-shadow: none;
 }
 
 /* Filter Transitions */

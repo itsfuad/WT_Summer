@@ -45,7 +45,13 @@
         $goal_amount = floatval($_POST['goal_amount'] ?? 0);
         $category_id = intval($_POST['category_id'] ?? 0);
         $end_date = $_POST['end_date'] ?? '';
-        $status = $_POST['status'] ?? $fund['status'];
+        
+        // If status is frozen, preserve it (dropdown is disabled so no POST value)
+        if ($fund['status'] === 'frozen') {
+            $status = 'frozen';
+        } else {
+            $status = $_POST['status'] ?? $fund['status'];
+        }
         
         // Validation
         if (empty($title) || empty($description) || $goal_amount <= 0 || empty($end_date) || $category_id <= 0) {
@@ -175,13 +181,20 @@
                 
                 <div class="form-group">
                     <label for="status">Campaign Status *</label>
-                    <select id="status" name="status" required>
+                    <select id="status" name="status" required <?php echo ($fund['status'] === 'frozen') ? 'disabled style="background:#f8f9fa; cursor:not-allowed;"' : ''; ?>>
                         <option value="active" <?php echo ($fund['status'] === 'active') ? 'selected' : ''; ?>>Active</option>
                         <option value="paused" <?php echo ($fund['status'] === 'paused') ? 'selected' : ''; ?>>Paused</option>
                         <option value="completed" <?php echo ($fund['status'] === 'completed') ? 'selected' : ''; ?>>Completed</option>
                         <option value="cancelled" <?php echo ($fund['status'] === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
+                        <option value="frozen" <?php echo ($fund['status'] === 'frozen') ? 'selected' : ''; ?>>Frozen (Admin)</option>
                     </select>
-                    <small>Current status affects visibility and donation acceptance</small>
+                    <?php if ($fund['status'] === 'frozen'): ?>
+                        <small style="color:#dc3545;">
+                            <i class="fas fa-lock"></i> Status locked by administrator - cannot be changed.
+                        </small>
+                    <?php else: ?>
+                        <small>Current status affects visibility and donation acceptance</small>
+                    <?php endif; ?>
                 </div>
             </div>
 
