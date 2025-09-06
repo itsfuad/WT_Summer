@@ -1,6 +1,6 @@
 @import url('../../shared/css/common.css');
 
-/* Analytics Styles */
+/* Analytics Styles for Backer */
 * {
     margin: 0;
     padding: 0;
@@ -102,8 +102,6 @@ body {
     background: var(--gray-900);
 }
 
-/* Neutralize per-card icon colors for minimal theme */
-
 .metric-value {
     font-size: 1.75rem;
     font-weight: 700;
@@ -153,7 +151,7 @@ body {
     color: var(--gray-400);
 }
 
-#donationChart {
+#monthlyChart {
     max-height: 300px;
 }
 
@@ -163,31 +161,10 @@ body {
     align-items: center;
 }
 
-#progressChart {
-    max-width: 200px;
-    max-height: 200px;
+#categoryChart {
+    max-width: 250px;
+    max-height: 250px;
     margin-bottom: 20px;
-}
-
-.progress-stats {
-    display: flex;
-    gap: var(--space-6);
-}
-
-.progress-stat {
-    text-align: center;
-}
-
-.stat-label {
-    color: var(--gray-600);
-    font-size: var(--font-sm);
-    margin-bottom: 4px;
-}
-
-.stat-value {
-    color: var(--gray-900);
-    font-weight: 600;
-    font-size: 1.1rem;
 }
 
 /* Tables Row */
@@ -222,195 +199,144 @@ body {
 
 .no-data {
     text-align: center;
-    padding: 40px 20px;
-    color: var(--gray-600);
+    padding: var(--space-8);
+    color: var(--gray-500);
 }
 
 .no-data i {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    color: var(--gray-400);
+    font-size: 2rem;
+    margin-bottom: var(--space-2);
+    opacity: 0.5;
 }
 
-/* Donations Table */
-.donations-table {
-    max-height: 300px;
-    overflow-y: auto;
+/* Donations List */
+.donations-list,
+.campaigns-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
 }
 
-.donation-row {
+.donation-item,
+.campaign-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--gray-100);
-}
-
-.donation-row:last-child {
-    border-bottom: none;
-}
-
-.donor-name {
-    font-weight: 600;
-    color: var(--gray-900);
-    margin-bottom: 3px;
-}
-
-.donation-date {
-    font-size: 0.85rem;
-    color: var(--gray-600);
-}
-
-.donation-amount {
-    font-weight: 700;
-    color: var(--success);
-    font-size: 1.1rem;
-}
-
-/* Activity List */
-.activity-list {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.activity-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--gray-100);
-}
-
-.activity-item:last-child {
-    border-bottom: none;
-}
-
-.activity-icon {
-    width: 35px;
-    height: 35px;
-    background: var(--gray-900);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-.activity-text {
-    font-weight: 500;
-    color: var(--gray-900);
-    margin-bottom: 3px;
-}
-
-.activity-time {
-    font-size: 0.85rem;
-    color: var(--gray-400);
-}
-
-/* Performance Card */
-.performance-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: var(--space-6);
-    box-shadow: var(--shadow);
+    padding: var(--space-3);
     border: var(--border);
-}
-
-.performance-card h3 {
-    color: var(--gray-900);
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: var(--space-4);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-}
-
-.performance-card h3 i {
-    color: var(--gray-400);
-}
-
-.performance-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.performance-item {
-    text-align: center;
-    padding: var(--space-4);
+    border-radius: var(--radius);
     background: var(--gray-50);
-    border-radius: var(--radius);
-    border: var(--border);
 }
 
-.performance-label {
+.donation-info,
+.campaign-info {
+    flex: 1;
+}
+
+.donation-title,
+.campaign-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.donation-title a,
+.campaign-title a {
+    color: var(--gray-900);
+    text-decoration: none;
+}
+
+.donation-title a:hover,
+.campaign-title a:hover {
+    color: var(--blue-600);
+}
+
+.donation-meta,
+.campaign-meta {
     color: var(--gray-600);
-    font-weight: 500;
-    margin-bottom: 8px;
     font-size: var(--font-sm);
 }
 
-.performance-value {
-    color: var(--gray-900);
+.donation-amount,
+.campaign-amount {
+    font-weight: 600;
+    color: var(--green-600);
+}
+
+/* Impact Section */
+.impact-section {
+    margin-bottom: var(--space-6);
+}
+
+.impact-card {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.impact-card h3 {
+    font-size: 1.5rem;
     font-weight: 700;
-    font-size: 1.25rem;
+    margin-bottom: var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+.impact-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-6);
+}
+
+.impact-stat {
+    text-align: center;
+}
+
+.impact-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+}
+
+.impact-label {
+    font-size: var(--font-sm);
+    opacity: 0.9;
+    font-weight: 500;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .analytics-container {
-        padding: 15px;
+        padding: 16px;
     }
 
     .header {
         flex-direction: column;
-        text-align: center;
-        padding: 20px;
+        align-items: flex-start;
     }
 
-    .header-left h1 {
-        font-size: 1.5rem;
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    .tables-row {
+        grid-template-columns: 1fr;
     }
 
     .metrics-grid {
         grid-template-columns: 1fr;
     }
 
-    .charts-row {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .tables-row {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .performance-grid {
+    .impact-stats {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .progress-stats {
-        gap: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .metric-card {
-        flex-direction: column;
-        text-align: center;
-        padding: 20px;
-    }
-
-    .performance-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .progress-stats {
-        flex-direction: column;
-        gap: 15px;
     }
 }

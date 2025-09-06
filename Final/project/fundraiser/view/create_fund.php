@@ -29,7 +29,6 @@
         $goal_amount = floatval($_POST['goal_amount'] ?? 0);
         $category_id = intval($_POST['category_id'] ?? 0);
         $end_date = $_POST['end_date'] ?? '';
-        $featured = isset($_POST['featured']) ? 1 : 0;
         
         // Validation
         if (empty($title) || empty($description) || $goal_amount <= 0 || empty($end_date) || $category_id <= 0) {
@@ -45,8 +44,7 @@
                 'goal_amount' => $goal_amount,
                 'category_id' => $category_id,
                 'fundraiser_id' => $user['id'],
-                'end_date' => $end_date,
-                'featured' => $featured
+                'end_date' => $end_date
             ]);
             
             if ($fund_id) {
@@ -140,24 +138,6 @@
                                value="<?php echo htmlspecialchars($_POST['end_date'] ?? ''); ?>" 
                                min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" required>
                         <small>When should this campaign end?</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section terms-checkbox">
-                <h2><i class="fas fa-star"></i> Campaign Options</h2>
-                
-                <div class="form-group">
-                    <div class="checkbox-container">
-                        <input type="checkbox" name="featured" value="1" id="featured"
-                               <?php echo (isset($_POST['featured']) && $_POST['featured']) ? 'checked' : ''; ?>>
-                        <div class="checkmark"></div>
-                        <label for="featured" class="checkbox-label">
-                            Request to feature this campaign
-                            <small style="display: block; margin-top: 4px; color: var(--gray-500);">
-                                Featured campaigns get more visibility (subject to admin approval)
-                            </small>
-                        </label>
                     </div>
                 </div>
             </div>

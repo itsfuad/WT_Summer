@@ -1,3 +1,8 @@
+<?php
+    require_once '../../includes/session.php';
+    requireNoLogin();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -46,7 +46,6 @@
         $category_id = intval($_POST['category_id'] ?? 0);
         $end_date = $_POST['end_date'] ?? '';
         $status = $_POST['status'] ?? $fund['status'];
-        $featured = isset($_POST['featured']) ? 1 : 0;
         
         // Validation
         if (empty($title) || empty($description) || $goal_amount <= 0 || empty($end_date) || $category_id <= 0) {
@@ -62,8 +61,7 @@
                 'goal_amount' => $goal_amount,
                 'category_id' => $category_id,
                 'end_date' => $end_date,
-                'status' => $status,
-                'featured' => $featured
+                'status' => $status
             ]);
             
             if ($updated) {
@@ -184,20 +182,6 @@
                         <option value="cancelled" <?php echo ($fund['status'] === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
                     </select>
                     <small>Current status affects visibility and donation acceptance</small>
-                </div>
-                
-                <div class="form-group">
-                    <div class="checkbox-container">
-                        <input type="checkbox" name="featured" value="1" id="featured"
-                               <?php echo $fund['featured'] ? 'checked' : ''; ?>>
-                        <div class="checkmark"></div>
-                        <div class="checkbox-label">
-                            Request to feature this campaign
-                            <small style="display: block; margin-top: 4px; color: var(--gray-500);">
-                                Featured campaigns get more visibility (subject to admin approval)
-                            </small>
-                        </div>
-                    </div>
                 </div>
             </div>
 

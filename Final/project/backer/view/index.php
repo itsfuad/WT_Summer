@@ -5,87 +5,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backer Dashboard - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <style>
-        :root { --bg:#f6f7f8; --card:#fff; --text:#111; --muted:#6b7280; --border:#e5e7eb; --radius:12px; --accent:#111; }
-        *{box-sizing:border-box}
-        body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin:0; background: var(--bg); color: var(--text); }
-        .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-        .header { display:flex; align-items:center; justify-content:space-between; background: var(--card); padding:16px 20px; border:1px solid var(--border); border-radius: var(--radius); margin-bottom:16px; }
-        .title { font-size: 20px; font-weight: 600; }
-        .link { color:#ef4444; text-decoration:none; }
-        .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap:16px; }
-        .card { background: var(--card); border:1px solid var(--border); border-radius: var(--radius); padding:16px; }
-        .col-8 { grid-column: span 8; }
-        .col-4 { grid-column: span 4; }
-        .section-title { font-size:16px; font-weight:600; margin:0 0 12px; }
-        .donation { display:flex; align-items:center; justify-content:space-between; padding:12px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; }
-        .donation .left { display:flex; gap:12px; align-items:center; }
-        .avatar { width:36px; height:36px; border-radius:50%; background:#f3f4f6; display:flex; align-items:center; justify-content:center; color:#6b7280; }
-        .muted { color: var(--muted); font-size:12px; }
-        .amount { font-weight:600; }
-        .list-empty { color: var(--muted); padding:8px 0; }
-        a.btn { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border); border-radius:8px; text-decoration:none; color:var(--text); }
-        .fund { padding:12px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
-        .fund .name { font-weight:600; }
-        .fund .actions a { margin-left:8px; }
-    </style>
-<?php
-require_once '../../includes/session.php';
-require_once '../../includes/functions.php';
-requireLogin();
-requireRole('backer');
-$user = getCurrentUser();
-$fm = new FundManager();
-$donations = $fm->getUserDonations($user['id'], 25);
-$liked = $fm->getUserLikedFunds($user['id'], 25);
-?>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="title"><i class="fas fa-hand-holding-heart"></i> Backer Dashboard</div>
-            <a class="link" href="../../includes/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <?php
+    require_once '../../includes/session.php';
+    require_once '../../includes/functions.php';
+    
+    requireLogin();
+    requireRole('backer');
+    $user = getCurrentUser();
+    
+    $fundManager = new FundManager();
+    
+    // Get funds the backer has donated to
+    $sort = $_GET['sort'] ?? 'latest';
+    $donatedFunds = $fundManager->getUserDonatedFunds($user['id'], $sort);
+    
+    // Calculate statistics
+    $totalDonated = 0;
+    $totalCampaigns = count($donatedFunds);
+    $activeCampaigns = 0;
+    $completedCampaigns = 0;
+    
+    foreach ($donatedFunds as $fund) {
+        $totalDonated += $fund['total_donated'];
+        if ($fund['status'] === 'active') {
+            $activeCampaigns++;
+        } elseif ($fund['status'] === 'completed') {
+            $completedCampaigns++;
+        }
+    }
+    ?>
+    
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fas fa-hand-holding-heart"></i> Backer Dashboard</h1>
+                <div class="user-info">
+                    <span>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</span>
+                    <a href="../../includes/logout.php" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="grid">
-            <div class="card col-8">
-                <h3 class="section-title">Recent Donations</h3>
-                <?php if (empty($donations)): ?>
-                    <div class="list-empty">You haven't donated yet. Explore campaigns to get started.</div>
-                <?php else: ?>
-                    <?php foreach ($donations as $d): ?>
-                        <div class="donation">
-                            <div class="left">
-                                <div class="avatar"><i class="fas fa-donate"></i></div>
-                                <div>
-                                    <div><strong><?php echo formatCurrency($d['amount']); ?></strong> to <a class="btn" href="../../campaign/view.php?id=<?php echo $d['fund_id']; ?>"><?php echo htmlspecialchars($d['fund_title']); ?></a></div>
-                                    <div class="muted"><?php echo timeAgo($d['created_at']); ?> • <?php echo $d['payment_status']; ?></div>
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <div class="stat-content">
+                    <h3><?php echo formatCurrency($totalDonated); ?></h3>
+                    <p>Total Donated</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="stat-content">
+                    <h3><?php echo $totalCampaigns; ?></h3>
+                    <p>Campaigns Supported</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3><?php echo $activeCampaigns; ?></h3>
+                    <p>Active Campaigns</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3><?php echo $completedCampaigns; ?></h3>
+                    <p>Completed Campaigns</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section">
+            <a href="../../home/view/index.php" class="btn btn-primary">
+                <i class="fas fa-search"></i> Browse Campaigns
+            </a>
+            <a href="analytics.php" class="btn btn-outline">
+                <i class="fas fa-chart-bar"></i> View Analytics
+            </a>
+        </div>
+
+        <!-- Donated Campaigns Section -->
+        <div class="campaigns-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2><i class="fas fa-hand-holding-heart"></i> Campaigns You've Supported</h2>
+                <div class="filter-controls">
+                    <select onchange="window.location.href='?sort=' + this.value" style="padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <option value="latest" <?php echo $sort === 'latest' ? 'selected' : ''; ?>>Latest Donations</option>
+                        <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Oldest Donations</option>
+                        <option value="top_raised" <?php echo $sort === 'top_raised' ? 'selected' : ''; ?>>Top Raised</option>
+                        <option value="less_raised" <?php echo $sort === 'less_raised' ? 'selected' : ''; ?>>Less Raised</option>
+                    </select>
+                </div>
+            </div>
+            
+            <?php if (empty($donatedFunds)): ?>
+                <div class="empty-state">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <h3>No donations yet</h3>
+                    <p>Start supporting amazing projects and make a difference in the community.</p>
+                </div>
+            <?php else: ?>
+                <div class="campaigns-grid">
+                    <?php foreach ($donatedFunds as $fund): ?>
+                        <?php 
+                        $percentage = calculatePercentage($fund['current_amount'], $fund['goal_amount']);
+                        $daysLeft = getDaysLeft($fund['end_date']);
+                        $statusClass = $fund['status'] === 'active' ? 'active' : $fund['status'];
+                        ?>
+                        <div class="campaign-card">
+                            <div class="campaign-status status-<?php echo $statusClass; ?>">
+                                <?php echo ucfirst($fund['status']); ?>
+                            </div>
+                            
+                            <div class="campaign-content">
+                                <h3><?php echo htmlspecialchars($fund['title']); ?></h3>
+                                <p><?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 100) . '...'); ?></p>
+                                
+                                <div class="donation-info" style="background: #f3f4f6; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span><strong>Your contribution:</strong> <?php echo formatCurrency($fund['total_donated']); ?></span>
+                                        <span style="color: #6b7280; font-size: 14px;"><?php echo $fund['donation_count']; ?> donation<?php echo $fund['donation_count'] > 1 ? 's' : ''; ?></span>
+                                    </div>
+                                    <div style="margin-top: 4px; color: #6b7280; font-size: 12px;">
+                                        First donation: <?php echo date('M j, Y', strtotime($fund['first_donation_date'])); ?>
+                                    </div>
+                                </div>
+                                
+                                <div class="campaign-stats">
+                                    <div class="stat">
+                                        <strong><?php echo formatCurrency($fund['current_amount']); ?></strong>
+                                        <span>of <?php echo formatCurrency($fund['goal_amount']); ?></span>
+                                    </div>
+                                    <div class="stat">
+                                        <strong><?php echo $fund['backer_count']; ?></strong>
+                                        <span>backers</span>
+                                    </div>
+                                    <div class="stat">
+                                        <strong><?php echo $daysLeft; ?></strong>
+                                        <span>days left</span>
+                                    </div>
+                                    <div class="stat">
+                                        <strong>by</strong>
+                                        <span><?php echo htmlspecialchars($fund['fundraiser_name']); ?></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
+                                </div>
+                                <div class="progress-text"><?php echo $percentage; ?>% funded</div>
+                                
+                                <div class="campaign-actions">
+                                    <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
+                                        <i class="fas fa-eye"></i> View Campaign
+                                    </a>
+                                    <?php if ($fund['status'] === 'active'): ?>
+                                        <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>#donate" class="btn btn-primary">
+                                            <i class="fas fa-heart"></i> Donate Again
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="amount"><?php echo $d['anonymous'] ? 'Anonymous' : ''; ?></div>
                         </div>
                     <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-
-            <div class="card col-4">
-                <h3 class="section-title">Liked Campaigns</h3>
-                <?php if (empty($liked)): ?>
-                    <div class="list-empty">No liked campaigns yet.</div>
-                <?php else: ?>
-                    <?php foreach ($liked as $f): ?>
-                        <div class="fund">
-                            <div>
-                                <div class="name"><?php echo htmlspecialchars($f['title']); ?></div>
-                                <div class="muted">by <?php echo htmlspecialchars($f['fundraiser_name']); ?></div>
-                            </div>
-                            <div class="actions">
-                                <a class="btn" href="../../campaign/view.php?id=<?php echo $f['id']; ?>"><i class="fas fa-eye"></i> View</a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>

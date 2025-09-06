@@ -31,10 +31,24 @@ body {
     font-size: var(--font-sm);
 }
 
-.form-group input, .form-group select { width: 100%; padding: 12px; border: var(--border); border-radius: var(--radius); font-size: 16px; }
-.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: var(--border);
+    border-radius: var(--radius);
+    font-size: 16px;
+}
 
-.form-group input.error, .form-group select.error {
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.form-group input.error,
+.form-group select.error {
     border-color: #ff4757;
 }
 
@@ -121,31 +135,6 @@ body {
     color: var(--gray-400);
 }
 
-/* Submit Button */
-.submit-btn {
-    width: 100%;
-    padding: var(--spacing-4);
-    background: var(--primary-color);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: var(--spacing-4);
-    transition: all var(--transition-normal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-2);
-}
-
-.submit-btn:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lg);
-}
-
 /* Login Link */
 .login-link {
     text-align: center;
@@ -187,7 +176,7 @@ body {
     .role-selection {
         grid-template-columns: 1fr;
     }
-    
+
     .signup-container {
         padding: var(--spacing-6);
         max-width: 100%;

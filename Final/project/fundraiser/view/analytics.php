@@ -6,7 +6,7 @@
     <title>Campaign Analytics - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/analytics.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../shared/libs/chart.min.js"></script>
 </head>
 <body>
     <?php
@@ -108,19 +108,6 @@
             
             <div class="metric-card">
                 <div class="metric-icon">
-                    <i class="fas fa-eye"></i>
-                </div>
-                <div class="metric-content">
-                    <div class="metric-value"><?php echo number_format($fund['views_count']); ?></div>
-                    <div class="metric-label">Page Views</div>
-                    <div class="metric-progress">
-                        <?php echo $fund['views_count'] > 0 ? round(($fund['backer_count'] / $fund['views_count']) * 100, 1) : 0; ?>% conversion
-                    </div>
-                </div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-icon">
                     <i class="fas fa-calendar-day"></i>
                 </div>
                 <div class="metric-content">
@@ -130,7 +117,7 @@
                                             <div class="campaign-info">
                         <div class="campaign-status">
                             <span class="status-badge status-<?php echo $fund['status']; ?>">
-                                <?php echo ucfirst($fund['status']); ?>
+                                Status: <?php echo ucfirst($fund['status']); ?>
                             </span>
                         </div>
                         <?php echo $days_running; ?> days running • <?php echo $days_left; ?> days left
@@ -142,10 +129,10 @@
             <!-- Engagement Metrics -->
             <div class="metric-card">
                 <div class="metric-icon">
-                    <i class="fas fa-heart" style="color: #ff6b9d;"></i>
+                    <i class="fas fa-heart"></i>
                 </div>
                 <div class="metric-content">
-                    <div class="metric-value" style="color: #ff6b9d;"><?php echo $likesCount; ?></div>
+                    <div class="metric-value"><?php echo $likesCount; ?></div>
                     <div class="metric-label">Total Likes</div>
                 </div>
             </div>

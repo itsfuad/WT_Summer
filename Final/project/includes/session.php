@@ -54,6 +54,14 @@ function requireRole($role) {
     }
 }
 
+function requireNoLogin() {
+    if (isLoggedIn()) {
+        $redirectUrl = redirectBasedOnRole();
+        header("Location: $redirectUrl");
+        exit();
+    }
+}
+
 function redirectBasedOnRole() {
     $user = getCurrentUser();
     if (!$user) {

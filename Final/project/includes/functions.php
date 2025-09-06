@@ -50,7 +50,7 @@ class FundManager {
     /**
      * Get all active funds with pagination
      */
-    public function getAllFunds($page = 1, $limit = 12, $category = null, $search = null) {
+    public function getAllFunds($page = 1, $limit = 12, $category = null, $search = null, $sort = 'featured', $excludeFeatured = false) {
         // Ensure numeric values are integers
         $page = (int)$page;
         $limit = (int)$limit;
@@ -65,9 +65,37 @@ class FundManager {
         }
         
         if ($search) {
-            $conditions[] = "(f.title LIKE ? OR f.description LIKE ?)";
+            $conditions[] = "(f.title LIKE ? OR f.description LIKE ? OR u.name LIKE ? OR c.name LIKE ?)";
             $params[] = "%$search%";
             $params[] = "%$search%";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+        
+        if ($excludeFeatured) {
+            $conditions[] = "f.featured = 0";
+        }
+        
+        // Handle sort order
+        $orderBy = "";
+        switch ($sort) {
+            case 'featured':
+                $orderBy = "f.featured DESC, f.current_amount DESC, f.created_at DESC";
+                break;
+            case 'newest':
+                $orderBy = "f.created_at DESC";
+                break;
+            case 'oldest':
+                $orderBy = "f.created_at ASC";
+                break;
+            case 'most_funded':
+                $orderBy = "f.current_amount DESC";
+                break;
+            case 'least_funded':
+                $orderBy = "f.current_amount ASC";
+                break;
+            default:
+                $orderBy = "f.featured DESC, f.current_amount DESC, f.created_at DESC";
         }
         
         $whereClause = implode(' AND ', $conditions);
@@ -79,15 +107,19 @@ class FundManager {
                 c.name as category_name,
                 c.icon as category_icon,
                 c.color as category_color,
-                COUNT(d.id) as backer_count,
+                COUNT(DISTINCT d.id) as backer_count,
+                COUNT(DISTINCT l.id) as likes_count,
+                COUNT(DISTINCT cm.id) as comments_count,
                 DATEDIFF(f.end_date, CURDATE()) as days_left
             FROM funds f
             LEFT JOIN users u ON f.fundraiser_id = u.id
             LEFT JOIN categories c ON f.category_id = c.id
             LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
+            LEFT JOIN fund_likes l ON f.id = l.fund_id
+            LEFT JOIN comments cm ON f.id = cm.fund_id
             WHERE $whereClause
-            GROUP BY f.id
-            ORDER BY f.featured DESC, f.current_amount DESC, f.created_at DESC
+            GROUP BY f.id, u.name, c.name, c.icon, c.color
+            ORDER BY $orderBy
             LIMIT $limit OFFSET $offset
         ";
         
@@ -99,7 +131,7 @@ class FundManager {
     /**
      * Get total count of active funds
      */
-    public function getTotalFundsCount($category = null, $search = null) {
+    public function getTotalFundsCount($category = null, $search = null, $excludeFeatured = false) {
         $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
         $params = [];
         
@@ -109,14 +141,26 @@ class FundManager {
         }
         
         if ($search) {
-            $conditions[] = "(f.title LIKE ? OR f.description LIKE ?)";
+            $conditions[] = "(f.title LIKE ? OR f.description LIKE ? OR u.name LIKE ? OR c.name LIKE ?)";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
             $params[] = "%$search%";
             $params[] = "%$search%";
         }
         
+        if ($excludeFeatured) {
+            $conditions[] = "f.featured = 0";
+        }
+        
         $whereClause = implode(' AND ', $conditions);
         
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM funds f WHERE $whereClause");
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) 
+            FROM funds f
+            LEFT JOIN users u ON f.fundraiser_id = u.id
+            LEFT JOIN categories c ON f.category_id = c.id
+            WHERE $whereClause
+        ");
         $stmt->execute($params);
         return $stmt->fetchColumn();
     }
@@ -239,20 +283,55 @@ class FundManager {
     }
     
     /**
-     * Get recent donations for a fund
+     * Get fund donations with flexible sorting options
      */
-    public function getRecentDonations($fund_id, $limit = 10) {
+    public function getFundDonations($fund_id, $sort = 'recent', $limit = 10) {
+        $validSorts = ['recent', 'top', 'oldest'];
+        if (!in_array($sort, $validSorts)) {
+            $sort = 'recent';
+        }
+        
+        $orderBy = match($sort) {
+            'recent' => 'd.created_at DESC',
+            'top' => 'd.amount DESC',
+            'oldest' => 'd.created_at ASC'
+        };
+        
         $stmt = $this->pdo->prepare("
-            SELECT d.*, u.name as backer_name
+            SELECT d.*, u.name as backer_name, u.role as backer_role
             FROM donations d
             LEFT JOIN users u ON d.backer_id = u.id
             WHERE d.fund_id = ? AND d.payment_status = 'completed'
-            ORDER BY d.created_at DESC
+            ORDER BY $orderBy
             LIMIT " . (int)$limit . "
         ");
         
         $stmt->execute([$fund_id]);
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Legacy function - use getFundDonations with sort='recent' instead
+     * @deprecated
+     */
+    public function getRecentDonations($fund_id, $limit = 10) {
+        return $this->getFundDonations($fund_id, 'recent', $limit);
+    }
+
+    /**
+     * Legacy function - use getFundDonations with sort='top' instead  
+     * @deprecated
+     */
+    public function getTopDonations($fund_id, $limit = 5) {
+        return $this->getFundDonations($fund_id, 'top', $limit);
+    }
+
+    /**
+     * Legacy function - use getFundDonations with sort='recent' instead
+     * @deprecated
+     */
+    public function getRecentActivity($fund_id, $limit = 10) {
+        return $this->getFundDonations($fund_id, 'recent', $limit);
     }
     
     /**
@@ -287,40 +366,6 @@ class FundManager {
             GROUP BY DATE(created_at)
             ORDER BY date ASC
             LIMIT 30
-        ");
-        
-        $stmt->execute([$fund_id]);
-        return $stmt->fetchAll();
-    }
-    
-    /**
-     * Get top donations
-     */
-    public function getTopDonations($fund_id, $limit = 5) {
-        $stmt = $this->pdo->prepare("
-            SELECT d.*, u.name as backer_name
-            FROM donations d
-            LEFT JOIN users u ON d.backer_id = u.id
-            WHERE d.fund_id = ? AND d.payment_status = 'completed'
-            ORDER BY d.amount DESC
-            LIMIT " . (int)$limit . "
-        ");
-        
-        $stmt->execute([$fund_id]);
-        return $stmt->fetchAll();
-    }
-    
-    /**
-     * Get recent activity
-     */
-    public function getRecentActivity($fund_id, $limit = 10) {
-        $stmt = $this->pdo->prepare("
-            SELECT d.*, u.name as backer_name
-            FROM donations d
-            LEFT JOIN users u ON d.backer_id = u.id
-            WHERE d.fund_id = ? AND d.payment_status = 'completed'
-            ORDER BY d.created_at DESC
-            LIMIT " . (int)$limit . "
         ");
         
         $stmt->execute([$fund_id]);
@@ -467,6 +512,27 @@ class FundManager {
     }
 
     /**
+     * Get user likes for multiple funds (for bulk checking)
+     */
+    public function getUserLikesForFunds($fund_ids, $user_id) {
+        if (empty($fund_ids) || !$user_id) {
+            return [];
+        }
+        
+        $placeholders = str_repeat('?,', count($fund_ids) - 1) . '?';
+        $params = array_merge($fund_ids, [$user_id]);
+        
+        $stmt = $this->pdo->prepare("
+            SELECT fund_id 
+            FROM fund_likes 
+            WHERE fund_id IN ($placeholders) AND user_id = ?
+        ");
+        
+        $stmt->execute($params);
+        return array_column($stmt->fetchAll(), 'fund_id');
+    }
+
+    /**
      * Create a donation (simple immediate completion flow)
      */
     public function createDonation($fund_id, $backer_id, $amount, $comment = null, $anonymous = 0) {
@@ -501,15 +567,61 @@ class FundManager {
     }
 
     /**
-     * Get donations made by a user
+     * Get donations made by a user (individual donation records)
      */
     public function getUserDonations($user_id, $limit = 50) {
         $stmt = $this->pdo->prepare("
-            SELECT d.*, f.title as fund_title, f.fundraiser_id
+            SELECT d.*, f.title as fund_title, f.fundraiser_id, u.name as fundraiser_name
             FROM donations d
-            LEFT JOIN funds f ON d.fund_id = f.id
-            WHERE d.backer_id = ?
+            INNER JOIN funds f ON d.fund_id = f.id
+            LEFT JOIN users u ON f.fundraiser_id = u.id
+            WHERE d.backer_id = ? AND d.payment_status = 'completed'
             ORDER BY d.created_at DESC
+            LIMIT " . (int)$limit . "
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Get funds a user has donated to (aggregated by fund with sorting options)
+     * This is the main function for dashboard display
+     */
+    public function getUserDonatedFunds($user_id, $sort = 'latest', $limit = 50) {
+        $validSorts = ['latest', 'oldest', 'top_raised', 'less_raised'];
+        if (!in_array($sort, $validSorts)) {
+            $sort = 'latest';
+        }
+        
+        $orderBy = match($sort) {
+            'latest' => 'first_donation_date DESC',
+            'oldest' => 'first_donation_date ASC',
+            'top_raised' => 'f.current_amount DESC',
+            'less_raised' => 'f.current_amount ASC'
+        };
+        
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                f.*,
+                u.name as fundraiser_name,
+                c.name as category_name,
+                c.icon as category_icon,
+                c.color as category_color,
+                SUM(d.amount) as total_donated,
+                COUNT(d.id) as donation_count,
+                MIN(d.created_at) as first_donation_date,
+                MAX(d.created_at) as last_donation_date,
+                (SELECT COUNT(DISTINCT backer_id) 
+                 FROM donations 
+                 WHERE fund_id = f.id AND payment_status = 'completed') as backer_count,
+                DATEDIFF(f.end_date, CURDATE()) as days_left
+            FROM donations d
+            INNER JOIN funds f ON d.fund_id = f.id
+            LEFT JOIN users u ON f.fundraiser_id = u.id
+            LEFT JOIN categories c ON f.category_id = c.id
+            WHERE d.backer_id = ? AND d.payment_status = 'completed'
+            GROUP BY f.id
+            ORDER BY $orderBy
             LIMIT " . (int)$limit . "
         ");
         $stmt->execute([$user_id]);
@@ -527,6 +639,99 @@ class FundManager {
             LEFT JOIN users u ON f.fundraiser_id = u.id
             WHERE fl.user_id = ?
             ORDER BY fl.created_at DESC
+            LIMIT " . (int)$limit . "
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get backer analytics data
+     */
+    public function getBackerAnalytics($user_id) {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                COUNT(DISTINCT d.fund_id) as campaigns_supported,
+                COUNT(d.id) as total_donations,
+                SUM(d.amount) as total_donated,
+                AVG(d.amount) as avg_donation,
+                MIN(d.created_at) as first_donation_date
+            FROM donations d
+            WHERE d.backer_id = ? AND d.payment_status = 'completed'
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetch();
+    }
+    
+    /**
+     * Get monthly donation data for charts
+     */
+    public function getMonthlyDonationData($user_id) {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                DATE_FORMAT(d.created_at, '%Y-%m') as month,
+                SUM(d.amount) as amount,
+                COUNT(d.id) as count
+            FROM donations d
+            WHERE d.backer_id = ? AND d.payment_status = 'completed'
+            AND d.created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(d.created_at, '%Y-%m')
+            ORDER BY month ASC
+        ");
+        $stmt->execute([$user_id]);
+        $results = $stmt->fetchAll();
+        
+        // Fill in missing months with zero values
+        $months = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $month = date('Y-m', strtotime("-$i months"));
+            $months[$month] = ['month' => date('M Y', strtotime("-$i months")), 'amount' => 0, 'count' => 0];
+        }
+        
+        foreach ($results as $result) {
+            if (isset($months[$result['month']])) {
+                $months[$result['month']]['amount'] = (float)$result['amount'];
+                $months[$result['month']]['count'] = (int)$result['count'];
+            }
+        }
+        
+        return array_values($months);
+    }
+    
+    /**
+     * Get donations breakdown by category
+     */
+    public function getDonationsByCategory($user_id) {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                c.name as category_name,
+                c.color as category_color,
+                SUM(d.amount) as total_amount,
+                COUNT(d.id) as donation_count
+            FROM donations d
+            INNER JOIN funds f ON d.fund_id = f.id
+            LEFT JOIN categories c ON f.category_id = c.id
+            WHERE d.backer_id = ? AND d.payment_status = 'completed'
+            GROUP BY c.id, c.name
+            ORDER BY total_amount DESC
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Get recent donations by a user (for analytics)
+     */
+    public function getUserRecentDonations($user_id, $limit = 10) {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                d.*,
+                f.title as fund_title,
+                f.id as fund_id
+            FROM donations d
+            INNER JOIN funds f ON d.fund_id = f.id
+            WHERE d.backer_id = ? AND d.payment_status = 'completed'
+            ORDER BY d.created_at DESC
             LIMIT " . (int)$limit . "
         ");
         $stmt->execute([$user_id]);
