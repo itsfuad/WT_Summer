@@ -1,6 +1,7 @@
 <?php
-
 require_once __DIR__ . '/../../database/database.php';
+require_once 'upload_manager.php';
+
 
 class FundManager {
     private $pdo;
@@ -133,7 +134,14 @@ class FundManager {
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        $funds = $stmt->fetchAll();
+        
+        // Add cover image URLs to each fund
+        foreach ($funds as &$fund) {
+            $fund['image_url'] = $this->getFundCoverImage($fund['id']);
+        }
+        
+        return $funds;
     }
     
     /**
@@ -199,7 +207,14 @@ class FundManager {
         ");
         
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        $fund = $stmt->fetch();
+        
+        // Add cover image URL
+        if ($fund) {
+            $fund['image_url'] = $this->getFundCoverImage($fund['id']);
+        }
+        
+        return $fund;
     }
     
     /**
@@ -238,7 +253,14 @@ class FundManager {
         ");
         
         $stmt->execute([$fundraiser_id]);
-        return $stmt->fetchAll();
+        $funds = $stmt->fetchAll();
+        
+        // Add cover image URLs to each fund
+        foreach ($funds as &$fund) {
+            $fund['image_url'] = $this->getFundCoverImage($fund['id']);
+        }
+        
+        return $funds;
     }
     
     /**
@@ -854,7 +876,46 @@ class FundManager {
             LIMIT " . (int)$limit . "
         ");
         $stmt->execute();
-        return $stmt->fetchAll();
+        $funds = $stmt->fetchAll();
+        
+        // Add cover image URLs to each fund
+        foreach ($funds as &$fund) {
+            $fund['image_url'] = $this->getFundCoverImage($fund['id']);
+        }
+        
+        return $funds;
+    }
+    
+    /**
+     * Update fund cover image
+     */
+    public function updateFundCoverImage($fundId, $imagePath) {
+        $stmt = $this->pdo->prepare("UPDATE funds SET image_url = ?, updated_at = NOW() WHERE id = ?");
+        try {
+            $result = $stmt->execute([$imagePath, $fundId]);
+            return $result ? ['success' => true] : ['error' => 'Failed to update fund cover image'];
+        } catch (PDOException $e) {
+            return ['error' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Get fund's current cover image path
+     */
+    public function getFundCoverImage($fundId) {
+        $uploadManager = new UploadManager();
+        $filename = $this->getFundCoverFilename($fundId);
+        return $uploadManager->getImageUrl('cover', $filename);
+    }
+    
+    /**
+     * Get fund cover filename (for upload manager)
+     */
+    public function getFundCoverFilename($fundId) {
+        $stmt = $this->pdo->prepare("SELECT image_url FROM funds WHERE id = ?");
+        $stmt->execute([$fundId]);
+        $fund = $stmt->fetch();
+        return $fund ? $fund['image_url'] : null;
     }
 }
 
@@ -980,12 +1041,54 @@ class UserManager {
      * Get user profile with complete information
      */
     public function getCompleteUserProfile($userId) {
-        $stmt = $this->pdo->prepare("SELECT id, name, email, role, bio, status, email_verified, created_at, updated_at
+        $stmt = $this->pdo->prepare("SELECT id, name, email, role, bio, status, email_verified, profile_image, created_at, updated_at
             FROM users 
             WHERE id = ?
         ");
         $stmt->execute([$userId]);
         return $stmt->fetch();
+    }
+    
+    /**
+     * Update user profile image
+     */
+    public function updateProfileImage($userId, $imagePath) {
+        $stmt = $this->pdo->prepare("UPDATE users SET profile_image = ?, updated_at = NOW() WHERE id = ?");
+        try {
+            $result = $stmt->execute([$imagePath, $userId]);
+            return $result ? ['success' => true] : ['error' => 'Failed to update profile image'];
+        } catch (PDOException $e) {
+            return ['error' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Get user's current profile image path
+     */
+    public function getUserProfileImage($userId) {
+        $stmt = $this->pdo->prepare("SELECT profile_image FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        return $user ? $user['profile_image'] : null;
+    }
+    
+    /**
+     * Get user's profile image URL
+     */
+    public function getProfileImage($userId) {
+        $uploadManager = new UploadManager();
+        $filename = $this->getProfileImageFilename($userId);
+        return $uploadManager->getImageUrl('profile', $filename);
+    }
+    
+    /**
+     * Get profile image filename (for upload manager)
+     */
+    public function getProfileImageFilename($userId) {
+        $stmt = $this->pdo->prepare("SELECT profile_image FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        return $user ? $user['profile_image'] : null;
     }
 }
 

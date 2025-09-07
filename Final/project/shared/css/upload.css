@@ -1,0 +1,238 @@
+/* Upload Component Styles */
+.upload-section {
+    background: var(--gray-50);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.upload-section h3 {
+    color: var(--gray-900);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.upload-section h3 i {
+    color: var(--gray-600);
+}
+
+.current-image-preview {
+    margin-bottom: var(--space-4);
+    text-align: center;
+}
+
+.profile-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--white);
+    box-shadow: var(--shadow);
+}
+
+.cover-preview {
+    width: 100%;
+    max-width: 400px;
+    max-height: 200px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.cover-preview img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.upload-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+}
+
+.file-input-wrapper label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.file-input-wrapper label:hover {
+    background: var(--gray-100);
+    border-color: var(--gray-400);
+}
+
+.upload-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.upload-info small {
+    color: var(--gray-600);
+    font-size: 12px;
+}
+
+/* Upload progress and status */
+.upload-status {
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    font-size: 14px;
+    display: none;
+}
+
+.upload-status.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.upload-status.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.upload-status.loading {
+    background: #e0f2fe;
+    color: #0c4a6e;
+    border: 1px solid #bae6fd;
+}
+
+/* Image upload drag and drop area */
+.upload-dropzone {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    text-align: center;
+    transition: all var(--transition);
+    margin-bottom: var(--space-4);
+}
+
+.upload-dropzone.dragover {
+    border-color: var(--primary);
+    background: var(--primary-50);
+}
+
+.upload-dropzone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.upload-dropzone-icon {
+    font-size: 48px;
+    color: var(--gray-400);
+}
+
+.upload-dropzone-text {
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.upload-dropzone-subtext {
+    color: var(--gray-500);
+    font-size: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .upload-section {
+        padding: var(--space-4);
+    }
+    
+    .cover-preview {
+        height: 150px;
+    }
+    
+    .profile-preview {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .upload-controls {
+        text-align: center;
+    }
+}
+
+/* Integration with existing form styles */
+.form-section .upload-section {
+    background: var(--white);
+    border: none;
+    padding: 0;
+    margin-bottom: var(--space-4);
+}
+
+.form-section .upload-section h3 {
+    font-size: 14px;
+    margin-bottom: var(--space-3);
+}
+
+/* Upload animation */
+.upload-progress {
+    width: 100%;
+    height: 4px;
+    background: var(--gray-200);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: var(--space-2);
+    display: none;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Image removal button */
+.image-remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--error);
+    color: var(--white);
+    border: 2px solid var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all var(--transition);
+}
+
+.image-remove-btn:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+.current-image-preview {
+    position: relative;
+    display: inline-block;
+}

@@ -125,7 +125,7 @@ try {
                 </div>
                 
                 <div class='campaign-actions'>
-                    <a href='../../campaign/view.php?id=" . $campaign['id'] . "' class='btn btn-primary'>
+                    <a href='../../campaign/view?id=" . $campaign['id'] . "' class='btn btn-primary'>
                         <i class='fas fa-eye'></i> View Details
                     </a>
                 </div>

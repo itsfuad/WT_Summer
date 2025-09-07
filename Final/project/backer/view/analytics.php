@@ -150,7 +150,7 @@
                             <div class="donation-item">
                                 <div class="donation-info">
                                     <div class="donation-title">
-                                        <a href="../../campaign/view.php?id=<?php echo $donation['fund_id']; ?>">
+                                        <a href="../../campaign/view?id=<?php echo $donation['fund_id']; ?>">
                                             <?php echo htmlspecialchars($donation['fund_title']); ?>
                                         </a>
                                     </div>
@@ -188,7 +188,7 @@
                             <div class="campaign-item">
                                 <div class="campaign-info">
                                     <div class="campaign-title">
-                                        <a href="../../campaign/view.php?id=<?php echo $campaign['id']; ?>">
+                                        <a href="../../campaign/view?id=<?php echo $campaign['id']; ?>">
                                             <?php echo htmlspecialchars($campaign['title']); ?>
                                         </a>
                                     </div>

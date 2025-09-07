@@ -37,7 +37,7 @@ function renderFundForm($config) {
     }
     ?>
     
-    <form method="POST" class="<?php echo $formClass; ?>">
+    <form method="POST" class="<?php echo $formClass; ?>" enctype="multipart/form-data">
         <!-- Basic Information -->
         <div class="form-section">
             <h2><i class="fas fa-info-circle"></i> Basic Information</h2>
@@ -70,6 +70,28 @@ function renderFundForm($config) {
                         </option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+        </div>
+
+        <!-- Cover Image -->
+        <div class="form-section">
+            <h2><i class="fas fa-image"></i> Campaign Cover Image</h2>
+            
+            <div class="form-group">
+                <label for="cover_image">Cover Image</label>
+                <?php
+                // Get current cover image if editing
+                $currentCover = null;
+                if ($isEdit && $fund) {
+                    $fundManager = new FundManager();
+                    $currentCover = $fundManager->getFundCoverImage($fund['id']);
+                }
+                
+                // Render upload form for cover image
+                $uploadManager = new UploadManager();
+                $uploadManager->renderUploadForm('cover', $currentCover);
+                ?>
+                <small>Upload a compelling cover image for your campaign (optional). JPG, PNG formats. Max 10MB.</small>
             </div>
         </div>
 
@@ -167,7 +189,7 @@ function renderFundForm($config) {
         <!-- Form Actions -->
         <div class="form-actions">
             <?php if ($isEdit): ?>
-                <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
+                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancel
                 </a>
             <?php else: ?>

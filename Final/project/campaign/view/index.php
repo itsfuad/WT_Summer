@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($fund['title'] ?? 'Campaign'); ?> - CrowdFund</title>
-    <link rel="stylesheet" href="../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <?php
-    require_once '../includes/session.php';
-    require_once '../includes/functions.php';
+    require_once '../../shared/includes/session.php';
+    require_once '../../shared/includes/functions.php';
     
     $fundManager = new FundManager();
     
@@ -63,21 +63,21 @@
                         <div class="user-menu">
                             <span>Welcome, <?php echo htmlspecialchars($user['name']); ?></span>
                             <?php if ($userRole === 'fundraiser'): ?>
-                                <a href="../fundraiser/view/index.php" class="nav-link">Dashboard</a>
-                                <a href="../fundraiser/view/profile.php" class="nav-link">Profile</a>
+                                <a href="../../fundraiser/view/index.php" class="nav-link">Dashboard</a>
+                                <a href="../../fundraiser/view/profile.php" class="nav-link">Profile</a>
                             <?php elseif ($userRole === 'backer'): ?>
-                                <a href="../backer/view/index.php" class="nav-link">My Donations</a>
-                                <a href="../backer/view/profile.php" class="nav-link">Profile</a>
+                                <a href="../../backer/view/index.php" class="nav-link">My Donations</a>
+                                <a href="../../backer/view/profile.php" class="nav-link">Profile</a>
                             <?php elseif ($userRole === 'admin'): ?>
-                                <a href="../admin/view/index.php" class="nav-link">Admin Panel</a>
-                                <a href="../admin/view/profile.php" class="nav-link">Profile</a>
+                                <a href="../../admin/view/index.php" class="nav-link">Admin Panel</a>
+                                <a href="../../admin/view/profile.php" class="nav-link">Profile</a>
                             <?php endif; ?>
-                            <a href="../includes/logout.php" class="nav-link">Logout</a>
+                            <a href="../../includes/logout.php" class="nav-link">Logout</a>
                         </div>
                     <?php else: ?>
                         <div class="auth-links">
-                            <a href="../login/view/index.php" class="nav-link">Login</a>
-                            <a href="../signup/view/index.php" class="nav-link">Sign Up</a>
+                            <a href="../../login/view/index.php" class="nav-link">Login</a>
+                            <a href="../../signup/view/index.php" class="nav-link">Sign Up</a>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -137,7 +137,7 @@
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <?php if ($userRole === 'guest'): ?>
-                            <a href="../login/view/index.php" class="btn btn-primary">
+                            <a href="../../login/view/index.php" class="btn btn-primary">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Login to donate
                             </a>
@@ -158,7 +158,7 @@
                         <?php endif; ?>
                         
                         <?php if ($userRole === 'fundraiser' && $fund['fundraiser_id'] == $user['id']): ?>
-                            <a href="../fundraiser/view/edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
+                            <a href="../../fundraiser/view/edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
                                 <i class="fas fa-edit"></i>
                                 Edit Campaign
                             </a>
@@ -217,7 +217,7 @@
                 </div>
                 <?php elseif ($commentsCount > 0): ?>
                 <div class="login-prompt">
-                    <p><a href="../login/view/index.php">Login</a> to join the conversation</p>
+                    <p><a href="../../login/view/index.php">Login</a> to join the conversation</p>
                 </div>
                 <?php endif; ?>
 
@@ -384,7 +384,7 @@
             
             likeBtn.disabled = true;
             
-            fetch('ajax/toggle_like.php', {
+            fetch('../ajax/toggle_like.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -436,7 +436,7 @@
             if (!(amount > 0)) { showNotification('Enter a valid amount', 'error'); return; }
             const submitBtn = e.target.querySelector('button[type="submit"]');
             submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing';
-            fetch('ajax/donate.php', {
+            fetch('../ajax/donate.php', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ fund_id: fundId, amount, comment, anonymous })
             }).then(r => r.json()).then(data => {
@@ -534,7 +534,7 @@
             if (!reason) { showNotification('Select a reason', 'error'); return; }
             const submitBtn = e.target.querySelector('button[type="submit"]');
             submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting';
-            fetch('ajax/report.php', {
+            fetch('../ajax/report.php', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ fund_id: reportCommentId ? null : fundId, comment_id: reportCommentId ? reportCommentId : null, reason, description })
             }).then(r => r.json()).then(data => {
@@ -563,7 +563,7 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             
-            fetch('ajax/add_comment.php', {
+            fetch('../ajax/add_comment.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -669,7 +669,7 @@
                 return;
             }
             
-            fetch('ajax/delete_comment.php', {
+            fetch('../ajax/delete_comment.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -733,7 +733,7 @@
                 return;
             }
             
-            fetch('ajax/edit_comment.php', {
+            fetch('../ajax/edit_comment.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

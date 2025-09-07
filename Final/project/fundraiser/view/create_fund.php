@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Campaign - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../../shared/css/upload.css">
     <link rel="stylesheet" href="../css/fund_form.css">
 </head>
 <body>
@@ -12,6 +13,7 @@
     require_once '../../shared/includes/session.php';
     require_once '../../shared/includes/functions.php';
     require_once '../../shared/includes/fund_form.php';
+    require_once '../../shared/includes/upload_manager.php';
     
     requireLogin();
     requireRole('fundraiser');
@@ -49,9 +51,24 @@
             ]);
             
             if ($fund_id) {
-                $success = "Campaign created successfully!";
-                // Redirect after 2 seconds
-                header("refresh:2;url=index.php");
+                // Handle cover image upload if provided
+                if (!empty($_FILES['cover_image']['name'])) {
+                    $uploadManager = new UploadManager();
+                    $upload_result = $uploadManager->uploadCoverImage($_FILES['cover_image'], $fund_id);
+                    
+                    if (!$upload_result['success']) {
+                        $error = "Campaign created but cover image upload failed: " . $upload_result['message'];
+                    } else {
+                        $success = "Campaign created successfully with cover image!";
+                    }
+                } else {
+                    $success = "Campaign created successfully!";
+                }
+                
+                if (!$error) {
+                    // Redirect after 2 seconds
+                    header("refresh:2;url=index.php");
+                }
             } else {
                 $error = "Failed to create campaign. Please try again.";
             }

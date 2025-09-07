@@ -164,7 +164,7 @@
                                 <div class="progress-text"><?php echo $percentage; ?>% funded</div>
                                 
                                 <div class="campaign-actions">
-                                    <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
                                         <i class="fas fa-eye"></i> View
                                     </a>
                                     <a href="edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
@@ -250,7 +250,7 @@
                                 <div class="progress-text"><?php echo $percentage; ?>% funded</div>
                                 
                                 <div class="campaign-actions">
-                                    <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
                                         <i class="fas fa-eye"></i> View Campaign
                                     </a>
                                 </div>

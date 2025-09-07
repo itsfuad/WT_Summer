@@ -180,11 +180,11 @@
                                 <div class="progress-text"><?php echo $percentage; ?>% funded</div>
                                 
                                 <div class="campaign-actions">
-                                    <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
                                         <i class="fas fa-eye"></i> View Campaign
                                     </a>
                                     <?php if ($fund['status'] === 'active'): ?>
-                                        <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>#donate" class="btn btn-primary">
+                                        <a href="../../campaign/view?id=<?php echo $fund['id']; ?>#donate" class="btn btn-primary">
                                             <i class="fas fa-heart"></i> Donate Again
                                         </a>
                                     <?php endif; ?>

@@ -5,7 +5,7 @@ echo "<h2>🔧 CrowdFund Database Test</h2>\n";
 try {
     // Test database connection
     echo "<p>1. Testing database connection...</p>\n";
-    require_once '../config/database.php';
+    require_once 'database.php';
     echo "<p style='color:green;'>✅ Database connection successful!</p>\n";
     
     // Test if tables exist

@@ -238,7 +238,6 @@ try {
     echo "<strong>❌ Error:</strong> " . htmlspecialchars($e->getMessage()) . "<br><br>\n";
     echo "<strong>🔧 Solution:</strong><br>\n";
     echo "1. Make sure the database 'crowdfund_db' exists<br>\n";
-    echo "2. Run create_db.php first if needed<br>\n";
     echo "3. Check MySQL service is running<br>\n";
     echo "</div>\n";
 }

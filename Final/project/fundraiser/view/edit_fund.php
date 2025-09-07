@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Campaign - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../../shared/css/upload.css">
     <link rel="stylesheet" href="../css/fund_form.css">
 </head>
 <body>
     <?php
     require_once '../../shared/includes/session.php';
     require_once '../../shared/includes/functions.php';
-    require_once '../includes/fund_form.php';
+    require_once '../../shared/includes/fund_form.php';
+    require_once '../../shared/includes/upload_manager.php';
     
     requireLogin();
     requireRole('fundraiser');
@@ -72,9 +74,24 @@
             ]);
             
             if ($updated) {
-                $success = "Campaign updated successfully!";
-                // Refresh fund data
-                $fund = $fundManager->getFundById($fund_id);
+                // Handle cover image upload if provided
+                if (!empty($_FILES['cover_image']['name'])) {
+                    $uploadManager = new UploadManager();
+                    $upload_result = $uploadManager->uploadCoverImage($_FILES['cover_image'], $fund_id);
+                    
+                    if (!$upload_result['success']) {
+                        $error = "Campaign updated but cover image upload failed: " . $upload_result['message'];
+                    } else {
+                        $success = "Campaign updated successfully with new cover image!";
+                    }
+                } else {
+                    $success = "Campaign updated successfully!";
+                }
+                
+                if (!$error) {
+                    // Refresh fund data
+                    $fund = $fundManager->getFundById($fund_id);
+                }
             } else {
                 $error = "Failed to update campaign. Please try again.";
             }
@@ -86,13 +103,13 @@
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="back-btn">
+                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Campaign
                 </a>
                 <h1>Edit Campaign</h1>
             </div>
             <div class="header-actions">
-                <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
+                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
                     <i class="fas fa-eye"></i> View Campaign
                 </a>
                 <a href="analytics.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">

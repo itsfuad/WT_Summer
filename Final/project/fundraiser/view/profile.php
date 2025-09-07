@@ -6,6 +6,7 @@
     <title>Manage Profile - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../../shared/css/profile_manager.css">
+    <link rel="stylesheet" href="../../shared/css/upload.css">
 </head>
 <body>
     <?php

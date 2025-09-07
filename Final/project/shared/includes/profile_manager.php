@@ -1,11 +1,13 @@
 <?php
-require_once '../../shared/includes/session.php';
-require_once '../../shared/includes/functions.php';
+require_once 'session.php';
+require_once 'functions.php';
+require_once 'upload_manager.php';
 
 requireLogin();
 $user = getCurrentUser();
 
 $userManager = new UserManager();
+$uploadManager = new UploadManager();
 
 // Get complete user profile
 $fullUser = $userManager->getCompleteUserProfile($user['id']);
@@ -16,20 +18,21 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $bio = trim($_POST['bio'] ?? '');
     $currentPassword = trim($_POST['current_password'] ?? '');
     $newPassword = trim($_POST['new_password'] ?? '');
     $confirmPassword = trim($_POST['confirm_password'] ?? '');
     
     $updateData = [];
     
-    // Validate name
-    if (empty($name)) {
-        $errors['name'] = "Name is required";
-    } else if (!preg_match("/^[a-zA-Z-' ]+$/", $name)) {
-        $errors['name'] = "Name can only contain letters, spaces, apostrophes, and hyphens";
-    } else {
-        $updateData['name'] = $name;
+    // Validate name (if the user role allows name change)
+    if (isset($_POST['name'])) {
+        if (empty($name)) {
+            $errors['name'] = "Name is required";
+        } else if (!preg_match("/^[a-zA-Z-' ]+$/", $name)) {
+            $errors['name'] = "Name can only contain letters, spaces, apostrophes, and hyphens";
+        } else {
+            $updateData['name'] = $name;
+        }
     }
     
     // Validate email
@@ -41,11 +44,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updateData['email'] = $email;
     }
     
-    // Bio is optional
-    if (strlen($bio) > 500) {
-        $errors['bio'] = "Bio cannot exceed 500 characters";
-    } else {
-        $updateData['bio'] = $bio;
+    // Handle profile image upload
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $uploadResult = $uploadManager->uploadProfileImage($_FILES['profile_image'], $user['id']);
+        if ($uploadResult['success']) {
+            $imageUpdateResult = $userManager->updateProfileImage($user['id'], $uploadResult['filename']);
+            if (!$imageUpdateResult['success']) {
+                $errors['profile_image'] = $imageUpdateResult['error'];
+            }
+        } else {
+            $errors['profile_image'] = $uploadResult['message'];
+        }
     }
     
     // Handle password change
@@ -129,7 +138,7 @@ function renderProfileForm($config) {
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?php echo $formAction; ?>" class="profile-form">
+        <form method="POST" action="<?php echo $formAction; ?>" class="profile-form" enctype="multipart/form-data">
             <!-- Account Information -->
             <div class="form-section">
                 <h2><i class="fas fa-user"></i> Account Information</h2>
@@ -155,6 +164,40 @@ function renderProfileForm($config) {
                         <span class="error-message"><?php echo $errors['email']; ?></span>
                     <?php endif; ?>
                     <small>This email is used for login and notifications</small>
+                </div>
+            </div>
+
+            <!-- Profile Image -->
+            <div class="form-section">
+                <h2><i class="fas fa-camera"></i> Profile Picture</h2>
+                <div class="upload-section">
+                    <div class="current-image-preview">
+                        <?php 
+                        global $uploadManager;
+                        if (!$uploadManager) $uploadManager = new UploadManager();
+                        $profileImageUrl = $uploadManager->getImageUrl('profile', $user['profile_image']); 
+                        ?>
+                        <img src="<?php echo htmlspecialchars($profileImageUrl); ?>" 
+                             alt="Current profile picture" 
+                             class="profile-preview" id="profile-preview">
+                    </div>
+                    <div class="upload-controls">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="profile_image" name="profile_image" 
+                                   accept="image/jpeg,image/jpg,image/png,image/webp" 
+                                   onchange="previewImage(this, 'profile')">
+                            <label for="profile_image" class="btn btn-outline">
+                                <i class="fas fa-upload"></i> Choose Image
+                            </label>
+                        </div>
+                        <div class="upload-info">
+                            <small>Max size: 10MB. Formats: JPG, PNG, WebP</small>
+                            <small>Recommended: 400x400px square image</small>
+                        </div>
+                        <?php if (isset($errors['profile_image'])): ?>
+                            <span class="error-message"><?php echo $errors['profile_image']; ?></span>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 
@@ -258,6 +301,33 @@ function renderProfileForm($config) {
             } else {
                 toggleIcon.classList.remove('fa-eye-slash');
                 toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        function previewImage(input, type) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Validate file size
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Only JPEG, PNG, and WebP images are allowed');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(type + '-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         }
     </script>

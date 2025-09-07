@@ -251,7 +251,7 @@ $commentReports = $fundManager->getCommentReports();
 
         // Utility function to open campaign view
         function openCampaignView(campaignId) {
-            window.open(`../../campaign/view.php?id=${campaignId}`, '_blank');
+            window.open(`../../campaign/view?id=${campaignId}`, '_blank');
         }
 
         // Admin action functions
