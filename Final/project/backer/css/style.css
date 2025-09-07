@@ -1,10 +1,6 @@
 /* Backer Dashboard Styles */
 @import url('../../shared/css/common.css');
 
-body {
-    background: var(--gray-50);
-}
-
 .dashboard {
     max-width: 1200px;
     margin: 0 auto;

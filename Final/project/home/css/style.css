@@ -1,9 +1,5 @@
 @import url('../../shared/css/common.css');
 
-body {
-    background: var(--gray-50);
-}
-
 .header {
     background: var(--white);
     border-bottom: var(--border);

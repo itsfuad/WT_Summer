@@ -1,9 +1,4 @@
-/* Fundraiser Dashboard Styles */
 @import url('../../shared/css/common.css');
-
-body {
-    background: var(--white);
-}
 
 .dashboard {
     max-width: 1200px;

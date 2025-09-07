@@ -1,11 +1,6 @@
 /* Edit Fund Styles */
 @import url('../../shared/css/common.css');
 
-body {
-    background: var(--white);
-    padding: var(--space-6);
-}
-
 .edit-fund-container {
     max-width: 900px;
     margin: 0 auto;
@@ -245,9 +240,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    body {
-        padding: 15px;
-    }
 
     .edit-fund-container {
         max-width: 100%;

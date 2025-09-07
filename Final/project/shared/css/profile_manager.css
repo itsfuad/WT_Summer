@@ -1,10 +1,5 @@
 @import url('./common.css');
 
-body {
-    background: var(--gray-50);
-    padding: var(--space-6);
-}
-
 .profile-form-container {
     max-width: 800px;
     margin: 0 auto;
@@ -318,9 +313,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    body {
-        padding: var(--space-4);
-    }
     
     .profile-form-container {
         max-width: 100%;

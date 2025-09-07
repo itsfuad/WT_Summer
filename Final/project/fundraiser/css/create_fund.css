@@ -1,10 +1,6 @@
 /* Create Fund Form Styles */
 @import url('../../shared/css/common.css');
 
-body {
-    padding: 20px;
-}
-
 .create-fund-container {
     max-width: 800px;
     margin: 0 auto;
@@ -201,9 +197,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    body {
-        padding: 15px;
-    }
 
     .create-fund-container {
         max-width: 100%;

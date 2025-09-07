@@ -1,12 +1,5 @@
-/* Login Page Styles */
-@import url('../../shared/css/common.css');
 
-body {
-    background: var(--white);
-    display: flex;
-    justify-content: center;
-    align-items: safe center;
-}
+@import url('../../shared/css/common.css');
 
 .login-container {
     background: var(--white);

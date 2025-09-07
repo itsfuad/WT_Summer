@@ -1,11 +1,6 @@
 /* Unified Fund Form Styles */
 @import url('../../shared/css/common.css');
 
-body {
-    background: var(--white);
-    padding: var(--space-6);
-}
-
 .fund-form-container {
     max-width: 900px;
     margin: 0 auto;
@@ -240,9 +235,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    body {
-        padding: var(--space-4);
-    }
     
     .fund-form-container {
         max-width: 100%;

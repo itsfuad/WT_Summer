@@ -1,12 +1,6 @@
-/* Signup Page Styles */
+
 @import url('../../shared/css/common.css');
 
-body {
-    background: var(--white);
-    display: flex;
-    justify-content: center;
-    align-items: safe center;
-}
 
 .signup-container {
     background: var(--white);

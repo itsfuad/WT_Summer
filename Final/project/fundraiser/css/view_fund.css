@@ -1,19 +1,5 @@
 @import url('../../shared/css/common.css');
 
-/* View Fund - Minimal Theme */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-family);
-  background: var(--white);
-  min-height: 100vh;
-  color: var(--gray-900);
-}
-
 .view-fund-container {
   max-width: 1200px;
   margin: 0 auto;

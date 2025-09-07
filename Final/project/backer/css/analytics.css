@@ -1,19 +1,5 @@
 @import url('../../shared/css/common.css');
 
-/* Analytics Styles for Backer */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: var(--font-family);
-    background: var(--white);
-    min-height: 100vh;
-    color: var(--gray-900);
-}
-
 .analytics-container {
     max-width: 1400px;
     margin: 0 auto;

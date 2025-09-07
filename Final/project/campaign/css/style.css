@@ -1,19 +1,5 @@
 @import url('../../shared/css/common.css');
 
-/* Modern Minimal Campaign View */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: var(--font-family);
-    background: var(--white);
-    color: var(--gray-900);
-    line-height: 1.5;
-}
-
 /* Main Container */
 .campaign-container {
     min-height: 100vh;

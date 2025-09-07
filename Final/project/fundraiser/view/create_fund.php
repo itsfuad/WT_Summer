@@ -82,7 +82,11 @@
                 <a href="index.php" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
-                <h1>Create Campaign</h1>
+            </div>
+            <div class="header-actions">
+                <div class="sub-title">
+                    <i class="fas fa-pencil-alt"></i> Edit Campaign
+                </div>
             </div>
         </div>
 

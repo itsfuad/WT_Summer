@@ -64,6 +64,10 @@
                             <a href="../../login/view/index.php" class="nav-link">Login</a>
                             <a href="../../signup/view/index.php" class="nav-link">Sign Up</a>
                         </div>
+                    <?php else: ?>
+                        <div class="user-menu">
+                            <a href="../../<?php echo $userRole; ?>/view/index.php" class="nav-link">Back to Dashboard</a>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
