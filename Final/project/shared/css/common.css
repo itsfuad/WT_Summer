@@ -564,6 +564,28 @@ p {
     gap: 8px;
 }
 
+/* Campaigns Section */
+.campaigns-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    box-shadow: var(--shadow);
+    border: var(--border);
+    margin: 5px 0;
+}
+
+.campaigns-section h2 {
+    color: var(--gray-900);
+    font-size: 22px;
+    margin-bottom: var(--space-6);
+    font-weight: 700;
+}
+
+.campaigns-section h2 i {
+    margin-right: var(--space-2);
+    color: var(--gray-400);
+}
+
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;

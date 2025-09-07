@@ -1,6 +1,14 @@
 
 @import url('../../shared/css/common.css');
 
+
+body {
+    display: flex;
+    justify-content: safe center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .login-container {
     background: var(--white);
     border: var(--border);

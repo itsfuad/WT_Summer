@@ -269,11 +269,6 @@
     gap: 8px;
 }
 
-/* Campaigns Management */
-.campaigns-section {
-    margin-bottom: 32px;
-}
-
 .section-header {
     display: flex;
     justify-content: space-between;
