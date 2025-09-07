@@ -3,9 +3,12 @@
 echo "<h2>🔧 CrowdFund Database Test</h2>\n";
 
 try {
+
+    require_once '../database.php';
+    require_once '../../shared/includes/functions.php';
+
     // Test database connection
     echo "<p>1. Testing database connection...</p>\n";
-    require_once 'database.php';
     echo "<p style='color:green;'>✅ Database connection successful!</p>\n";
     
     // Test if tables exist
@@ -46,7 +49,6 @@ try {
     
     if ($fundCount > 0) {
         echo "<p>4. Testing function includes...</p>\n";
-        require_once '../includes/functions.php';
         $fundManager = new FundManager();
         $funds = $fundManager->getFeaturedFunds(3);
         echo "<p style='color:green;'>✅ Functions loaded successfully!</p>\n";
@@ -66,7 +68,7 @@ try {
         
         echo "<div style='background:#d4edda;padding:20px;border-radius:5px;margin:20px 0;'>\n";
         echo "<h3 style='color:green;'>🎉 Everything is working correctly!</h3>\n";
-        echo "<a href='../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>Visit Homepage</a>\n";
+        echo "<a href='../../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>Visit Homepage</a>\n";
         echo "</div>\n";
     } else {
         echo "<div style='background:#fff3cd;padding:15px;border-radius:5px;margin:10px 0;'>\n";

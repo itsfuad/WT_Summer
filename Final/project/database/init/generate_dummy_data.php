@@ -1,5 +1,5 @@
 <?php
-require_once 'database.php';
+require_once '../database.php';
 
 echo "<h2>🎲 Generating Sample Data for CrowdFund Platform</h2>\n";
 echo "<p>Creating admin account, sample users, funds, likes, donations, comments, and updates...</p>\n";
@@ -247,8 +247,7 @@ try {
             
             $comment = rand(1, 3) == 1 ? $comments[array_rand($comments)] : null;
             
-            $stmt = $pdo->prepare("
-                INSERT INTO donations (fund_id, backer_id, amount, payment_status, comment, anonymous, created_at) 
+            $stmt = $pdo->prepare("INSERT INTO donations (fund_id, backer_id, amount, payment_status, comment, anonymous, created_at) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             ");
             
@@ -300,53 +299,10 @@ try {
             
             $comment = $comment_texts[array_rand($comment_texts)];
             
-            $stmt = $pdo->prepare("\n                INSERT INTO comments (fund_id, user_id, comment, created_at) \n                VALUES (?, ?, ?, ?)\n            ");
+            $stmt = $pdo->prepare("INSERT INTO comments (fund_id, user_id, comment, created_at) \n                VALUES (?, ?, ?, ?)\n            ");
             
             $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(1, 20) . ' days'));
             $stmt->execute([$fund_id, $user_id, $comment, $created_at]);
-        }
-    }
-
-    // Add some fund updates
-    echo "<p>10. Creating fund updates...</p>\n";
-    foreach ($fund_ids as $fund_id) {
-        if (rand(1, 3) == 1) { // 33% of funds have updates
-            $update_count = rand(1, 3);
-            
-            for ($j = 0; $j < $update_count; $j++) {
-                $update_titles = [
-                    'Project Milestone Reached!',
-                    'Thank You to Our Amazing Supporters',
-                    'New Partnership Announcement',
-                    'Progress Update and Next Steps',
-                    'Community Feedback Integration',
-                    'Technical Development Update',
-                    'Funding Goal Achievement',
-                    'Team Expansion Update'
-                ];
-                
-                $update_contents = [
-                    'We\'re excited to share that we\'ve reached a major milestone in our project development. Thanks to your continued support, we\'re making excellent progress.',
-                    'We want to express our heartfelt gratitude to all our supporters who have made this project possible. Your contributions are making a real difference.',
-                    'We\'re thrilled to announce a new partnership that will help us expand our reach and impact. This collaboration brings additional expertise and resources to our project.',
-                    'Here\'s a detailed update on our progress so far and what we plan to accomplish in the coming weeks. Your feedback has been invaluable.',
-                    'Based on community feedback, we\'ve made several improvements to our approach. We\'re committed to ensuring this project meets your expectations.',
-                    'Our technical team has been working hard on the development phase. Here are some insights into the challenges we\'ve overcome and our current status.',
-                    'Thanks to your incredible support, we\'ve reached our initial funding goal! This enables us to move forward with confidence.',
-                    'We\'re excited to welcome new team members who bring specialized skills to help us deliver on our promises to supporters.'
-                ];
-                
-                $title = $update_titles[array_rand($update_titles)];
-                $content = $update_contents[array_rand($update_contents)];
-                
-                $stmt = $pdo->prepare("
-                    INSERT INTO fund_updates (fund_id, title, content, created_at) 
-                    VALUES (?, ?, ?, ?)
-                ");
-                
-                $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(1, 15) . ' days'));
-                $stmt->execute([$fund_id, $title, $content, $created_at]);
-            }
         }
     }
 
@@ -365,7 +321,7 @@ try {
     echo "</div>\n";
 
     echo "<div style='margin:20px 0;'>\n";
-    echo "<a href='../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;margin-right:10px;'>🎉 View Homepage</a>\n";
+    echo "<a href='../../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;margin-right:10px;'>🎉 View Homepage</a>\n";
     echo "<a href='test.php' style='background:#6c757d;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>🔧 Test Database</a>\n";
     echo "</div>\n";
 
