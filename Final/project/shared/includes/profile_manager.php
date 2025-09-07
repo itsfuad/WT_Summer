@@ -171,33 +171,42 @@ function renderProfileForm($config) {
             <div class="form-section">
                 <h2><i class="fas fa-camera"></i> Profile Picture</h2>
                 <div class="upload-section">
-                    <div class="current-image-preview">
+                    <div class="image-upload-container profile-upload-container" onclick="document.getElementById('profile_image').click()">
                         <?php 
                         global $uploadManager;
                         if (!$uploadManager) $uploadManager = new UploadManager();
                         $profileImageUrl = $uploadManager->getImageUrl('profile', $user['profile_image']); 
                         ?>
-                        <img src="<?php echo htmlspecialchars($profileImageUrl); ?>" 
-                             alt="Current profile picture" 
-                             class="profile-preview" id="profile-preview">
-                    </div>
-                    <div class="upload-controls">
-                        <div class="file-input-wrapper">
-                            <input type="file" id="profile_image" name="profile_image" 
-                                   accept="image/jpeg,image/jpg,image/png,image/webp" 
-                                   onchange="previewImage(this, 'profile')">
-                            <label for="profile_image" class="btn btn-outline">
-                                <i class="fas fa-upload"></i> Choose Image
-                            </label>
-                        </div>
-                        <div class="upload-info">
-                            <small>Max size: 10MB. Formats: JPG, PNG, WebP</small>
-                            <small>Recommended: 400x400px square image</small>
-                        </div>
-                        <?php if (isset($errors['profile_image'])): ?>
-                            <span class="error-message"><?php echo $errors['profile_image']; ?></span>
+                        
+                        <?php if ($user['profile_image']): ?>
+                            <img src="<?php echo htmlspecialchars($profileImageUrl); ?>" 
+                                 alt="Profile picture" 
+                                 class="profile-preview" id="profile-preview">
+                            <div class="upload-overlay">
+                                <i class="fas fa-camera"></i>
+                                <span>Change Photo</span>
+                            </div>
+                        <?php else: ?>
+                            <div class="upload-placeholder">
+                                <i class="fas fa-user"></i>
+                                <span>Click to Upload</span>
+                            </div>
                         <?php endif; ?>
+                        
+                        <input type="file" id="profile_image" name="profile_image" 
+                               accept="image/jpeg,image/jpg,image/png,image/webp" 
+                               class="upload-input"
+                               onchange="previewImage(this, 'profile')">
                     </div>
+                    
+                    <div class="upload-info">
+                        <small>Max size: 10MB. Formats: JPG, PNG, WebP</small>
+                        <small>Recommended: 400x400px square image</small>
+                    </div>
+                    
+                    <?php if (isset($errors['profile_image'])): ?>
+                        <span class="error-message"><?php echo $errors['profile_image']; ?></span>
+                    <?php endif; ?>
                 </div>
             </div>
 

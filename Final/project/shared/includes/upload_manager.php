@@ -143,30 +143,76 @@ class UploadManager {
     public function renderUploadForm($type, $currentImage = null) {
         $inputName = $type . '_image';
         $previewId = $type . '_preview';
+        $isProfile = ($type === 'profile');
+        $containerClass = $isProfile ? 'profile-upload-container' : 'cover-upload-container';
         ?>
         <div class="upload-section">
-            <div class="upload-area">
-                <input type="file" id="<?= $inputName ?>" name="<?= $inputName ?>" accept="image/jpeg,image/png" onchange="previewImage(this, '<?= $previewId ?>')">
-                <label for="<?= $inputName ?>" class="upload-label">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Choose Image</span>
-                </label>
-            </div>
-            <div class="<?= $type ?>-preview" id="<?= $previewId ?>">
+            <div class="image-upload-container <?= $containerClass ?>" onclick="document.getElementById('<?= $inputName ?>').click()">
                 <?php if ($currentImage): ?>
-                    <img src="<?= htmlspecialchars($currentImage) ?>" alt="Current <?= $type ?>">
+                    <img src="<?= htmlspecialchars($currentImage) ?>" 
+                         alt="<?= ucfirst($type) ?> image" 
+                         class="<?= $type ?>-preview" id="<?= $previewId ?>">
+                    <div class="upload-overlay">
+                        <i class="fas fa-<?= $isProfile ? 'camera' : 'image' ?>"></i>
+                        <span>Change <?= ucfirst($type) ?></span>
+                    </div>
+                <?php else: ?>
+                    <div class="upload-placeholder">
+                        <i class="fas fa-<?= $isProfile ? 'user' : 'image' ?>"></i>
+                        <span>Click to Upload</span>
+                    </div>
                 <?php endif; ?>
+                
+                <input type="file" id="<?= $inputName ?>" name="<?= $inputName ?>" 
+                       accept="image/jpeg,image/jpg,image/png,image/webp" 
+                       class="upload-input"
+                       onchange="previewModernImage(this, '<?= $previewId ?>', '<?= $type ?>')">
             </div>
         </div>
+        
         <script>
-        function previewImage(input, previewId) {
+        function previewModernImage(input, previewId, type) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
+                var container = input.closest('.image-upload-container');
+                
                 reader.onload = function(e) {
-                    document.getElementById(previewId).innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+                    // Remove placeholder if it exists
+                    var placeholder = container.querySelector('.upload-placeholder');
+                    if (placeholder) {
+                        placeholder.remove();
+                    }
+                    
+                    // Update or create preview image
+                    var existingImg = container.querySelector('.' + type + '-preview');
+                    if (existingImg) {
+                        existingImg.src = e.target.result;
+                    } else {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = type.charAt(0).toUpperCase() + type.slice(1) + ' preview';
+                        img.className = type + '-preview';
+                        img.id = previewId;
+                        container.insertBefore(img, container.firstChild);
+                    }
+                    
+                    // Add or update overlay
+                    var overlay = container.querySelector('.upload-overlay');
+                    if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.className = 'upload-overlay';
+                        overlay.innerHTML = '<i class="fas fa-' + (type === 'profile' ? 'camera' : 'image') + '"></i><span>Change ' + type.charAt(0).toUpperCase() + type.slice(1) + '</span>';
+                        container.appendChild(overlay);
+                    }
                 };
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+        
+        // Legacy support for existing previewImage function calls
+        function previewImage(input, previewId) {
+            var type = input.name.replace('_image', '');
+            previewModernImage(input, previewId, type);
         }
         </script>
         <?php

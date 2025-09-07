@@ -53,7 +53,7 @@
         <nav class="nav-bar">
             <div class="nav-content">
                 <div class="nav-left">
-                    <a href="../home/view/index.php" class="nav-brand">
+                    <a href="../../home/view/index.php" class="nav-brand">
                         <i class="fas fa-hand-holding-heart"></i>
                         CrowdFund
                     </a>
