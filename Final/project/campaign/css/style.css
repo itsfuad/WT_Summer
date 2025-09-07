@@ -599,3 +599,51 @@ body {
         gap: 8px;
     }
 }
+
+/* User Profile Images */
+.user-profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--gray-200);
+}
+
+/* Anonymous and default profile image filters */
+.user-profile-img.anonymous {
+    filter: saturate(0) brightness(0.8);
+}
+
+.user-profile-img.default {
+    filter: saturate(0) brightness(0.8);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    color: var(--gray-400);
+    font-size: 20px;
+}
+
+.backer-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    color: var(--gray-400);
+    font-size: 16px;
+}
+
+.backer-avatar .user-profile-img {
+    border: 1px solid var(--gray-200);
+}

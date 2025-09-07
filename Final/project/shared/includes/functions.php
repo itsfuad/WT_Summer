@@ -336,7 +336,7 @@ class FundManager {
             'oldest' => 'd.created_at ASC'
         };
         
-        $stmt = $this->pdo->prepare("SELECT d.*, u.name as backer_name, u.role as backer_role
+        $stmt = $this->pdo->prepare("SELECT d.*, u.name as backer_name, u.role as backer_role, u.profile_image
             FROM donations d
             LEFT JOIN users u ON d.backer_id = u.id
             WHERE d.fund_id = ? AND d.payment_status = 'completed'
@@ -345,7 +345,15 @@ class FundManager {
         ");
         
         $stmt->execute([$fund_id]);
-        return $stmt->fetchAll();
+        $donations = $stmt->fetchAll();
+        
+        // Add profile image URLs
+        $uploadManager = new UploadManager();
+        foreach ($donations as &$donation) {
+            $donation['profile_image_url'] = $uploadManager->getImageUrl('profile', $donation['profile_image']);
+        }
+        
+        return $donations;
     }
 
     /**
@@ -412,7 +420,7 @@ class FundManager {
      * Get comments for a fund
      */
     public function getFundComments($fund_id, $limit = 20) {
-        $stmt = $this->pdo->prepare("SELECT c.*, u.name as user_name, u.role as user_role
+        $stmt = $this->pdo->prepare("SELECT c.*, u.name as user_name, u.role as user_role, u.profile_image
             FROM comments c
             LEFT JOIN users u ON c.user_id = u.id
             WHERE c.fund_id = ? AND c.status = 'active'
@@ -421,7 +429,15 @@ class FundManager {
         ");
         
         $stmt->execute([$fund_id]);
-        return $stmt->fetchAll();
+        $comments = $stmt->fetchAll();
+        
+        // Add profile image URLs
+        $uploadManager = new UploadManager();
+        foreach ($comments as &$comment) {
+            $comment['profile_image_url'] = $uploadManager->getImageUrl('profile', $comment['profile_image']);
+        }
+        
+        return $comments;
     }
     
     /**

@@ -206,7 +206,26 @@
                     <form class="comment-form" onsubmit="submitComment(event)">
                         <div class="comment-input-container">
                             <div class="user-avatar">
-                                <i class="fas fa-user-circle"></i>
+                                <?php 
+                                if ($user) {
+                                    $userManager = new UserManager();
+                                    $currentUserProfileImage = $userManager->getProfileImage($user['id']);
+                                    if (!empty($currentUserProfileImage)): ?>
+                                        <img src="<?php echo htmlspecialchars($currentUserProfileImage); ?>" alt="<?php echo htmlspecialchars($user['name']); ?>" class="user-profile-img">
+                                    <?php else: 
+                                        // Show default profile image for users without profile images
+                                        $uploadManager = new UploadManager();
+                                        $defaultProfileUrl = $uploadManager->getImageUrl('profile', 'default-profile.png');
+                                    ?>
+                                        <img src="<?php echo htmlspecialchars($defaultProfileUrl); ?>" alt="<?php echo htmlspecialchars($user['name']); ?>" class="user-profile-img default">
+                                    <?php endif;
+                                } else { 
+                                    // Show default profile image for guests
+                                    $uploadManager = new UploadManager();
+                                    $defaultProfileUrl = $uploadManager->getImageUrl('profile', 'default-profile.png');
+                                ?>
+                                    <img src="<?php echo htmlspecialchars($defaultProfileUrl); ?>" alt="Guest" class="user-profile-img default">
+                                <?php } ?>
                             </div>
                             <textarea id="comment-text" placeholder="Add a comment..." required maxlength="1000" rows="1" oninput="autoResize(this)"></textarea>
                             <button type="submit" class="submit-comment-btn">
@@ -235,7 +254,15 @@
                                     <div class="comment-header">
                                         <div class="comment-user">
                                             <div class="user-avatar">
-                                                <i class="fas fa-user-circle"></i>
+                                                <?php if (!empty($comment['profile_image_url'])): ?>
+                                                    <img src="<?php echo htmlspecialchars($comment['profile_image_url']); ?>" alt="<?php echo htmlspecialchars($comment['user_name']); ?>" class="user-profile-img">
+                                                <?php else: 
+                                                    // Show default profile image for users without profile images
+                                                    $uploadManager = new UploadManager();
+                                                    $defaultProfileUrl = $uploadManager->getImageUrl('profile', 'default-profile.png');
+                                                ?>
+                                                    <img src="<?php echo htmlspecialchars($defaultProfileUrl); ?>" alt="<?php echo htmlspecialchars($comment['user_name']); ?>" class="user-profile-img default">
+                                                <?php endif; ?>
                                             </div>
                                             <div class="user-info">
                                                 <span class="username">
@@ -287,7 +314,15 @@
                             <div class="backer-item">
                                 <div class="backer-info">
                                     <div class="backer-avatar">
-                                        <i class="fas fa-user-circle"></i>
+                                        <?php if (!$donation['anonymous'] && !empty($donation['profile_image_url'])): ?>
+                                            <img src="<?php echo htmlspecialchars($donation['profile_image_url']); ?>" alt="<?php echo htmlspecialchars($donation['backer_name']); ?>" class="user-profile-img">
+                                        <?php else: 
+                                            // Show default profile image for anonymous users or users without profile images
+                                            $uploadManager = new UploadManager();
+                                            $defaultProfileUrl = $uploadManager->getImageUrl('profile', 'default-profile.png');
+                                        ?>
+                                            <img src="<?php echo htmlspecialchars($defaultProfileUrl); ?>" alt="User" class="user-profile-img <?php echo $donation['anonymous'] ? 'anonymous' : 'default'; ?>">
+                                        <?php endif; ?>
                                     </div>
                                     <div class="backer-details">
                                         <div class="backer-name">
@@ -493,9 +528,15 @@
             if (!list) return;
             const item = document.createElement('div');
             item.className = 'backer-item';
+            
+            // Get avatar HTML based on whether donation is anonymous and has profile image
+            const avatarHtml = (!d.anonymous && d.profile_image_url && d.profile_image_url !== '') ? 
+                `<img src="${d.profile_image_url}" alt="${escapeHtml(d.backer_name)}" class="user-profile-img">` :
+                `<img src="../../uploads/profiles/default-profile.png" alt="${d.anonymous ? 'Anonymous' : escapeHtml(d.backer_name)}" class="user-profile-img ${d.anonymous ? 'anonymous' : 'default'}">`;
+            
             item.innerHTML = `
                 <div class="backer-info">
-                    <div class="backer-avatar"><i class="fas fa-user-circle"></i></div>
+                    <div class="backer-avatar">${avatarHtml}</div>
                     <div class="backer-details">
                         <div class="backer-name">${d.anonymous ? 'Anonymous' : escapeHtml(d.backer_name)}</div>
                         <div class="backer-time js-timeago" data-time="${new Date().toISOString().slice(0,19).replace('T',' ')}">just now</div>
@@ -615,13 +656,18 @@
                 commentsList = document.getElementById('comments-list');
             }
             
+            // Get user avatar HTML
+            const userAvatarHtml = comment.profile_image_url && comment.profile_image_url !== '' ? 
+                `<img src="${comment.profile_image_url}" alt="${comment.user_name}" class="user-profile-img">` :
+                `<img src="../../uploads/profiles/default-profile.png" alt="${comment.user_name}" class="user-profile-img default">`;
+            
             const commentHtml = `
                 <div class="comment-item" data-comment-id="${comment.id}">
                     <div class="comment-content">
                         <div class="comment-header">
                             <div class="comment-user">
                                 <div class="user-avatar">
-                                    <i class="fas fa-user-circle"></i>
+                                    ${userAvatarHtml}
                                 </div>
                                 <div class="user-info">
                                     <span class="username">

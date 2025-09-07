@@ -48,6 +48,11 @@ try {
     $donation_id = $fundManager->createDonation($fund_id, $user['id'], $amount, $comment, $anonymous);
     // Return updated quick stats and the donation payload for UI update
     $updated = $fundManager->getFundById($fund_id);
+    
+    // Get user's profile image
+    $userManager = new UserManager();
+    $profileImageUrl = $userManager->getProfileImage($user['id']);
+    
     echo json_encode([
         'success' => true,
         'donation_id' => $donation_id,
@@ -57,7 +62,8 @@ try {
             'amount' => $amount,
             'anonymous' => (int)$anonymous,
             'backer_name' => $anonymous ? 'Anonymous' : $user['name'],
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s'),
+            'profile_image_url' => $anonymous ? null : $profileImageUrl
         ],
         'message' => 'Donation successful!',
     ]);

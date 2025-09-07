@@ -53,6 +53,10 @@ try {
         // Get the new comment count
         $commentsCount = $fundManager->getCommentsCount($fund_id);
         
+        // Get user's profile image
+        $userManager = new UserManager();
+        $profileImageUrl = $userManager->getProfileImage($user['id']);
+        
         // Return the new comment data
         echo json_encode([
             'success' => true,
@@ -62,7 +66,8 @@ try {
                 'user_role' => $user['role'],
                 'comment' => $comment_text,
                 'created_at' => date('Y-m-d H:i:s'),
-                'user_id' => $user['id']
+                'user_id' => $user['id'],
+                'profile_image_url' => $profileImageUrl
             ],
             'comments_count' => $commentsCount,
             'message' => 'Comment added successfully!'
