@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Campaign - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../css/edit_fund.css">
+    <link rel="stylesheet" href="../css/fund_form.css">
 </head>
 <body>
     <?php
     require_once '../../includes/session.php';
     require_once '../../includes/functions.php';
+    require_once '../includes/fund_form.php';
     
     requireLogin();
     requireRole('fundraiser');
@@ -81,7 +82,7 @@
     }
     ?>
     
-    <div class="edit-fund-container">
+    <div class="fund-form-container">
         <!-- Header -->
         <div class="header">
             <div class="header-left">
@@ -112,126 +113,13 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" class="edit-fund-form">
-            <!-- Basic Information -->
-            <div class="form-section">
-                <h2><i class="fas fa-info-circle"></i> Basic Information</h2>
-                
-                <div class="form-group">
-                    <label for="title">Campaign Title *</label>
-                    <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($fund['title']); ?>" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="short_description">Short Description</label>
-                    <input type="text" id="short_description" name="short_description" 
-                           value="<?php echo htmlspecialchars($fund['short_description'] ?? ''); ?>" 
-                           maxlength="100">
-                    <small>Brief summary for campaign cards (max 100 characters)</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="category_id">Category *</label>
-                    <select id="category_id" name="category_id" required>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo $category['id']; ?>"
-                                    <?php echo ($fund['category_id'] == $category['id']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($category['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Campaign Description -->
-            <div class="form-section">
-                <h2><i class="fas fa-align-left"></i> Campaign Description</h2>
-                
-                <div class="form-group">
-                    <label for="description">Full Description *</label>
-                    <textarea id="description" name="description" rows="8" required><?php echo htmlspecialchars($fund['description']); ?></textarea>
-                    <small>Tell your story and explain how the funds will be used</small>
-                </div>
-            </div>
-
-            <!-- Funding Details -->
-            <div class="form-section">
-                <h2><i class="fas fa-chart-line"></i> Funding Details</h2>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="goal_amount">Funding Goal (USD) *</label>
-                        <input type="number" id="goal_amount" name="goal_amount" 
-                               value="<?php echo $fund['goal_amount']; ?>" min="1" step="1" required>
-                        <small>Current raised: <?php echo formatCurrency($fund['current_amount']); ?></small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="end_date">Campaign End Date *</label>
-                        <input type="date" id="end_date" name="end_date" 
-                               value="<?php echo $fund['end_date']; ?>" required>
-                        <small>When should this campaign end?</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Campaign Status -->
-            <div class="form-section">
-                <h2><i class="fas fa-toggle-on"></i> Campaign Status</h2>
-                
-                <div class="form-group">
-                    <label for="status">Campaign Status *</label>
-                    <select id="status" name="status" required <?php echo ($fund['status'] === 'frozen') ? 'disabled style="background:#f8f9fa; cursor:not-allowed;"' : ''; ?>>
-                        <option value="active" <?php echo ($fund['status'] === 'active') ? 'selected' : ''; ?>>Active</option>
-                        <option value="paused" <?php echo ($fund['status'] === 'paused') ? 'selected' : ''; ?>>Paused</option>
-                        <option value="completed" <?php echo ($fund['status'] === 'completed') ? 'selected' : ''; ?>>Completed</option>
-                        <option value="cancelled" <?php echo ($fund['status'] === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
-                        <option value="frozen" <?php echo ($fund['status'] === 'frozen') ? 'selected' : ''; ?>>Frozen (Admin)</option>
-                    </select>
-                    <?php if ($fund['status'] === 'frozen'): ?>
-                        <small style="color:#dc3545;">
-                            <i class="fas fa-lock"></i> Status locked by administrator - cannot be changed.
-                        </small>
-                    <?php else: ?>
-                        <small>Current status affects visibility and donation acceptance</small>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Campaign Statistics (Read-only) -->
-            <div class="form-section">
-                <h2><i class="fas fa-chart-pie"></i> Campaign Statistics</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">Total Raised</div>
-                        <div class="stat-value"><?php echo formatCurrency($fund['current_amount']); ?></div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Total Backers</div>
-                        <div class="stat-value"><?php echo $fund['backer_count']; ?></div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Views</div>
-                        <div class="stat-value"><?php echo $fund['views_count']; ?></div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Days Left</div>
-                        <div class="stat-value"><?php echo getDaysLeft($fund['end_date']); ?></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form Actions -->
-            <div class="form-actions">
-                <a href="../../campaign/view.php?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancel
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
-            </div>
-        </form>
+        <?php 
+        renderFundForm([
+            'mode' => 'edit',
+            'fund' => $fund,
+            'categories' => $categories
+        ]); 
+        ?>
     </div>
 </body>
 </html>

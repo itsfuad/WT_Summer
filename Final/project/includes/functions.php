@@ -303,7 +303,7 @@ class FundManager {
             $data['category_id'],
             $data['end_date'],
             $data['status'],
-            $data['featured'],
+            $data['featured'] ?? 0,
             $fund_id
         ]);
     }

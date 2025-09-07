@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Campaign - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../css/create_fund.css">
+    <link rel="stylesheet" href="../css/fund_form.css">
 </head>
 <body>
     <?php
     require_once '../../includes/session.php';
     require_once '../../includes/functions.php';
+    require_once '../includes/fund_form.php';
     
     requireLogin();
     requireRole('fundraiser');
@@ -58,11 +59,14 @@
     }
     ?>
     
-    <div class="create-fund-container">
+    <div class="fund-form-container">
         <div class="header">
-            <a href="index.php" class="back-btn">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
+            <div class="header-left">
+                <a href="index.php" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <h1>Create Campaign</h1>
+            </div>
         </div>
 
         <?php if ($success): ?>
@@ -77,80 +81,12 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" class="create-fund-form">
-            <div class="form-section">
-                <h2><i class="fas fa-info-circle"></i> Basic Information</h2>
-                
-                <div class="form-group">
-                    <label for="title">Campaign Title *</label>
-                    <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>" 
-                           placeholder="Give your campaign a compelling title" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="short_description">Short Description</label>
-                    <input type="text" id="short_description" name="short_description" 
-                           value="<?php echo htmlspecialchars($_POST['short_description'] ?? ''); ?>" 
-                           placeholder="A brief summary (optional)" maxlength="100">
-                    <small>This will appear on campaign cards (max 100 characters)</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="category_id">Category *</label>
-                    <select id="category_id" name="category_id" required>
-                        <option value="">Select a category</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo $category['id']; ?>"
-                                    <?php echo (isset($_POST['category_id']) && $_POST['category_id'] == $category['id']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($category['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h2><i class="fas fa-align-left"></i> Campaign Description</h2>
-                
-                <div class="form-group">
-                    <label for="description">Full Description *</label>
-                    <textarea id="description" name="description" rows="8" 
-                              placeholder="Tell your story... Why are you raising funds? What will the money be used for? What impact will it have?" required><?php echo htmlspecialchars($_POST['description'] ?? ''); ?></textarea>
-                    <small>Be detailed and compelling. This is where you convince people to support your cause.</small>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h2><i class="fas fa-chart-line"></i> Funding Details</h2>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="goal_amount">Funding Goal (USD) *</label>
-                        <input type="number" id="goal_amount" name="goal_amount" 
-                               value="<?php echo htmlspecialchars($_POST['goal_amount'] ?? ''); ?>" 
-                               min="1" step="1" placeholder="10000" required>
-                        <small>Set a realistic and achievable goal</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="end_date">Campaign End Date *</label>
-                        <input type="date" id="end_date" name="end_date" 
-                               value="<?php echo htmlspecialchars($_POST['end_date'] ?? ''); ?>" 
-                               min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" required>
-                        <small>When should this campaign end?</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php'">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> Launch Campaign
-                </button>
-            </div>
-        </form>
+        <?php 
+        renderFundForm([
+            'mode' => 'create',
+            'categories' => $categories
+        ]); 
+        ?>
     </div>
 </body>
 </html>
