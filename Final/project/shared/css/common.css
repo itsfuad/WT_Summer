@@ -496,6 +496,73 @@ p {
     outline-offset: 2px;
 }
 
+/* Navigation */
+.nav-bar {
+    background: var(--white);
+    border-bottom: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-content {
+    max-width: 975px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 54px;
+}
+
+.nav-brand {
+    text-decoration: none;
+    color: var(--gray-900);
+    font-weight: 700;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-brand i {
+    color: var(--gray-400);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--gray-900);
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--gray-600);
+}
+
+.user-menu,
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    text-decoration: none;
+    color: var(--gray-900);
+    font-weight: 700;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;

@@ -59,22 +59,7 @@
                     </a>
                 </div>
                 <div class="nav-right">
-                    <?php if ($user): ?>
-                        <div class="user-menu">
-                            <span>Welcome, <?php echo htmlspecialchars($user['name']); ?></span>
-                            <?php if ($userRole === 'fundraiser'): ?>
-                                <a href="../../fundraiser/view/index.php" class="nav-link">Dashboard</a>
-                                <a href="../../fundraiser/view/profile.php" class="nav-link">Profile</a>
-                            <?php elseif ($userRole === 'backer'): ?>
-                                <a href="../../backer/view/index.php" class="nav-link">My Donations</a>
-                                <a href="../../backer/view/profile.php" class="nav-link">Profile</a>
-                            <?php elseif ($userRole === 'admin'): ?>
-                                <a href="../../admin/view/index.php" class="nav-link">Admin Panel</a>
-                                <a href="../../admin/view/profile.php" class="nav-link">Profile</a>
-                            <?php endif; ?>
-                            <a href="../../includes/logout.php" class="nav-link">Logout</a>
-                        </div>
-                    <?php else: ?>
+                    <?php if (!$user): ?>
                         <div class="auth-links">
                             <a href="../../login/view/index.php" class="nav-link">Login</a>
                             <a href="../../signup/view/index.php" class="nav-link">Sign Up</a>
@@ -162,7 +147,7 @@
                                 <i class="fas fa-edit"></i>
                                 Edit Campaign
                             </a>
-                            <a href="../fundraiser/view/analytics.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
+                            <a href="../../fundraiser/view/analytics.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
                                 <i class="fas fa-chart-bar"></i>
                                 Analytics
                             </a>

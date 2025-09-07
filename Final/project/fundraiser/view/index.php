@@ -47,13 +47,16 @@
         <!-- Header -->
         <div class="dashboard-header">
             <div class="header-content">
-                <h1><i class="fas fa-lightbulb"></i> Fundraiser Dashboard</h1>
+                <a href="../../home/view/index.php" class="logo">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    CrowdFund
+                </a>
                 <div class="user-info">
                     <span>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</span>
                     <a href="profile.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
-                    <a href="../../includes/logout.php" class="logout-btn">
+                    <a href="../../shared/includes/logout.php" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
@@ -107,9 +110,6 @@
         <div class="action-section">
             <a href="create_fund.php" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Create New Campaign
-            </a>
-            <a href="../../home/view/index.php" class="btn btn-secondary">
-                <i class="fas fa-eye"></i> Browse Campaigns
             </a>
             <a href="../../backer/view/analytics.php" class="btn btn-outline">
                 <i class="fas fa-chart-bar"></i> Donation Analytics

@@ -62,16 +62,11 @@
                 <a href="<?php echo $user['role'] === 'backer' ? 'index.php' : '../../fundraiser/view/index.php'; ?>" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
-                <h1>Your Donation Analytics</h1>
-                <p>Comprehensive overview of your funding activity</p>
             </div>
             <div class="header-actions">
-                <a href="../../home/view/index.php" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Browse Campaigns
-                </a>
-                <a href="<?php echo $user['role'] === 'backer' ? 'index.php' : '../../fundraiser/view/index.php'; ?>" class="btn btn-outline">
-                    <i class="fas fa-dashboard"></i> Dashboard
-                </a>
+                <div class="sub-title">
+                    <i class="fas fa-chart-bar"></i> Donation Analytics
+                </div>
             </div>
         </div>
 

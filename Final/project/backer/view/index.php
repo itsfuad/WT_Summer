@@ -42,13 +42,16 @@
         <!-- Header -->
         <div class="dashboard-header">
             <div class="header-content">
-                <h1><i class="fas fa-hand-holding-heart"></i> Backer Dashboard</h1>
+                <a href="../../home/view/index.php" class="logo">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    CrowdFund
+                </a>
                 <div class="user-info">
                     <span>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</span>
                     <a href="profile.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
-                    <a href="../../includes/logout.php" class="logout-btn">
+                    <a href="../../shared/includes/logout.php" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>

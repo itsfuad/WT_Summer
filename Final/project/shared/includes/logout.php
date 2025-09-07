@@ -5,6 +5,6 @@ require_once 'session.php';
 logoutUser();
 
 // Redirect to home page
-header('Location: ../home/view/index.php');
+header('Location: ../../home/view/index.php');
 exit();
 ?>

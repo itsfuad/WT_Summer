@@ -122,13 +122,11 @@ function renderProfileForm($config) {
                 <a href="<?php echo $backUrl; ?>" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
-                <h1><i class="fas fa-user-edit"></i> Manage Profile</h1>
             </div>
             <div class="header-actions">
-                <span class="user-role">
-                    <i class="fas fa-<?php echo getRoleIcon($user['role']); ?>"></i>
-                    <?php echo ucfirst($user['role']); ?> Account
-                </span>
+                <div class="sub-title">
+                    <i class="fas fa-user-edit"></i> Manage Profile
+                </div>
             </div>
         </div>
 

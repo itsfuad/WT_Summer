@@ -56,12 +56,6 @@ $totalPages = ceil($totalFunds / $limit);
                 <a href="../../<?php echo $user['role']; ?>/view/index.php" class="btn btn-primary">
                     <i class="fas fa-tachometer-alt"></i> Go to Dashboard
                 </a>
-                <a href="../../<?php echo $user['role']; ?>/view/profile.php" class="btn btn-outline">
-                    <i class="fas fa-user-edit"></i> Profile
-                </a>
-                <a href="../../includes/logout.php" class="btn btn-secondary">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
             <?php else: ?>
                 <a href="../../login/view/index.php" class="btn btn-secondary">
                     <i class="fas fa-sign-in-alt"></i> Login

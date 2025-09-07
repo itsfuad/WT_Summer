@@ -32,16 +32,18 @@ $commentReports = $fundManager->getCommentReports();
         <!-- Header -->
         <div class="dashboard-header">
             <div class="header-content">
-                <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+                <a href="../../home/view/index.php" class="logo">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    CrowdFund
+                </a>
                 <div class="user-info">
-                    <a href="../../home/view/index.php" class="btn btn-primary" style="margin-right: 16px;">
+                    <a href="../../home/view/index.php" class="btn btn-primary">
                         <i class="fas fa-search"></i> Browse Campaigns
                     </a>
-                    <span>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</span>
                     <a href="profile.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
-                    <a href="../../includes/logout.php" class="logout-btn">
+                    <a href="../../shared/includes/logout.php" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>

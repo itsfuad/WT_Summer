@@ -65,16 +65,11 @@
                 <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Campaign
                 </a>
-                <h1>Campaign Analytics</h1>
-                <p><?php echo htmlspecialchars($fund['title']); ?></p>
             </div>
             <div class="header-actions">
-                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
-                    <i class="fas fa-eye"></i> View Campaign
-                </a>
-                <a href="edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                    <i class="fas fa-edit"></i> Edit Campaign
-                </a>
+                <div class="sub-title">
+                    <i class="fas fa-chart-bar"></i> Campaign Analytics
+                </div>
             </div>
         </div>
 
