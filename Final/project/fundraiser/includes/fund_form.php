@@ -128,7 +128,6 @@ function renderFundForm($config) {
                         <option value="paused" <?php echo ($formData['status'] === 'paused') ? 'selected' : ''; ?>>Paused</option>
                         <option value="completed" <?php echo ($formData['status'] === 'completed') ? 'selected' : ''; ?>>Completed</option>
                         <option value="cancelled" <?php echo ($formData['status'] === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
-                        <option value="frozen" <?php echo ($formData['status'] === 'frozen') ? 'selected' : ''; ?>>Frozen (Admin)</option>
                     </select>
                     <?php if ($fund['status'] === 'frozen'): ?>
                         <small style="color:#dc3545;">

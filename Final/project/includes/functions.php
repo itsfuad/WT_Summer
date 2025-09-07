@@ -190,7 +190,6 @@ class FundManager {
                 f.*,
                 u.name as fundraiser_name,
                 u.email as fundraiser_email,
-                u.bio as fundraiser_bio,
                 c.name as category_name,
                 c.icon as category_icon,
                 c.color as category_color,
@@ -941,6 +940,84 @@ class UserManager {
     public function getUserById($id) {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+    
+    /**
+     * Update user profile
+     */
+    public function updateProfile($userId, $data) {
+        $fields = [];
+        $params = [];
+        
+        // Handle name update (not for admin)
+        if (isset($data['name'])) {
+            $fields[] = "name = ?";
+            $params[] = $data['name'];
+        }
+        
+        // Handle email update
+        if (isset($data['email'])) {
+            // Check if email already exists for another user
+            $stmt = $this->pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+            $stmt->execute([$data['email'], $userId]);
+            if ($stmt->fetch()) {
+                return ['error' => 'Email already exists for another user'];
+            }
+            
+            $fields[] = "email = ?";
+            $params[] = $data['email'];
+        }
+
+        // Handle password update
+        if (isset($data['password'])) {
+            $fields[] = "password = ?";
+            $params[] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+        
+        if (empty($fields)) {
+            return ['error' => 'No fields to update'];
+        }
+        
+        $fields[] = "updated_at = NOW()";
+        $params[] = $userId;
+        
+        $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        
+        try {
+            $result = $stmt->execute($params);
+            return $result ? ['success' => true] : ['error' => 'Failed to update profile'];
+        } catch (PDOException $e) {
+            return ['error' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Verify current password
+     */
+    public function verifyCurrentPassword($userId, $password) {
+        $stmt = $this->pdo->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        
+        if ($user && password_verify($password, $user['password'])) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Get user profile with complete information
+     */
+    public function getCompleteUserProfile($userId) {
+        $stmt = $this->pdo->prepare("
+            SELECT id, name, email, role, bio, status, email_verified, created_at, updated_at
+            FROM users 
+            WHERE id = ?
+        ");
+        $stmt->execute([$userId]);
         return $stmt->fetch();
     }
 }

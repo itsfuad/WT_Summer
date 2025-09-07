@@ -3,6 +3,9 @@
 
 body {
     background: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: safe center;
 }
 
 .signup-container {
@@ -13,6 +16,7 @@ body {
     padding: var(--space-8);
     width: 100%;
     max-width: 450px;
+    margin: 20px;
 }
 
 .signup-header {

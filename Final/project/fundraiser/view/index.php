@@ -50,6 +50,9 @@
                 <h1><i class="fas fa-lightbulb"></i> Fundraiser Dashboard</h1>
                 <div class="user-info">
                     <span>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</span>
+                    <a href="profile.php" class="btn btn-primary">
+                        <i class="fas fa-user-edit"></i> Manage Profile
+                    </a>
                     <a href="../../includes/logout.php" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>

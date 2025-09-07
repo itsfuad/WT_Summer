@@ -26,6 +26,7 @@
     --gray-200: #e4e4e7;
     /* Border color */
     --gray-400: #a1a1aa;
+    --gray-500: #71717a;
     /* Muted text */
     --gray-600: #52525b;
     /* Secondary text */
@@ -75,8 +76,6 @@
     --font-size-base: var(--font-base);
     --transition-normal: var(--transition);
     --shadow-lg: var(--shadow);
-    --gray-500: var(--gray-400);
-    --gray-700: var(--gray-600);
 }
 
 /* Clean Reset */
