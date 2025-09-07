@@ -40,6 +40,22 @@ class UploadManager {
             return $validation;
         }
         
+        // Get existing image filename before uploading new one
+        $oldImagePath = null;
+        if ($type === 'profile') {
+            $userManager = new UserManager();
+            $oldFilename = $userManager->getProfileImageFilename($entityId);
+            if ($oldFilename && $oldFilename !== 'default-profile.png') {
+                $oldImagePath = $this->uploadsDir . '/profiles/' . $oldFilename;
+            }
+        } else if ($type === 'cover') {
+            $fundManager = new FundManager();
+            $oldFilename = $fundManager->getFundCoverFilename($entityId);
+            if ($oldFilename && $oldFilename !== 'default-cover.png') {
+                $oldImagePath = $this->uploadsDir . '/covers/' . $oldFilename;
+            }
+        }
+        
         // Create directory if it doesn't exist
         $typeDir = $this->uploadsDir . '/' . $type . 's';
         if (!is_dir($typeDir)) {
@@ -57,6 +73,11 @@ class UploadManager {
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             // Update database
             $this->updateDatabase($type, $entityId, $filename);
+            
+            // Delete old image file if it exists
+            if ($oldImagePath && file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
             
             return [
                 'success' => true,
