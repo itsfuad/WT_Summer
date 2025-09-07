@@ -11,7 +11,7 @@ try {
     foreach ($required_tables as $table) {
         $stmt = $pdo->query("SHOW TABLES LIKE '$table'");
         if (!$stmt->fetch()) {
-            throw new Exception("Table '$table' does not exist. Please run create_tables.php first.");
+            throw new Exception("Table '$table' does not exist. Please run index.php first.");
         }
     }
     echo "<span style='color:green;'>✓ All required tables exist</span><br>\n";
@@ -328,8 +328,8 @@ try {
 } catch (Exception $e) {
     echo "<div style='background:#f8d7da;padding:15px;border-radius:5px;margin:10px 0;'>\n";
     echo "<strong>❌ Error:</strong> " . $e->getMessage() . "<br><br>\n";
-    echo "<strong>Solution:</strong> Make sure to run create_tables.php first to create the database structure.<br>\n";
-    echo "<a href='create_tables.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Run Database Setup</a>\n";
+    echo "<strong>Solution:</strong> Make sure to run index.php first to create the database structure.<br>\n";
+    echo "<a href='index.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Run Database Setup</a>\n";
     echo "</div>\n";
 }
 ?>
