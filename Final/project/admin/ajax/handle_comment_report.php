@@ -1,9 +1,10 @@
 <?php
-require_once '../../includes/session.php';
+require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
+
 requireLogin();
 requireRole('admin');
 
-require_once '../../includes/functions.php';
 
 header('Content-Type: application/json');
 

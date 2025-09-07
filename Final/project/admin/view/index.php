@@ -1,9 +1,9 @@
 <?php
-require_once '../../includes/session.php';
+require_once '../../shared/includes/session.php';
 requireLogin();
 requireRole('admin');
 
-require_once '../../includes/functions.php';
+require_once '../../shared/includes/functions.php';
 
 $user = getCurrentUser();
 $fundManager = new FundManager();

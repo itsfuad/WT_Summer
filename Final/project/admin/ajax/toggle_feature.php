@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/session.php';
+require_once '../../shared/includes/session.php';
 requireLogin();
 requireRole('admin');
 
@@ -17,7 +17,7 @@ if ($fund_id <= 0) {
 }
 
 try {
-    require_once '../../config/database.php';
+    require_once '../../database/database.php';
     
     // Get current featured status
     $stmt = $pdo->prepare("SELECT featured FROM funds WHERE id = ?");

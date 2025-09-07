@@ -1,5 +1,5 @@
 <?php
-    require_once '../../includes/session.php';
+    require_once '../../shared/includes/session.php';
     requireNoLogin();
 ?>
 
@@ -56,8 +56,8 @@
             if (empty($emailErr) && empty($passwordErr)) {
                 
                 // Authenticate using database
-                require_once '../../includes/functions.php';
-                require_once '../../includes/session.php';
+                require_once '../../shared/includes/functions.php';
+                require_once '../../shared/includes/session.php';
                 $userManager = new UserManager();
 
                 $user = $userManager->authenticate($email, $password);

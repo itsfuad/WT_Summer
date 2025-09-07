@@ -24,7 +24,7 @@ try {
     echo "<p>3. Cleaning up existing tables...</p>\n";
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
     $dropTables = [
-        'notifications', 'favorites', 'fund_likes', 'fund_updates', 'reports', 'comments',
+        'fund_likes', 'reports', 'comments',
         'donations', 'funds', 'categories', 'users'
     ];
     
@@ -39,8 +39,7 @@ try {
     
     // Users table
     echo "<p>Creating users table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS users (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
             email VARCHAR(100) UNIQUE NOT NULL,
@@ -60,8 +59,7 @@ try {
     
     // Categories table
     echo "<p>Creating categories table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS categories (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS categories (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
             description TEXT,
@@ -74,8 +72,7 @@ try {
     
     // Funds table
     echo "<p>Creating funds table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS funds (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS funds (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(200) NOT NULL,
             description TEXT NOT NULL,
@@ -104,8 +101,7 @@ try {
     
     // Donations table
     echo "<p>Creating donations table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS donations (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS donations (
             id INT AUTO_INCREMENT PRIMARY KEY,
             fund_id INT NOT NULL,
             backer_id INT NOT NULL,
@@ -127,8 +123,7 @@ try {
     
     // Comments table
     echo "<p>Creating comments table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS comments (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS comments (
             id INT AUTO_INCREMENT PRIMARY KEY,
             fund_id INT NOT NULL,
             user_id INT NOT NULL,
@@ -146,8 +141,7 @@ try {
     
     // Reports table
     echo "<p>Creating reports table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS reports (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS reports (
             id INT AUTO_INCREMENT PRIMARY KEY,
             fund_id INT DEFAULT NULL,
             comment_id INT DEFAULT NULL,
@@ -166,41 +160,38 @@ try {
     ");
     echo "<span style='color:green;'>✓ Reports table created</span><br>\n";
     
-    // Fund updates table
-    echo "<p>Creating fund_updates table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS fund_updates (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            fund_id INT NOT NULL,
-            title VARCHAR(200) NOT NULL,
-            content TEXT NOT NULL,
-            image_url VARCHAR(255) DEFAULT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (fund_id) REFERENCES funds(id) ON DELETE CASCADE,
-            INDEX idx_fund_id (fund_id)
-        )
-    ");
-    echo "<span style='color:green;'>✓ Fund updates table created</span><br>\n";
+    // // Fund updates table
+    // echo "<p>Creating fund_updates table...</p>\n";
+    // $pdo->exec("CREATE TABLE IF NOT EXISTS fund_updates (
+    //         id INT AUTO_INCREMENT PRIMARY KEY,
+    //         fund_id INT NOT NULL,
+    //         title VARCHAR(200) NOT NULL,
+    //         content TEXT NOT NULL,
+    //         image_url VARCHAR(255) DEFAULT NULL,
+    //         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //         FOREIGN KEY (fund_id) REFERENCES funds(id) ON DELETE CASCADE,
+    //         INDEX idx_fund_id (fund_id)
+    //     )
+    // ");
+    // echo "<span style='color:green;'>✓ Fund updates table created</span><br>\n";
     
-    // Favorites table
-    echo "<p>Creating favorites table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS favorites (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            fund_id INT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (fund_id) REFERENCES funds(id) ON DELETE CASCADE,
-            UNIQUE KEY unique_favorite (user_id, fund_id)
-        )
-    ");
-    echo "<span style='color:green;'>✓ Favorites table created</span><br>\n";
+    // // Favorites table
+    // echo "<p>Creating favorites table...</p>\n";
+    // $pdo->exec("CREATE TABLE IF NOT EXISTS favorites (
+    //         id INT AUTO_INCREMENT PRIMARY KEY,
+    //         user_id INT NOT NULL,
+    //         fund_id INT NOT NULL,
+    //         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    //         FOREIGN KEY (fund_id) REFERENCES funds(id) ON DELETE CASCADE,
+    //         UNIQUE KEY unique_favorite (user_id, fund_id)
+    //     )
+    // ");
+    // echo "<span style='color:green;'>✓ Favorites table created</span><br>\n";
     
     // Fund likes table
     echo "<p>Creating fund_likes table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS fund_likes (
+    $pdo->exec("CREATE TABLE IF NOT EXISTS fund_likes (
             id INT AUTO_INCREMENT PRIMARY KEY,
             fund_id INT NOT NULL,
             user_id INT NOT NULL,
@@ -214,24 +205,23 @@ try {
     ");
     echo "<span style='color:green;'>✓ Fund likes table created</span><br>\n";
     
-    // Notifications table
-    echo "<p>Creating notifications table...</p>\n";
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS notifications (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            type VARCHAR(50) NOT NULL,
-            title VARCHAR(200) NOT NULL,
-            message TEXT NOT NULL,
-            related_id INT DEFAULT NULL,
-            is_read BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            INDEX idx_user_id (user_id),
-            INDEX idx_is_read (is_read)
-        )
-    ");
-    echo "<span style='color:green;'>✓ Notifications table created</span><br>\n";
+    // // Notifications table
+    // echo "<p>Creating notifications table...</p>\n";
+    // $pdo->exec("CREATE TABLE IF NOT EXISTS notifications (
+    //         id INT AUTO_INCREMENT PRIMARY KEY,
+    //         user_id INT NOT NULL,
+    //         type VARCHAR(50) NOT NULL,
+    //         title VARCHAR(200) NOT NULL,
+    //         message TEXT NOT NULL,
+    //         related_id INT DEFAULT NULL,
+    //         is_read BOOLEAN DEFAULT FALSE,
+    //         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    //         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    //         INDEX idx_user_id (user_id),
+    //         INDEX idx_is_read (is_read)
+    //     )
+    // ");
+    // echo "<span style='color:green;'>✓ Notifications table created</span><br>\n";
     
     echo "<div style='background:#d4edda;padding:20px;border-radius:5px;margin:20px 0;'>\n";
     echo "<h3>✅ Database Structure Created Successfully!</h3>\n";

@@ -9,8 +9,8 @@
 </head>
 <body>
     <?php
-    require_once '../../includes/session.php';
-    require_once '../../includes/functions.php';
+    require_once '../../shared/includes/session.php';
+    require_once '../../shared/includes/functions.php';
     
     requireLogin();
     requireRole('fundraiser');

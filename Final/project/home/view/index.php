@@ -1,7 +1,7 @@
 <?php
 // Include database functions
-require_once '../../includes/functions.php';
-require_once '../../includes/session.php';
+require_once '../../shared/includes/functions.php';
+require_once '../../shared/includes/session.php';
 
 // Initialize managers
 $fundManager = new FundManager();

@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/session.php';
+require_once '../../shared/includes/session.php';
 requireLogin();
 requireRole('admin');
 
@@ -18,7 +18,7 @@ if ($fund_id <= 0 || !in_array($action, ['freeze', 'unfreeze'])) {
 }
 
 try {
-    require_once '../../config/database.php';
+    require_once '../../database/database.php';
     
     $pdo->beginTransaction();
     

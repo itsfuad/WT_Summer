@@ -1,5 +1,5 @@
 <?php
-    require_once '../../includes/session.php';
+    require_once '../../shared/includes/session.php';
     requireNoLogin();
 ?>
 <!DOCTYPE html>
@@ -81,7 +81,7 @@
             // If no errors, process signup
             if (empty($nameErr) && empty($emailErr) && empty($roleErr) && empty($passwordErr) && empty($confirmPasswordErr)) {
                 // Save to database
-                require_once '../../includes/functions.php';
+                require_once '../../shared/includes/functions.php';
                 $userManager = new UserManager();
                 
                 $userId = $userManager->createUser($name, $email, $password, $role);

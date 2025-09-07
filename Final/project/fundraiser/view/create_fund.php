@@ -9,9 +9,9 @@
 </head>
 <body>
     <?php
-    require_once '../../includes/session.php';
-    require_once '../../includes/functions.php';
-    require_once '../includes/fund_form.php';
+    require_once '../../shared/includes/session.php';
+    require_once '../../shared/includes/functions.php';
+    require_once '../../shared/includes/fund_form.php';
     
     requireLogin();
     requireRole('fundraiser');

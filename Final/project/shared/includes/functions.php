@@ -1,7 +1,6 @@
 <?php
-// Database helper functions for CrowdFund platform
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../../database/database.php';
 
 class FundManager {
     private $pdo;
@@ -23,8 +22,7 @@ class FundManager {
         // Ensure limit is an integer to prevent SQL injection
         $limit = (int)$limit;
         
-        $sql = "
-            SELECT 
+        $sql = "SELECT 
                 f.*,
                 u.name as fundraiser_name,
                 c.name as category_name,
@@ -105,8 +103,7 @@ class FundManager {
         
         $whereClause = implode(' AND ', $conditions);
         
-        $sql = "
-            SELECT 
+        $sql = "SELECT 
                 f.*,
                 u.name as fundraiser_name,
                 c.name as category_name,
@@ -170,8 +167,7 @@ class FundManager {
         
         $whereClause = implode(' AND ', $conditions);
         
-        $stmt = $this->pdo->prepare("
-            SELECT COUNT(*) 
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) 
             FROM funds f
             LEFT JOIN users u ON f.fundraiser_id = u.id
             LEFT JOIN categories c ON f.category_id = c.id
@@ -185,8 +181,7 @@ class FundManager {
      * Get fund details by ID
      */
     public function getFundById($id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 f.*,
                 u.name as fundraiser_name,
                 u.email as fundraiser_email,
@@ -227,8 +222,7 @@ class FundManager {
      * Get funds by fundraiser ID
      */
     public function getFundsByFundraiserId($fundraiser_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 f.*,
                 c.name as category_name,
                 c.icon as category_icon,
@@ -251,8 +245,7 @@ class FundManager {
      * Create a new fund
      */
     public function createFund($data) {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO funds (
+        $stmt = $this->pdo->prepare("INSERT INTO funds (
                 title, short_description, description, goal_amount, category_id, 
                 fundraiser_id, end_date, featured, status, created_at
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW())
@@ -286,8 +279,7 @@ class FundManager {
             $data['status'] = $currentStatus;
         }
         
-        $stmt = $this->pdo->prepare("
-            UPDATE funds SET 
+        $stmt = $this->pdo->prepare("UPDATE funds SET 
                 title = ?, short_description = ?, description = ?, 
                 goal_amount = ?, category_id = ?, end_date = ?, 
                 status = ?, featured = ?, updated_at = NOW()
@@ -322,8 +314,7 @@ class FundManager {
             'oldest' => 'd.created_at ASC'
         };
         
-        $stmt = $this->pdo->prepare("
-            SELECT d.*, u.name as backer_name, u.role as backer_role
+        $stmt = $this->pdo->prepare("SELECT d.*, u.name as backer_name, u.role as backer_role
             FROM donations d
             LEFT JOIN users u ON d.backer_id = u.id
             WHERE d.fund_id = ? AND d.payment_status = 'completed'
@@ -363,8 +354,7 @@ class FundManager {
      * Get fund analytics data
      */
     public function getFundAnalytics($fund_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 COUNT(d.id) as total_donations,
                 SUM(d.amount) as total_raised,
                 AVG(d.amount) as avg_donation,
@@ -381,8 +371,7 @@ class FundManager {
      * Get daily donation data for charts
      */
     public function getDailyDonationData($fund_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 DATE(created_at) as date,
                 SUM(amount) as amount,
                 COUNT(*) as count
@@ -401,8 +390,7 @@ class FundManager {
      * Get comments for a fund
      */
     public function getFundComments($fund_id, $limit = 20) {
-        $stmt = $this->pdo->prepare("
-            SELECT c.*, u.name as user_name, u.role as user_role
+        $stmt = $this->pdo->prepare("SELECT c.*, u.name as user_name, u.role as user_role
             FROM comments c
             LEFT JOIN users u ON c.user_id = u.id
             WHERE c.fund_id = ? AND c.status = 'active'
@@ -418,8 +406,7 @@ class FundManager {
      * Add a comment to a fund
      */
     public function addComment($fund_id, $user_id, $comment) {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO comments (fund_id, user_id, comment) 
+        $stmt = $this->pdo->prepare("INSERT INTO comments (fund_id, user_id, comment) 
             VALUES (?, ?, ?)
         ");
         
@@ -433,8 +420,7 @@ class FundManager {
      * Get comments count for a fund
      */
     public function getCommentsCount($fund_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT COUNT(*) FROM comments 
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM comments 
             WHERE fund_id = ? AND status = 'active'
         ");
         
@@ -446,8 +432,7 @@ class FundManager {
      * Update a comment
      */
     public function updateComment($comment_id, $comment_text) {
-        $stmt = $this->pdo->prepare("
-            UPDATE comments 
+        $stmt = $this->pdo->prepare("UPDATE comments 
             SET comment = ?, updated_at = NOW() 
             WHERE id = ?
         ");
@@ -459,8 +444,7 @@ class FundManager {
      * Delete a comment (soft delete)
      */
     public function deleteComment($comment_id) {
-        $stmt = $this->pdo->prepare("
-            UPDATE comments 
+        $stmt = $this->pdo->prepare("UPDATE comments 
             SET status = 'deleted', updated_at = NOW() 
             WHERE id = ?
         ");
@@ -523,8 +507,7 @@ class FundManager {
      * Get users who liked a fund
      */
     public function getFundLikes($fund_id, $limit = 10) {
-        $stmt = $this->pdo->prepare("
-            SELECT fl.*, u.name as user_name, u.role as user_role
+        $stmt = $this->pdo->prepare("SELECT fl.*, u.name as user_name, u.role as user_role
             FROM fund_likes fl
             LEFT JOIN users u ON fl.user_id = u.id
             WHERE fl.fund_id = ?
@@ -547,8 +530,7 @@ class FundManager {
         $placeholders = str_repeat('?,', count($fund_ids) - 1) . '?';
         $params = array_merge($fund_ids, [$user_id]);
         
-        $stmt = $this->pdo->prepare("
-            SELECT fund_id 
+        $stmt = $this->pdo->prepare("SELECT fund_id 
             FROM fund_likes 
             WHERE fund_id IN ($placeholders) AND user_id = ?
         ");
@@ -578,8 +560,7 @@ class FundManager {
         }
 
         // Create donation as completed (no external payment for now)
-        $stmt = $this->pdo->prepare("
-            INSERT INTO donations (fund_id, backer_id, amount, payment_status, comment, anonymous, created_at)
+        $stmt = $this->pdo->prepare("INSERT INTO donations (fund_id, backer_id, amount, payment_status, comment, anonymous, created_at)
             VALUES (?, ?, ?, 'completed', ?, ?, NOW())
         ");
         $stmt->execute([$fund_id, $backer_id, $amount, $comment, (int)$anonymous]);
@@ -595,8 +576,7 @@ class FundManager {
      * Get donations made by a user (individual donation records)
      */
     public function getUserDonations($user_id, $limit = 50) {
-        $stmt = $this->pdo->prepare("
-            SELECT d.*, f.title as fund_title, f.fundraiser_id, u.name as fundraiser_name
+        $stmt = $this->pdo->prepare("SELECT d.*, f.title as fund_title, f.fundraiser_id, u.name as fundraiser_name
             FROM donations d
             INNER JOIN funds f ON d.fund_id = f.id
             LEFT JOIN users u ON f.fundraiser_id = u.id
@@ -625,8 +605,7 @@ class FundManager {
             'less_raised' => 'f.current_amount ASC'
         };
         
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 f.*,
                 u.name as fundraiser_name,
                 c.name as category_name,
@@ -657,8 +636,7 @@ class FundManager {
      * Get funds a user liked
      */
     public function getUserLikedFunds($user_id, $limit = 50) {
-        $stmt = $this->pdo->prepare("
-            SELECT f.*, u.name as fundraiser_name
+        $stmt = $this->pdo->prepare("SELECT f.*, u.name as fundraiser_name
             FROM fund_likes fl
             INNER JOIN funds f ON fl.fund_id = f.id
             LEFT JOIN users u ON f.fundraiser_id = u.id
@@ -674,8 +652,7 @@ class FundManager {
      * Get backer analytics data
      */
     public function getBackerAnalytics($user_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 COUNT(DISTINCT d.fund_id) as campaigns_supported,
                 COUNT(d.id) as total_donations,
                 SUM(d.amount) as total_donated,
@@ -692,8 +669,7 @@ class FundManager {
      * Get monthly donation data for charts
      */
     public function getMonthlyDonationData($user_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 DATE_FORMAT(d.created_at, '%Y-%m') as month,
                 SUM(d.amount) as amount,
                 COUNT(d.id) as count
@@ -727,8 +703,7 @@ class FundManager {
      * Get donations breakdown by category
      */
     public function getDonationsByCategory($user_id) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 c.name as category_name,
                 c.color as category_color,
                 SUM(d.amount) as total_amount,
@@ -748,8 +723,7 @@ class FundManager {
      * Get recent donations by a user (for analytics)
      */
     public function getUserRecentDonations($user_id, $limit = 10) {
-        $stmt = $this->pdo->prepare("
-            SELECT 
+        $stmt = $this->pdo->prepare("SELECT 
                 d.*,
                 f.title as fund_title,
                 f.id as fund_id
@@ -801,8 +775,7 @@ class FundManager {
      */
     public function getTopCampaigns($limit = 5) {
         $limit = intval($limit); // Ensure it's an integer
-        $stmt = $this->pdo->query("
-            SELECT f.*, u.name as fundraiser_name, c.name as category_name,
+        $stmt = $this->pdo->query("SELECT f.*, u.name as fundraiser_name, c.name as category_name,
                    (f.current_amount / f.goal_amount * 100) as progress_percentage,
                    COUNT(d.id) as donation_count
             FROM funds f
@@ -821,8 +794,7 @@ class FundManager {
      * Get monthly platform donation data
      */
     public function getMonthlyPlatformData() {
-        $stmt = $this->pdo->query("
-            SELECT 
+        $stmt = $this->pdo->query("SELECT 
                 DATE_FORMAT(created_at, '%Y-%m') as month,
                 SUM(amount) as total_donations,
                 COUNT(*) as donation_count
@@ -839,8 +811,7 @@ class FundManager {
      * Get fund reports for admin
      */
     public function getFundReports($status = 'pending') {
-        $stmt = $this->pdo->prepare("
-            SELECT r.*, f.title as fund_title, f.current_amount, f.goal_amount,
+        $stmt = $this->pdo->prepare("SELECT r.*, f.title as fund_title, f.current_amount, f.goal_amount,
                    u.name as reporter_name, fr.name as fundraiser_name
             FROM reports r
             LEFT JOIN funds f ON r.fund_id = f.id
@@ -857,8 +828,7 @@ class FundManager {
      * Get comment reports for admin
      */
     public function getCommentReports($status = 'pending') {
-        $stmt = $this->pdo->prepare("
-            SELECT r.*, c.comment as comment_content, f.title as fund_title,
+        $stmt = $this->pdo->prepare("SELECT r.*, c.comment as comment_content, f.title as fund_title,
                    u.name as reporter_name, cu.name as commenter_name
             FROM reports r
             LEFT JOIN comments c ON r.comment_id = c.id
@@ -876,8 +846,7 @@ class FundManager {
      * Get funds for feature management
      */
     public function getFundsForFeatureManagement($limit = 50) {
-        $stmt = $this->pdo->prepare("
-            SELECT f.*, u.name as fundraiser_name
+        $stmt = $this->pdo->prepare("SELECT f.*, u.name as fundraiser_name
             FROM funds f
             LEFT JOIN users u ON f.fundraiser_id = u.id
             WHERE f.status IN ('active', 'paused', 'frozen')
@@ -925,8 +894,7 @@ class UserManager {
         
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
-        $stmt = $this->pdo->prepare("
-            INSERT INTO users (name, email, password, role, bio, email_verified) 
+        $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password, role, bio, email_verified) 
             VALUES (?, ?, ?, ?, ?, 1)
         ");
         
@@ -1012,8 +980,7 @@ class UserManager {
      * Get user profile with complete information
      */
     public function getCompleteUserProfile($userId) {
-        $stmt = $this->pdo->prepare("
-            SELECT id, name, email, role, bio, status, email_verified, created_at, updated_at
+        $stmt = $this->pdo->prepare("SELECT id, name, email, role, bio, status, email_verified, created_at, updated_at
             FROM users 
             WHERE id = ?
         ");
