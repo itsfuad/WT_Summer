@@ -1200,6 +1200,32 @@ class UserManager {
     }
     
     /**
+     * Remove user profile image (set to NULL to use default)
+     */
+    public function removeProfileImage($userId) {
+        // Get current profile image filename before removing
+        $currentFilename = $this->getProfileImageFilename($userId);
+        
+        // Only delete file if it's not the default and exists
+        if ($currentFilename && $currentFilename !== 'default-profile.png') {
+            $uploadManager = new UploadManager();
+            $currentImagePath = '../../uploads/profiles/' . $currentFilename;
+            if (file_exists($currentImagePath)) {
+                unlink($currentImagePath);
+            }
+        }
+        
+        // Set profile_image to NULL in database (will use default)
+        $stmt = $this->pdo->prepare("UPDATE users SET profile_image = NULL, updated_at = NOW() WHERE id = ?");
+        try {
+            $result = $stmt->execute([$userId]);
+            return $result ? ['success' => true] : ['error' => 'Failed to remove profile image'];
+        } catch (PDOException $e) {
+            return ['error' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
      * Get user's current profile image path
      */
     public function getUserProfileImage($userId) {

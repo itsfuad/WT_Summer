@@ -342,7 +342,7 @@ p {
     box-shadow: var(--shadow-lg);
 }
 
-.logout-btn {
+.btn-destructive {
     color: var(--error);
     border: 2px solid var(--error);
     padding: var(--space-2) var(--space-4);
@@ -353,7 +353,7 @@ p {
     text-decoration: none;
     font-weight: 500;
 }
-.logout-btn:hover {
+.btn-destructive:hover {
     background: var(--error);
     color: var(--white);
     border-color: var(--error);

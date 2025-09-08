@@ -73,12 +73,9 @@ function submitDonation(e) {
     }).then(r => r.json()).then(data => {
         if (data.success) {
             showNotification('Thank you for your donation!', 'success');
-            // Update progress stats quickly
-            try {
-                const stats = document.querySelectorAll('.progress-stats .stat .stat-value');
-                if (stats && stats[0]) { stats[0].textContent = formatCurrency(data.current_amount); }
-                if (stats && stats[1] && typeof data.backer_count !== 'undefined') { stats[1].textContent = data.backer_count; }
-            } catch (_) {}
+            
+            // Update progress stats with proper IDs
+            updateProgressStats(data);
 
             // Update Recent Backers list without refresh
             try {
@@ -94,6 +91,34 @@ function submitDonation(e) {
 }
 
 function formatCurrency(amount) { try { return '$' + Number(amount).toLocaleString(); } catch { return '$' + amount; } }
+
+function updateProgressStats(data) {
+    try {
+        // Update current amount
+        const currentAmountEl = document.getElementById('current-amount');
+        if (currentAmountEl && data.current_amount !== undefined) {
+            currentAmountEl.textContent = formatCurrency(data.current_amount);
+        }
+        
+        // Update backer count
+        const backerCountEl = document.getElementById('backer-count');
+        if (backerCountEl && data.backer_count !== undefined) {
+            backerCountEl.textContent = data.backer_count;
+        }
+        
+        // Update progress bar percentage
+        const progressFillEl = document.getElementById('progress-fill');
+        if (progressFillEl && data.current_amount !== undefined && typeof goalAmount !== 'undefined') {
+            const percentage = Math.min((data.current_amount / goalAmount) * 100, 100);
+            progressFillEl.style.width = percentage + '%';
+        }
+        
+        // Days left doesn't change with donations, so no update needed
+        
+    } catch (error) {
+        console.error('Error updating progress stats:', error);
+    }
+}
 
 function ensureBackersSection() {
     let section = document.querySelector('.backers-section');

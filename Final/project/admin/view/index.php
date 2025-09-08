@@ -48,9 +48,56 @@ $commentReports = $fundManager->getCommentReports();
                     <a href="profile.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
-                    <a href="../../shared/includes/logout.php" class="logout-btn">
+                    <a href="../../shared/includes/logout.php" class="btn-destructive">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Statistics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value"><?php echo formatCurrency($stats['total_raised']); ?></div>
+                    <div class="metric-label">Total Raised</div>
+                    <div class="metric-progress">Platform lifetime</div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value"><?php echo $stats['total_funds']; ?></div>
+                    <div class="metric-label">Total Campaigns</div>
+                    <div class="metric-progress"><?php echo $stats['active_funds']; ?> active</div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value"><?php echo $stats['total_users']; ?></div>
+                    <div class="metric-label">Total Users</div>
+                    <div class="metric-progress">Platform members</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value"><?php echo $stats['pending_reports']; ?></div>
+                    <div class="metric-label">Pending Reports</div>
+                    <div class="metric-progress">Need attention</div>
                 </div>
             </div>
         </div>
@@ -198,53 +245,6 @@ $commentReports = $fundManager->getCommentReports();
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Platform Statistics -->
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="metric-content">
-                    <div class="metric-value"><?php echo formatCurrency($stats['total_raised']); ?></div>
-                    <div class="metric-label">Total Raised</div>
-                    <div class="metric-progress">Platform lifetime</div>
-                </div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-project-diagram"></i>
-                </div>
-                <div class="metric-content">
-                    <div class="metric-value"><?php echo $stats['total_funds']; ?></div>
-                    <div class="metric-label">Total Campaigns</div>
-                    <div class="metric-progress"><?php echo $stats['active_funds']; ?> active</div>
-                </div>
-            </div>
-            
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="metric-content">
-                    <div class="metric-value"><?php echo $stats['total_users']; ?></div>
-                    <div class="metric-label">Total Users</div>
-                    <div class="metric-progress">Platform members</div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-flag"></i>
-                </div>
-                <div class="metric-content">
-                    <div class="metric-value"><?php echo $stats['pending_reports']; ?></div>
-                    <div class="metric-label">Pending Reports</div>
-                    <div class="metric-progress">Need attention</div>
-                </div>
             </div>
         </div>
 

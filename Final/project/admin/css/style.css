@@ -1001,50 +1001,6 @@
     margin-left: 12px;
 }
 
-/* Charts Row Layout */
-.charts-row {
-    display: grid;
-    gap: 24px;
-    margin-bottom: 32px;
-}
-
-/* Default: 2 columns for analytics charts */
-.charts-row:nth-of-type(1) {
-    grid-template-columns: 1fr 1fr;
-}
-
-/* 2 columns for top performers */
-.charts-row:nth-of-type(2) {
-    grid-template-columns: 1fr 1fr;
-}
-
-/* 1 column for admin alerts */
-.charts-row:nth-of-type(3) {
-    grid-template-columns: 1fr;
-}
-
-.chart-card {
-    background: white;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-light);
-}
-
-.chart-card h3 {
-    margin: 0 0 16px 0;
-    color: var(--text-primary);
-    font-size: 1.125rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.chart-card h3 i {
-    color: var(--primary);
-}
-
 /* Top Backers List */
 .top-backers-list {
     display: flex;

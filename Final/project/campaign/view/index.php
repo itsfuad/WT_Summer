@@ -50,6 +50,7 @@ $days_left = getDaysLeft($fund['end_date']);
         const currentUserId = <?php echo $user ? $user['id'] : 'null'; ?>;
         const fundId = <?php echo $fund['id']; ?>;
         const fundTitle = <?php echo json_encode($fund['title']); ?>;
+        const goalAmount = <?php echo $fund['goal_amount']; ?>;
     </script>
     <script src="../js/script.js" defer></script>
 </head>
@@ -111,20 +112,20 @@ $days_left = getDaysLeft($fund['end_date']);
                     <!-- Progress Stats -->
                     <div class="progress-section">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
+                            <div class="progress-fill" id="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
                         </div>
                         
                         <div class="progress-stats">
                             <div class="stat">
-                                <div class="stat-value"><?php echo formatCurrency($fund['current_amount']); ?></div>
-                                <div class="stat-label">raised of <?php echo formatCurrency($fund['goal_amount']); ?></div>
+                                <div class="stat-value" id="current-amount"><?php echo formatCurrency($fund['current_amount']); ?></div>
+                                <div class="stat-label">raised of <span id="goal-amount"><?php echo formatCurrency($fund['goal_amount']); ?></span></div>
                             </div>
                             <div class="stat">
-                                <div class="stat-value"><?php echo $fund['backer_count']; ?></div>
+                                <div class="stat-value" id="backer-count"><?php echo $fund['backer_count']; ?></div>
                                 <div class="stat-label">backers</div>
                             </div>
                             <div class="stat">
-                                <div class="stat-value"><?php echo $days_left; ?></div>
+                                <div class="stat-value" id="days-left"><?php echo $days_left; ?></div>
                                 <div class="stat-label">days left</div>
                             </div>
                         </div>

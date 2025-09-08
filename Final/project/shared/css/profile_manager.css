@@ -306,8 +306,6 @@
     display: flex;
     justify-content: flex-end;
     gap: var(--space-3);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--gray-200);
     margin-top: var(--space-6);
 }
 
