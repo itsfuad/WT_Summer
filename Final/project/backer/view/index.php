@@ -1,3 +1,32 @@
+<?php
+require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
+
+requireLogin();
+requireRole('backer');
+$user = getCurrentUser();
+
+$fundManager = new FundManager();
+
+// Get funds the backer has donated to
+$sort = $_GET['sort'] ?? 'latest';
+$donatedFunds = $fundManager->getUserDonatedFunds($user['id'], $sort);
+
+// Calculate statistics
+$totalDonated = 0;
+$totalCampaigns = count($donatedFunds);
+$activeCampaigns = 0;
+$completedCampaigns = 0;
+
+foreach ($donatedFunds as $fund) {
+    $totalDonated += $fund['total_donated'];
+    if ($fund['status'] === 'active') {
+        $activeCampaigns++;
+    } elseif ($fund['status'] === 'completed') {
+        $completedCampaigns++;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,37 +36,7 @@
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
-    <?php
-    require_once '../../shared/includes/session.php';
-    require_once '../../shared/includes/functions.php';
-    
-    requireLogin();
-    requireRole('backer');
-    $user = getCurrentUser();
-    
-    $fundManager = new FundManager();
-    
-    // Get funds the backer has donated to
-    $sort = $_GET['sort'] ?? 'latest';
-    $donatedFunds = $fundManager->getUserDonatedFunds($user['id'], $sort);
-    
-    // Calculate statistics
-    $totalDonated = 0;
-    $totalCampaigns = count($donatedFunds);
-    $activeCampaigns = 0;
-    $completedCampaigns = 0;
-    
-    foreach ($donatedFunds as $fund) {
-        $totalDonated += $fund['total_donated'];
-        if ($fund['status'] === 'active') {
-            $activeCampaigns++;
-        } elseif ($fund['status'] === 'completed') {
-            $completedCampaigns++;
-        }
-    }
-    ?>
-    
+<body>    
     <div class="dashboard">
         <!-- Header -->
         <div class="dashboard-header">
@@ -184,13 +183,8 @@
                                 
                                 <div class="campaign-actions">
                                     <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-eye"></i> View Campaign
+                                        <i class="fas fa-eye"></i> View Details
                                     </a>
-                                    <?php if ($fund['status'] === 'active'): ?>
-                                        <a href="../../campaign/view?id=<?php echo $fund['id']; ?>#donate" class="btn btn-primary">
-                                            <i class="fas fa-heart"></i> Donate Again
-                                        </a>
-                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

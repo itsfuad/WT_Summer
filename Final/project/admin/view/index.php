@@ -1,9 +1,10 @@
 <?php
 require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
+
 requireLogin();
 requireRole('admin');
 
-require_once '../../shared/includes/functions.php';
 
 $user = getCurrentUser();
 $fundManager = new FundManager();
@@ -12,9 +13,9 @@ $fundManager = new FundManager();
 $stats = $fundManager->getPlatformStats();
 $monthlyData = $fundManager->getMonthlyPlatformData();
 $topCampaigns = $fundManager->getTopCampaigns(5);
+$topBackers = $fundManager->getTopBackers(5);
 $fundReports = $fundManager->getFundReports();
 $commentReports = $fundManager->getCommentReports();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +26,11 @@ $commentReports = $fundManager->getCommentReports();
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../../backer/css/analytics.css">
+    <script>
+        const monthlyData = <?php echo json_encode($monthlyData); ?>;
+    </script>
     <script src="../../shared/libs/chart.min.js"></script>
+    <script src="../js/script.js" defer></script>
 </head>
 <body>
     <div class="dashboard">
@@ -47,6 +52,152 @@ $commentReports = $fundManager->getCommentReports();
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
+            </div>
+        </div>
+
+        
+        <!-- Top Performers -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3><i class="fas fa-trophy"></i> Top 5 Campaigns</h3>
+                <?php if (empty($topCampaigns)): ?>
+                    <div class="no-data">
+                        <i class="fas fa-chart-bar"></i>
+                        <p>No campaigns found</p>
+                    </div>
+                <?php else: ?>
+                    <div class="top-campaigns-list">
+                        <?php foreach ($topCampaigns as $index => $campaign): ?>
+                            <div class="campaign-item">
+                                <div class="campaign-rank">
+                                    <span class="rank-number"><?php echo $index + 1; ?></span>
+                                </div>
+                                <div class="campaign-info">
+                                    <h4><?php echo htmlspecialchars($campaign['title']); ?></h4>
+                                    <p class="top-campaign-meta">
+                                        <span class="fundraiser">by <?php echo htmlspecialchars($campaign['fundraiser_name']); ?></span>
+                                    </p>
+                                    <div class="campaign-stats">
+                                        <span class="raised"><?php echo formatCurrency($campaign['current_amount']); ?></span>
+                                        <span class="progress"><?php echo number_format($campaign['progress_percentage'], 1); ?>% funded</span>
+                                    </div>
+                                </div>
+                                <div class="campaign-actions">
+                                    <button class="btn btn-sm btn-outline" onclick="openCampaignView(<?php echo $campaign['id']; ?>)">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="chart-card">
+                <h3><i class="fas fa-star"></i> Top 5 Backers</h3>
+                <?php if (empty($topBackers)): ?>
+                    <div class="no-data">
+                        <i class="fas fa-users"></i>
+                        <p>No backers found</p>
+                    </div>
+                <?php else: ?>
+                    <div class="top-backers-list">
+                        <?php foreach ($topBackers as $index => $backer): ?>
+                            <div class="backer-item">
+                                <div class="backer-rank">
+                                    <span class="rank-number"><?php echo $index + 1; ?></span>
+                                </div>
+                                <div class="backer-avatar">
+                                    <img src="<?php echo $backer['profile_image_url'] ?: '../../images/default-profile.png'; ?>"
+                                         alt="<?php echo htmlspecialchars($backer['name']); ?>" class="profile-img">
+                                </div>
+                                <div class="backer-info">
+                                    <h4><?php echo htmlspecialchars($backer['name']); ?></h4>
+                                    <p class="backer-email"><?php echo htmlspecialchars($backer['email']); ?></p>
+                                    <div class="backer-stats">
+                                        <span class="total-donated"><?php echo formatCurrency($backer['total_donated']); ?></span>
+                                        <span class="donations-count"><?php echo $backer['total_donations']; ?> donations</span>
+                                        <span class="campaigns-supported"><?php echo $backer['campaigns_supported']; ?> campaigns</span>
+                                    </div>
+                                    <small class="last-donation">
+                                        Last donation: <?php echo date('M j, Y', strtotime($backer['last_donation_date'])); ?>
+                                    </small>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Management Sections -->
+        <div class="tables-row">
+            <!-- Fund Reports -->
+            <div class="table-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Fund Reports (<?php echo count($fundReports); ?>)</h3>
+                <?php if (empty($fundReports)): ?>
+                    <div class="no-data">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No pending fund reports</p>
+                    </div>
+                <?php else: ?>
+                    <div class="reports-list">
+                        <?php foreach ($fundReports as $report): ?>
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <h4><?php echo htmlspecialchars($report['fund_title']); ?></h4>
+                                    <p><strong>Reason:</strong> <?php echo htmlspecialchars($report['reason']); ?></p>
+                                    <p><strong>Reporter:</strong> <?php echo htmlspecialchars($report['reporter_name']); ?></p>
+                                    <small><?php echo date('M j, Y', strtotime($report['created_at'])); ?></small>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn btn-primary btn-sm" onclick="openCampaignView(<?php echo $report['fund_id']; ?>)">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="handleFundReport(<?php echo $report['id']; ?>, <?php echo $report['fund_id']; ?>, 'freeze')">
+                                        <i class="fas fa-pause"></i> Freeze
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="handleFundReport(<?php echo $report['id']; ?>, <?php echo $report['fund_id']; ?>, 'dismiss')">
+                                        <i class="fas fa-times"></i> Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Comment Reports -->
+            <div class="table-card">
+                <h3><i class="fas fa-comment-slash"></i> Comment Reports (<?php echo count($commentReports); ?>)</h3>
+                <?php if (empty($commentReports)): ?>
+                    <div class="no-data">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No pending comment reports</p>
+                    </div>
+                <?php else: ?>
+                    <div class="reports-list">
+                        <?php foreach ($commentReports as $report): ?>
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <h4><?php echo htmlspecialchars($report['fund_title']); ?></h4>
+                                    <p><strong>Comment:</strong> "<?php echo htmlspecialchars(substr($report['comment_content'], 0, 100)); ?>..."</p>
+                                    <p><strong>Reason:</strong> <?php echo htmlspecialchars($report['reason']); ?></p>
+                                    <p><strong>Reporter:</strong> <?php echo htmlspecialchars($report['reporter_name']); ?></p>
+                                    <small><?php echo date('M j, Y', strtotime($report['created_at'])); ?></small>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn btn-danger btn-sm" onclick="handleCommentReport(<?php echo $report['id']; ?>, <?php echo $report['comment_id']; ?>, 'delete')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="handleCommentReport(<?php echo $report['id']; ?>, <?php echo $report['comment_id']; ?>, 'dismiss')">
+                                        <i class="fas fa-times"></i> Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -97,237 +248,19 @@ $commentReports = $fundManager->getCommentReports();
             </div>
         </div>
 
-        <!-- Charts -->
+        <!-- Analytics -->
         <div class="charts-row">
             <div class="chart-card">
-                <h3><i class="fas fa-chart-line"></i> Monthly Platform Activity</h3>
-                <canvas id="monthlyChart"></canvas>
+                <h3><i class="fas fa-dollar-sign"></i> Monthly Revenue & Donations</h3>
+                <canvas id="revenueChart"></canvas>
             </div>
             
             <div class="chart-card">
-                <h3><i class="fas fa-trophy"></i> Top 5 Campaigns</h3>
-                <?php if (empty($topCampaigns)): ?>
-                    <div class="no-data">
-                        <i class="fas fa-chart-bar"></i>
-                        <p>No campaigns found</p>
-                    </div>
-                <?php else: ?>
-                    <div class="top-campaigns-list">
-                        <?php foreach ($topCampaigns as $index => $campaign): ?>
-                            <div class="campaign-item">
-                                <div class="campaign-rank">
-                                    <span class="rank-number"><?php echo $index + 1; ?></span>
-                                </div>
-                                <div class="campaign-info">
-                                    <h4><?php echo htmlspecialchars($campaign['title']); ?></h4>
-                                    <p class="top-campaign-meta">
-                                        <span class="fundraiser">by <?php echo htmlspecialchars($campaign['fundraiser_name']); ?></span>
-                                    </p>
-                                    <div class="campaign-stats">
-                                        <span class="raised"><?php echo formatCurrency($campaign['current_amount']); ?></span>
-                                        <span class="progress"><?php echo number_format($campaign['progress_percentage'], 1); ?>% funded</span>
-                                    </div>
-                                </div>
-                                <div class="campaign-actions">
-                                    <button class="btn btn-sm btn-outline" onclick="openCampaignView(<?php echo $campaign['id']; ?>)">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Management Sections -->
-        <div class="tables-row">
-            <!-- Fund Reports -->
-            <div class="table-card">
-                <h3><i class="fas fa-exclamation-triangle"></i> Fund Reports (<?php echo count($fundReports); ?>)</h3>
-                <?php if (empty($fundReports)): ?>
-                    <div class="no-data">
-                        <i class="fas fa-check-circle"></i>
-                        <p>No pending fund reports</p>
-                    </div>
-                <?php else: ?>
-                    <div class="reports-list">
-                        <?php foreach ($fundReports as $report): ?>
-                            <div class="report-item">
-                                <div class="report-info">
-                                    <h4><?php echo htmlspecialchars($report['fund_title']); ?></h4>
-                                    <p><strong>Reason:</strong> <?php echo htmlspecialchars($report['reason']); ?></p>
-                                    <p><strong>Reporter:</strong> <?php echo htmlspecialchars($report['reporter_name']); ?></p>
-                                    <small><?php echo date('M j, Y', strtotime($report['created_at'])); ?></small>
-                                </div>
-                                <div class="report-actions">
-                                    <button class="btn btn-primary btn-sm" onclick="openCampaignView(<?php echo $report['fund_id']; ?>)">
-                                        <i class="fas fa-eye"></i> View Campaign
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="handleFundReport(<?php echo $report['id']; ?>, <?php echo $report['fund_id']; ?>, 'freeze')">
-                                        <i class="fas fa-pause"></i> Freeze
-                                    </button>
-                                    <button class="btn btn-outline btn-sm" onclick="handleFundReport(<?php echo $report['id']; ?>, <?php echo $report['fund_id']; ?>, 'dismiss')">
-                                        <i class="fas fa-times"></i> Dismiss
-                                    </button>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            <!-- Comment Reports -->
-            <div class="table-card">
-                <h3><i class="fas fa-comment-slash"></i> Comment Reports (<?php echo count($commentReports); ?>)</h3>
-                <?php if (empty($commentReports)): ?>
-                    <div class="no-data">
-                        <i class="fas fa-check-circle"></i>
-                        <p>No pending comment reports</p>
-                    </div>
-                <?php else: ?>
-                    <div class="reports-list">
-                        <?php foreach ($commentReports as $report): ?>
-                            <div class="report-item">
-                                <div class="report-info">
-                                    <h4><?php echo htmlspecialchars($report['fund_title']); ?></h4>
-                                    <p><strong>Comment:</strong> "<?php echo htmlspecialchars(substr($report['comment_content'], 0, 100)); ?>..."</p>
-                                    <p><strong>Reason:</strong> <?php echo htmlspecialchars($report['reason']); ?></p>
-                                    <p><strong>Reporter:</strong> <?php echo htmlspecialchars($report['reporter_name']); ?></p>
-                                    <small><?php echo date('M j, Y', strtotime($report['created_at'])); ?></small>
-                                </div>
-                                <div class="report-actions">
-                                    <button class="btn btn-danger btn-sm" onclick="handleCommentReport(<?php echo $report['id']; ?>, <?php echo $report['comment_id']; ?>, 'delete')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                    <button class="btn btn-outline btn-sm" onclick="handleCommentReport(<?php echo $report['id']; ?>, <?php echo $report['comment_id']; ?>, 'dismiss')">
-                                        <i class="fas fa-times"></i> Dismiss
-                                    </button>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                <h3><i class="fas fa-chart-bar"></i> Platform Growth</h3>
+                <canvas id="growthChart"></canvas>
             </div>
         </div>
     </div>
-
-    <script>
-        // Monthly Chart
-        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-        const monthlyData = <?php echo json_encode($monthlyData); ?>;
-        
-        new Chart(monthlyCtx, {
-            type: 'line',
-            data: {
-                labels: monthlyData.map(item => {
-                    const date = new Date(item.month + '-01');
-                    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-                }),
-                datasets: [{
-                    label: 'Total Donations',
-                    data: monthlyData.map(item => item.total_donations),
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Utility function to open campaign view
-        function openCampaignView(campaignId) {
-            window.open(`../../campaign/view?id=${campaignId}`, '_blank');
-        }
-
-        // Admin action functions
-        function handleFundReport(reportId, fundId, action) {
-            if (!confirm(`Are you sure you want to ${action} this campaign?`)) return;
-            
-            fetch('../ajax/handle_report.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `report_id=${reportId}&fund_id=${fundId}&action=${action}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            });
-        }
-
-        function handleCommentReport(reportId, commentId, action) {
-            if (!confirm(`Are you sure you want to ${action} this comment?`)) return;
-            
-            fetch('../ajax/handle_comment_report.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `report_id=${reportId}&comment_id=${commentId}&action=${action}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            });
-        }
-
-        function toggleFeature(fundId) {
-            fetch('../ajax/toggle_feature.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `fund_id=${fundId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            });
-        }
-
-        function toggleFreeze(fundId, action) {
-            const actionText = action === 'freeze' ? 'freeze' : 'unfreeze';
-            if (!confirm(`Are you sure you want to ${actionText} this campaign?`)) return;
-            
-            fetch('../ajax/toggle_freeze.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `fund_id=${fundId}&action=${action}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            });
-        }
-    </script>
     </div>
 </body>
 </html>

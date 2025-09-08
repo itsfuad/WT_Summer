@@ -829,9 +829,10 @@ class FundManager {
     }
     
     /**
-     * Get monthly platform donation data
+     * Get enhanced monthly platform data for admin dashboard
      */
     public function getMonthlyPlatformData() {
+        // Get donation data
         $stmt = $this->pdo->query("SELECT 
                 DATE_FORMAT(created_at, '%Y-%m') as month,
                 SUM(amount) as total_donations,
@@ -842,7 +843,127 @@ class FundManager {
             GROUP BY DATE_FORMAT(created_at, '%Y-%m')
             ORDER BY month ASC
         ");
-        return $stmt->fetchAll();
+        $donations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Get new campaigns data
+        $stmt = $this->pdo->query("SELECT 
+                DATE_FORMAT(created_at, '%Y-%m') as month,
+                COUNT(*) as new_campaigns
+            FROM funds 
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+            ORDER BY month ASC
+        ");
+        $campaigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Get new users data
+        $stmt = $this->pdo->query("SELECT 
+                DATE_FORMAT(created_at, '%Y-%m') as month,
+                COUNT(*) as new_users
+            FROM users 
+            WHERE role != 'admin' AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+            ORDER BY month ASC
+        ");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Get completed campaigns data
+        $stmt = $this->pdo->query("SELECT 
+                DATE_FORMAT(updated_at, '%Y-%m') as month,
+                COUNT(*) as completed_campaigns
+            FROM funds 
+            WHERE status = 'completed' AND updated_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY DATE_FORMAT(updated_at, '%Y-%m')
+            ORDER BY month ASC
+        ");
+        $completed = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Merge all data by month
+        $monthlyData = [];
+        $months = [];
+        
+        // Collect all unique months
+        foreach ([$donations, $campaigns, $users, $completed] as $dataset) {
+            foreach ($dataset as $row) {
+                if (!in_array($row['month'], $months)) {
+                    $months[] = $row['month'];
+                }
+            }
+        }
+        
+        sort($months);
+        
+        // Initialize data for each month
+        foreach ($months as $month) {
+            $monthlyData[$month] = [
+                'month' => $month,
+                'total_donations' => 0,
+                'donation_count' => 0,
+                'new_campaigns' => 0,
+                'new_users' => 0,
+                'completed_campaigns' => 0
+            ];
+        }
+        
+        // Fill in the data
+        foreach ($donations as $row) {
+            if (isset($monthlyData[$row['month']])) {
+                $monthlyData[$row['month']]['total_donations'] = floatval($row['total_donations']);
+                $monthlyData[$row['month']]['donation_count'] = intval($row['donation_count']);
+            }
+        }
+        
+        foreach ($campaigns as $row) {
+            if (isset($monthlyData[$row['month']])) {
+                $monthlyData[$row['month']]['new_campaigns'] = intval($row['new_campaigns']);
+            }
+        }
+        
+        foreach ($users as $row) {
+            if (isset($monthlyData[$row['month']])) {
+                $monthlyData[$row['month']]['new_users'] = intval($row['new_users']);
+            }
+        }
+        
+        foreach ($completed as $row) {
+            if (isset($monthlyData[$row['month']])) {
+                $monthlyData[$row['month']]['completed_campaigns'] = intval($row['completed_campaigns']);
+            }
+        }
+        
+        return array_values($monthlyData);
+    }
+    
+    /**
+     * Get top backers/donors for admin dashboard
+     */
+    public function getTopBackers($limit = 5) {
+        $limit = intval($limit);
+        $stmt = $this->pdo->query("SELECT 
+                u.id,
+                u.name,
+                u.email,
+                u.profile_image,
+                SUM(d.amount) as total_donated,
+                COUNT(d.id) as total_donations,
+                COUNT(DISTINCT d.fund_id) as campaigns_supported,
+                MAX(d.created_at) as last_donation_date
+            FROM users u
+            INNER JOIN donations d ON u.id = d.backer_id
+            WHERE d.payment_status = 'completed' AND u.role != 'admin'
+            GROUP BY u.id, u.name, u.email, u.profile_image
+            ORDER BY total_donated DESC
+            LIMIT $limit
+        ");
+        $backers = $stmt->fetchAll();
+        
+        // Add profile image URLs
+        $uploadManager = new UploadManager();
+        foreach ($backers as &$backer) {
+            $backer['profile_image_url'] = $uploadManager->getImageUrl('profile', $backer['profile_image']);
+        }
+        
+        return $backers;
     }
     
     /**

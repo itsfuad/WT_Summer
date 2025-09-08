@@ -7,9 +7,8 @@
 
 .main-content {
     max-width: 614px;
-    margin: 0 auto;
+    margin: 20px auto;
     background: var(--white);
-    margin-top: 20px;
     border: var(--border);
     border-radius: var(--radius);
 }
@@ -132,11 +131,6 @@
 
 .like-btn.liked i {
     color: var(--white);
-}
-
-/* Campaign Content */
-.campaign-content {
-    padding: 0;
 }
 
 /* Description Section */

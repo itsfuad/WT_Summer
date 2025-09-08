@@ -165,13 +165,7 @@
                                 
                                 <div class="campaign-actions">
                                     <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
-                                    <a href="edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <a href="analytics.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-chart-bar"></i> Analytics
+                                        <i class="fas fa-eye"></i> View Details
                                     </a>
                                 </div>
                             </div>
@@ -251,7 +245,7 @@
                                 
                                 <div class="campaign-actions">
                                     <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-eye"></i> View Campaign
+                                        <i class="fas fa-eye"></i> View Details
                                     </a>
                                 </div>
                             </div>

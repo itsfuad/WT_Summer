@@ -9,17 +9,17 @@
     <link rel="stylesheet" href="../../shared/css/upload.css">
 </head>
 <body>
-    <?php
-    require_once '../../shared/includes/profile_manager.php';
-    
-    renderProfileForm([
-        'user' => $fullUser,
-        'errors' => $errors,
-        'success' => $success,
-        'showNameField' => true,
-        'backUrl' => 'index.php',
-        'formAction' => ''
-    ]);
-    ?>
 </body>
 </html>
+<?php
+require_once '../../shared/includes/profile_manager.php';
+
+renderProfileForm([
+    'user' => $fullUser,
+    'errors' => $errors,
+    'success' => $success,
+    'showNameField' => true,
+    'backUrl' => 'index.php',
+    'formAction' => ''
+]);
+?>

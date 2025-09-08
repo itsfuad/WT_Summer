@@ -1,3 +1,49 @@
+<?php
+require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
+
+requireLogin();
+// Allow both backer and fundraiser roles
+$user = getCurrentUser();
+if (!in_array($user['role'], ['backer', 'fundraiser'])) {
+    header('Location: ../../login/view/index.php');
+    exit;
+}
+
+$fundManager = new FundManager();
+
+// Get backer's donation data
+$donatedFunds = $fundManager->getUserDonatedFunds($user['id'], 'latest', 1000);
+$backerAnalytics = $fundManager->getBackerAnalytics($user['id']);
+$monthlyDonations = $fundManager->getMonthlyDonationData($user['id']);
+$categoryBreakdown = $fundManager->getDonationsByCategory($user['id']);
+$recentDonations = $fundManager->getUserRecentDonations($user['id'], 10);
+
+// Calculate key metrics
+$totalDonated = 0;
+$totalCampaigns = count($donatedFunds);
+$activeCampaigns = 0;
+$completedCampaigns = 0;
+$totalDonationCount = 0;
+$avgDonationAmount = 0;
+
+// Debug: Let's see what data we actually have
+// echo '<pre>'; print_r($donatedFunds); echo '</pre>'; // Uncomment for debugging
+
+foreach ($donatedFunds as $fund) {
+    $totalDonated += $fund['total_donated'];
+    $totalDonationCount += $fund['donation_count'];
+    if ($fund['status'] === 'active') {
+        $activeCampaigns++;
+    } elseif ($fund['status'] === 'completed') {
+        $completedCampaigns++;
+    }
+}
+
+$avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCount : 0;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,55 +52,15 @@
     <title>Backer Analytics - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/analytics.css">
+    <script>
+        const monthlyData = <?php echo json_encode($monthlyDonations); ?>;
+        const categoryData = <?php echo json_encode($categoryBreakdown); ?>;
+    </script>
     <script src="../../shared/libs/chart.min.js"></script>
+    <script src="../js/script.js" defer></script>
 </head>
 <body>
-    <?php
-    require_once '../../shared/includes/session.php';
-    require_once '../../shared/includes/functions.php';
-    
-    requireLogin();
-    // Allow both backer and fundraiser roles
-    $user = getCurrentUser();
-    if (!in_array($user['role'], ['backer', 'fundraiser'])) {
-        header('Location: ../../login/view/index.php');
-        exit;
-    }
-    
-    $fundManager = new FundManager();
-    
-    // Get backer's donation data
-    $donatedFunds = $fundManager->getUserDonatedFunds($user['id'], 'latest', 1000);
-    $backerAnalytics = $fundManager->getBackerAnalytics($user['id']);
-    $monthlyDonations = $fundManager->getMonthlyDonationData($user['id']);
-    $categoryBreakdown = $fundManager->getDonationsByCategory($user['id']);
-    $recentDonations = $fundManager->getUserRecentDonations($user['id'], 10);
-    
-    // Calculate key metrics
-    $totalDonated = 0;
-    $totalCampaigns = count($donatedFunds);
-    $activeCampaigns = 0;
-    $completedCampaigns = 0;
-    $totalDonationCount = 0;
-    $avgDonationAmount = 0;
-    
-    // Debug: Let's see what data we actually have
-    // echo '<pre>'; print_r($donatedFunds); echo '</pre>'; // Uncomment for debugging
-    
-    foreach ($donatedFunds as $fund) {
-        $totalDonated += $fund['total_donated'];
-        $totalDonationCount += $fund['donation_count'];
-        if ($fund['status'] === 'active') {
-            $activeCampaigns++;
-        } elseif ($fund['status'] === 'completed') {
-            $completedCampaigns++;
-        }
-    }
-    
-    $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCount : 0;
-    
-    ?>
-    
+
     <div class="analytics-container">
         <!-- Header -->
         <div class="header">
@@ -201,72 +207,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Monthly Donation Chart
-        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-        const monthlyData = <?php echo json_encode($monthlyDonations); ?>;
-        
-        new Chart(monthlyCtx, {
-            type: 'line',
-            data: {
-                labels: monthlyData.map(item => item.month),
-                datasets: [{
-                    label: 'Donations',
-                    data: monthlyData.map(item => item.amount),
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-
-        // Category Breakdown Chart
-        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        const categoryData = <?php echo json_encode($categoryBreakdown); ?>;
-        
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: categoryData.map(item => item.category_name),
-                datasets: [{
-                    data: categoryData.map(item => item.total_amount),
-                    backgroundColor: [
-                        '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
-                        '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6B7280'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
-    </script>
 </body>
 </html>

@@ -1,3 +1,51 @@
+<?php
+require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
+
+requireLogin();
+requireRole('fundraiser');
+$user = getCurrentUser();
+
+$fundManager = new FundManager();
+
+// Get fund ID from URL
+$fund_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if (!$fund_id) {
+    header('Location: index.php');
+    exit;
+}
+
+// Get fund details
+$fund = $fundManager->getFundById($fund_id);
+
+if (!$fund || $fund['fundraiser_id'] != $user['id']) {
+    header('Location: index.php');
+    exit;
+}
+
+// Get analytics data
+$analytics = $fundManager->getFundAnalytics($fund_id);
+$dailyData = $fundManager->getDailyDonationData($fund_id);
+$topDonations = $fundManager->getTopDonations($fund_id, 5);
+$recentActivity = $fundManager->getRecentActivity($fund_id, 10);
+
+// Get engagement data
+$commentsCount = $fundManager->getCommentsCount($fund_id);
+$likesCount = $fundManager->getLikesCount($fund_id);
+
+// Calculate key metrics
+$percentage = calculatePercentage($fund['current_amount'], $fund['goal_amount']);
+$days_left = getDaysLeft($fund['end_date']);
+
+// Calculate campaign duration (how long it's been running)
+$days_running = max(1, floor((time() - strtotime($fund['created_at'])) / (60 * 60 * 24)));
+
+// Calculate total campaign duration (from start to end)
+$total_duration = max(1, floor((strtotime($fund['end_date']) - strtotime($fund['created_at'])) / (60 * 60 * 24)));
+
+$avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running : 0;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,56 +55,15 @@
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/analytics.css">
     <script src="../../shared/libs/chart.min.js"></script>
+    <script>
+        const dailyDataDate = <?php echo json_encode(array_column($dailyData, 'date')); ?>;
+        const dailyDataAmount = <?php echo json_encode(array_column($dailyData, 'amount')); ?>;
+
+        const progressChartData = [<?php echo $fund['current_amount']; ?>, <?php echo max(0, $fund['goal_amount'] - $fund['current_amount']); ?>];
+    </script>
+    <script src="../js/analytics.js" defer></script>
 </head>
 <body>
-    <?php
-    require_once '../../shared/includes/session.php';
-    require_once '../../shared/includes/functions.php';
-    
-    requireLogin();
-    requireRole('fundraiser');
-    $user = getCurrentUser();
-    
-    $fundManager = new FundManager();
-    
-    // Get fund ID from URL
-    $fund_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    
-    if (!$fund_id) {
-        header('Location: index.php');
-        exit;
-    }
-    
-    // Get fund details
-    $fund = $fundManager->getFundById($fund_id);
-    
-    if (!$fund || $fund['fundraiser_id'] != $user['id']) {
-        header('Location: index.php');
-        exit;
-    }
-    
-    // Get analytics data
-    $analytics = $fundManager->getFundAnalytics($fund_id);
-    $dailyData = $fundManager->getDailyDonationData($fund_id);
-    $topDonations = $fundManager->getTopDonations($fund_id, 5);
-    $recentActivity = $fundManager->getRecentActivity($fund_id, 10);
-    
-    // Get engagement data
-    $commentsCount = $fundManager->getCommentsCount($fund_id);
-    $likesCount = $fundManager->getLikesCount($fund_id);
-    
-    // Calculate key metrics
-    $percentage = calculatePercentage($fund['current_amount'], $fund['goal_amount']);
-    $days_left = getDaysLeft($fund['end_date']);
-    
-    // Calculate campaign duration (how long it's been running)
-    $days_running = max(1, floor((time() - strtotime($fund['created_at'])) / (60 * 60 * 24)));
-    
-    // Calculate total campaign duration (from start to end)
-    $total_duration = max(1, floor((strtotime($fund['end_date']) - strtotime($fund['created_at'])) / (60 * 60 * 24)));
-    
-    $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running : 0;
-    ?>
     
     <div class="analytics-container">
         <!-- Header -->
@@ -268,65 +275,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Donation Timeline Chart
-        const donationCtx = document.getElementById('donationChart').getContext('2d');
-        const donationChart = new Chart(donationCtx, {
-            type: 'line',
-            data: {
-                labels: <?php echo json_encode(array_column($dailyData, 'date')); ?>,
-                datasets: [{
-                    label: 'Daily Donations',
-                    data: <?php echo json_encode(array_column($dailyData, 'amount')); ?>,
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-
-        // Progress Chart
-        const progressCtx = document.getElementById('progressChart').getContext('2d');
-        const progressChart = new Chart(progressCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Raised', 'Remaining'],
-                datasets: [{
-                    data: [<?php echo $fund['current_amount']; ?>, <?php echo max(0, $fund['goal_amount'] - $fund['current_amount']); ?>],
-                    backgroundColor: ['#27ae60', '#ecf0f1'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                cutout: '70%'
-            }
-        });
-    </script>
 </body>
 </html>
