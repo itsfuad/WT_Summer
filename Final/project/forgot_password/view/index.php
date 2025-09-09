@@ -244,16 +244,13 @@ unset($_SESSION['reset_verified']);
                     <label for="new_password"><i class="fas fa-lock"></i> New Password:</label>
                     <div class="password-container">
                         <input type="password" id="new_password" name="new_password" class="form-control" required minlength="6">
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('new_password')" id="new_password-toggle"></i>
+                        <i class="fas fa-eye password-toggle" onclick="togglePasswords()" id="password-toggle"></i>
                     </div>
                     <span class="error-message" id="new_password-error" style="display: none;"></span>
                 </div>
                 <div class="form-group">
                     <label for="confirm_password"><i class="fas fa-lock"></i> Confirm Password:</label>
-                    <div class="password-container">
-                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required minlength="6">
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm_password')" id="confirm_password-toggle"></i>
-                    </div>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" required minlength="6">
                     <span class="error-message" id="confirm_password-error" style="display: none;"></span>
                 </div>
                 <button type="submit" class="submit-btn" id="resetPasswordBtn">
@@ -264,7 +261,7 @@ unset($_SESSION['reset_verified']);
         </div>
 
         <div class="signup-links">
-            <a href="../login/view/index.php" style="color: #666; text-decoration: none;">
+            <a href="../../login/view/index.php" style="color: #666; text-decoration: none;">
                 <i class="fas fa-arrow-left"></i> Back to Login
             </a>
         </div>

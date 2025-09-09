@@ -1,14 +1,17 @@
-// Password toggle functionality
-function togglePassword(fieldId) {
-    const passwordField = document.getElementById(fieldId);
-    const toggleIcon = document.getElementById(fieldId + '-toggle');
+
+function togglePasswords() {
+    const newPasswordField = document.getElementById('new_password');
+    const confirmPasswordField = document.getElementById('confirm_password');
+    const toggleIcon = document.getElementById('password-toggle');
     
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
+    if (newPasswordField.type === 'password') {
+        newPasswordField.type = 'text';
+        confirmPasswordField.type = 'text';
         toggleIcon.classList.remove('fa-eye');
         toggleIcon.classList.add('fa-eye-slash');
     } else {
-        passwordField.type = 'password';
+        newPasswordField.type = 'password';
+        confirmPasswordField.type = 'password';
         toggleIcon.classList.remove('fa-eye-slash');
         toggleIcon.classList.add('fa-eye');
     }
