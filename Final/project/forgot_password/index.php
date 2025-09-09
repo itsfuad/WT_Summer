@@ -32,6 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
                 exit;
             }
             
+            // Check rate limiting - allow resend only after 60 seconds
+            $stmt = $pdo->prepare("SELECT created_at FROM password_reset_tokens WHERE email = ? AND created_at > DATE_SUB(NOW(), INTERVAL 60 SECOND) ORDER BY created_at DESC LIMIT 1");
+            $stmt->execute([$email]);
+            if ($stmt->fetch()) {
+                $response['message'] = 'Please wait 60 seconds before requesting another OTP';
+                echo json_encode($response);
+                exit;
+            }
+            
             // Clean old tokens
             $pdo->prepare("DELETE FROM password_reset_tokens WHERE email = ? OR expires_at < NOW()")->execute([$email]);
             
@@ -149,8 +158,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
             unset($_SESSION['reset_verified']);
             
             $response['success'] = true;
-            $response['message'] = 'Password reset successfully! You can now login.';
-            $response['redirect'] = '../login/view/index.php';
+            $response['message'] = 'Password reset successfully! Redirecting to login...';
+            $response['redirect'] = '../login/view/index.php?reset=success';
         }
         
     } catch (Exception $e) {
@@ -220,6 +229,9 @@ unset($_SESSION['reset_verified']);
                 <button id="resendBtn" onclick="resendOTP()" style="background: none; border: none; color: #007bff; text-decoration: underline; cursor: pointer;">
                     <i class="fas fa-redo"></i> Resend OTP
                 </button>
+                <div id="resendTimer" style="display: none; color: #666; font-size: 14px; margin-top: 10px;">
+                    <i class="fas fa-clock"></i> Resend available in <span id="countdown">60</span> seconds
+                </div>
             </div>
         </div>
 
@@ -394,6 +406,7 @@ unset($_SESSION['reset_verified']);
                 if (data.success) {
                     document.getElementById('user-email').textContent = email;
                     showStep(2);
+                    startResendTimer(); // Start the 60-second timer
                 }
             })
             .catch(() => {
@@ -479,7 +492,7 @@ unset($_SESSION['reset_verified']);
                 setLoading('passwordForm', false);
                 showMessage(data.message, data.success);
                 if (data.success && data.redirect) {
-                    setTimeout(() => window.location.href = data.redirect, 2000);
+                    window.location.href = data.redirect;
                 }
             })
             .catch(() => {
@@ -488,14 +501,45 @@ unset($_SESSION['reset_verified']);
             });
         };
 
+        // Timer variables
+        let resendTimer = null;
+        let countdownSeconds = 60;
+
+        // Start countdown timer
+        function startResendTimer() {
+            const resendBtn = document.getElementById('resendBtn');
+            const timerDiv = document.getElementById('resendTimer');
+            const countdownSpan = document.getElementById('countdown');
+            
+            countdownSeconds = 60;
+            resendBtn.style.display = 'none';
+            timerDiv.style.display = 'block';
+            
+            resendTimer = setInterval(() => {
+                countdownSeconds--;
+                countdownSpan.textContent = countdownSeconds;
+                
+                if (countdownSeconds <= 0) {
+                    clearInterval(resendTimer);
+                    resendBtn.style.display = 'inline-block';
+                    timerDiv.style.display = 'none';
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+                }
+            }, 1000);
+        }
+
         // Resend OTP
         function resendOTP() {
             const email = document.getElementById('user-email').textContent;
             const resendBtn = document.getElementById('resendBtn');
             
-            // Disable resend button temporarily
+            // Disable resend button and show loading
             resendBtn.disabled = true;
             resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
+            // Disable OTP form during resend
+            setLoading('otpForm', true);
             
             fetch('', {
                 method: 'POST',
@@ -504,20 +548,33 @@ unset($_SESSION['reset_verified']);
             })
             .then(response => response.json())
             .then(data => {
+                setLoading('otpForm', false);
                 showMessage(data.message, data.success);
                 
-                // Re-enable button after 30 seconds
-                setTimeout(() => {
+                if (data.success) {
+                    // Clear the OTP field and start timer
+                    document.getElementById('otp').value = '';
+                    startResendTimer();
+                } else {
+                    // Re-enable button if failed
                     resendBtn.disabled = false;
                     resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
-                }, 30000);
+                }
             })
             .catch(() => {
+                setLoading('otpForm', false);
                 showMessage('Network error. Please try again.');
                 resendBtn.disabled = false;
                 resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
             });
         }
+
+        // Cleanup timer when page unloads
+        window.addEventListener('beforeunload', function() {
+            if (resendTimer) {
+                clearInterval(resendTimer);
+            }
+        });
 
         // Real-time validation for password fields
         document.addEventListener('DOMContentLoaded', function() {

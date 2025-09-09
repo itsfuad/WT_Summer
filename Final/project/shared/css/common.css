@@ -780,6 +780,42 @@ p {
     color: var(--text-muted);
 }
 
+.featured-badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: linear-gradient(135deg, #4ac37b, #00bdd4);
+    color: var(--white);
+    padding: 4px 10px;
+    border-radius: 25px 0 0 25px;
+    width: max-content;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.frozen-badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 25px 0 0 25px;
+    width: max-content;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* show only last badge */
+.featured-badge + .frozen-badge,
+.frozen-badge + .featured-badge {
+    display: none;
+}
+
 /* Charts Row */
 .charts-row {
     display: grid;

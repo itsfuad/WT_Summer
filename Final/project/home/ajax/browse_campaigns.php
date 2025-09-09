@@ -59,6 +59,13 @@ try {
             
             $campaignsHtml .= "
             <div class='campaign-card'>";
+
+            if ($campaign['status'] === 'frozen') {
+                $campaignsHtml .= "
+                <div class='frozen-badge'>
+                    <i class='fas fa-pause'></i> Frozen
+                </div>";
+            }
             
             if ($campaign['featured']) {
                 $campaignsHtml .= "
@@ -67,18 +74,11 @@ try {
                 </div>";
             }
             
-            if ($campaign['status'] === 'frozen') {
-                $campaignsHtml .= "
-                <div class='frozen-badge'>
-                    <i class='fas fa-pause'></i> Frozen
-                </div>";
-            }
-            
             $campaignsHtml .= "
                 <div class='campaign-header'>
                     <i class='campaign-icon " . htmlspecialchars($campaign['category_icon'] ?? 'fas fa-folder') . "'></i>
                     <div>
-                        <div class='campaign-title'>" . htmlspecialchars($campaign['title']) . "</div>
+                        <a href='../../campaign/view?id=" . htmlspecialchars($campaign['id']) . "' class='campaign-title'>" . htmlspecialchars($campaign['title']) . "</a>
                         <div class='campaign-fundraiser'>by " . htmlspecialchars($campaign['fundraiser_name']) . "</div>
                     </div>
                 </div>

@@ -536,7 +536,7 @@ if (document.readyState === 'loading') {
 
 // Admin functions
 function toggleFeature(fundId) {
-    fetch('../admin/ajax/toggle_feature.php', {
+    fetch('../ajax/toggle_feature.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `fund_id=${fundId}`
@@ -565,7 +565,7 @@ function toggleFreeze(fundId) {
     
     if (!confirm(`Are you sure you want to ${action} this campaign?`)) return;
     
-    fetch('../admin/ajax/toggle_freeze.php', {
+    fetch('../ajax/toggle_freeze.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `fund_id=${fundId}&action=${action}`

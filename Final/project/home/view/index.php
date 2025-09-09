@@ -178,14 +178,14 @@ $totalPages = ceil($totalFunds / $limit);
                             $days_left = getDaysLeft($fund['end_date']);
                             ?>
                             <div class="campaign-card">
+                                <?php if ($fund['status'] === 'frozen'): ?>
+                                    <div class="frozen-badge badge">
+                                        <i class="fas fa-pause"></i> Frozen
+                                    </div>
+                                <?php endif; ?>
                                 <?php if ($fund['featured']): ?>
                                     <div class="featured-badge">
                                         <i class="fas fa-star"></i> Featured
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($fund['status'] === 'frozen'): ?>
-                                    <div class="frozen-badge">
-                                        <i class="fas fa-pause"></i> Frozen
                                     </div>
                                 <?php endif; ?>
                                 <div class="campaign-header">

@@ -95,7 +95,6 @@ $days_left = getDaysLeft($fund['end_date']);
                         </div>
                     <?php endif; ?>
                 </div>
-                
                 <div class="campaign-info">
                     <div class="campaign-meta">
                         <span class="category">
@@ -107,8 +106,19 @@ $days_left = getDaysLeft($fund['end_date']);
                         </span>
                     </div>
                     
-                    <h1 class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></h1>
-                    
+                    <h1 class="campaign-title">
+                        <?php echo htmlspecialchars($fund['title']); ?>
+                        <?php if ($fund['status'] === 'frozen'): ?>
+                            <div class="frozen-badge">
+                                <i class="fas fa-pause"></i> Frozen
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($fund['featured']): ?>
+                            <div class="featured-badge">
+                                <i class="fas fa-star"></i> Featured
+                            </div>
+                        <?php endif; ?>
+                    </h1>
                     <!-- Progress Stats -->
                     <div class="progress-section">
                         <div class="progress-bar">

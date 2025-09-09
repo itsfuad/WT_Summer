@@ -26,6 +26,12 @@
             $signupSuccess = "Account created successfully! You can now login with your credentials.";
         }
         
+        // Check for password reset success parameter
+        $resetSuccess = "";
+        if (isset($_GET['reset']) && $_GET['reset'] === 'success') {
+            $resetSuccess = "Password reset successfully! You can now login with your new password.";
+        }
+        
         // Define variables
         $email = $password = "";
         $emailErr = $passwordErr = $loginErr = "";
@@ -80,6 +86,12 @@
         <?php if (!empty($signupSuccess)): ?>
             <div class="success-message">
                 <i class="fas fa-check-circle"></i> <?php echo $signupSuccess; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($resetSuccess)): ?>
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i> <?php echo $resetSuccess; ?>
             </div>
         <?php endif; ?>
 
