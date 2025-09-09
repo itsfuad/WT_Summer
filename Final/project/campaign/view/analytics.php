@@ -53,7 +53,7 @@ $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running :
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campaign Analytics - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../css/analytics.css">
+    <link rel="stylesheet" href="../../shared/css/analytics.css">
     <script src="../../shared/libs/chart.min.js"></script>
     <script>
         const dailyDataDate = <?php echo json_encode(array_column($dailyData, 'date')); ?>;
@@ -69,7 +69,7 @@ $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running :
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="back-btn">
+                <a href="index.php?id=<?php echo $fund['id']; ?>" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Campaign
                 </a>
             </div>

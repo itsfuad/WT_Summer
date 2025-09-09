@@ -105,7 +105,7 @@ foreach ($donatedFunds as $fund) {
             <a href="../../home/view/index.php" class="btn btn-primary">
                 <i class="fas fa-search"></i> Browse Campaigns
             </a>
-            <a href="analytics.php" class="btn btn-outline">
+            <a href="../../donation/view/index.php" class="btn btn-outline">
                 <i class="fas fa-chart-bar"></i> View Analytics
             </a>
         </div>

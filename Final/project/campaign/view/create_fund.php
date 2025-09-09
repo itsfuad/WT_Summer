@@ -79,7 +79,7 @@
     <div class="fund-form-container">
         <div class="header">
             <div class="header-left">
-                <a href="index.php" class="back-btn">
+                <a href="../../<?php echo $user['role']; ?>/view/index.php" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
@@ -106,7 +106,7 @@
         renderFundForm([
             'mode' => 'create',
             'categories' => $categories
-        ]); 
+        ]);
         ?>
     </div>
 </body>

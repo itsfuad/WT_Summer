@@ -108,10 +108,10 @@
 
         <!-- Action Buttons -->
         <div class="action-section">
-            <a href="create_fund.php" class="btn btn-primary">
+            <a href="../../campaign/view/create_fund.php" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Create New Campaign
             </a>
-            <a href="../../backer/view/analytics.php" class="btn btn-outline">
+            <a href="../../donation/view/index.php" class="btn btn-outline">
                 <i class="fas fa-chart-bar"></i> Donation Analytics
             </a>
         </div>

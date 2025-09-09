@@ -49,14 +49,15 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backer Analytics - CrowdFund</title>
+    <title>Donation Analytics - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../css/analytics.css">
+    <link rel="stylesheet" href="../../shared/css/analytics.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../../shared/libs/chart.min.js"></script>
     <script>
         const monthlyData = <?php echo json_encode($monthlyDonations); ?>;
         const categoryData = <?php echo json_encode($categoryBreakdown); ?>;
     </script>
-    <script src="../../shared/libs/chart.min.js"></script>
     <script src="../js/script.js" defer></script>
 </head>
 <body>
@@ -177,7 +178,7 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
                         <p>No campaigns supported yet</p>
                     </div>
                 <?php else: ?>
-                    <div class="campaigns-list">
+                    <div class="top-campaigns-list">
                         <?php 
                         // Sort by total donated descending
                         usort($donatedFunds, function($a, $b) {

@@ -23,7 +23,7 @@ $commentReports = $fundManager->getCommentReports();
     <title>Admin Dashboard - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../../backer/css/analytics.css">
+    <link rel="stylesheet" href="../../shared/css/analytics.css">
     <script>
         const monthlyData = <?php echo json_encode($monthlyData); ?>;
     </script>

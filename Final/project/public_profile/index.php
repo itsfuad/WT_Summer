@@ -1,7 +1,6 @@
 <?php
 require_once '../shared/includes/session.php';
 require_once '../shared/includes/functions.php';
-require_once '../shared/includes/upload_manager.php';
 
 // Get user ID from URL parameter
 $profileUserId = isset($_GET['id']) ? (int)$_GET['id'] : 0;

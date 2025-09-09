@@ -155,11 +155,11 @@ $days_left = getDaysLeft($fund['end_date']);
                         <?php endif; ?>
                         
                         <?php if ($userRole === 'fundraiser' && $fund['fundraiser_id'] == $user['id']): ?>
-                            <a href="../../fundraiser/view/edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
+                            <a href="edit_fund.php?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </a>
-                            <a href="../../fundraiser/view/analytics.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
+                            <a href="analytics.php?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
                                 <i class="fas fa-chart-bar"></i>
                                 Analytics
                             </a>
