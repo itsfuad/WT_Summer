@@ -2,17 +2,11 @@
 echo "<h2>🔧 Database Table Creation</h2>\n";
 echo "<p>Creating database and table structure for CrowdFund Platform...</p>\n";
 
-// Database configuration
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'crowdfund_db';
-
 try {
     // First, connect without selecting a database to create it
     echo "<p>1. Connecting to MySQL server...</p>\n";
-    $pdo = new PDO("mysql:host=$host;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    require_once '../config/database.php';
     
     // Create database
     echo "<p>2. Creating database 'crowdfund_db'...</p>\n";

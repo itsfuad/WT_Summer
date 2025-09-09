@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../database/database.php';
+require_once '../../config/database.php';
 require_once '../../shared/includes/functions.php';
 
 header('Content-Type: application/json');

@@ -1,18 +1,9 @@
 <?php
+
 session_start();
 
-// Database connection
-$host = 'localhost';
-$dbname = 'crowdfund_db';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Database connection failed");
-}
+require_once '../config/database.php';
+require_once '../config/email.php';
 
 // Handle AJAX requests
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
@@ -56,7 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
             $_SESSION['reset_email'] = $email;
             
             // Send email using SMTP
-            $emailSent = sendOTPEmail($email, $otp);
+            $emailManager = new EmailManager();
+            $emailSent = $emailManager->sendOTP($email, $otp);
             
             $response['success'] = true;
             if ($emailSent) {
@@ -167,99 +159,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
     
     echo json_encode($response);
     exit;
-}
-
-// Email sending function
-function sendOTPEmail($to, $otp) {
-    $host = 'mail.smtp2go.com';
-    $port = 2525;
-    $username = 'crowdfund';
-    $password = 'c_fund_9987';
-    $from_email = 'support@brainbird.org';
-    $from_name = 'CrowdFund Support';
-    
-    $socket = fsockopen($host, $port, $errno, $errstr, 10);
-    
-    if (!$socket) {
-        return false;
-    }
-    
-    stream_set_timeout($socket, 10);
-    
-    // Read server greeting
-    $response = fgets($socket, 512);
-    if (strpos($response, '220') === false) {
-        fclose($socket);
-        return false;
-    }
-    
-    // Send EHLO
-    fputs($socket, "EHLO localhost\r\n");
-    $response = fgets($socket, 512);
-    if (strpos($response, '250') === false) {
-        fclose($socket);
-        return false;
-    }
-    
-    // Read all EHLO extensions
-    while (strpos($response, '250-') !== false) {
-        $response = fgets($socket, 512);
-    }
-    
-    // AUTH PLAIN
-    $auth_string = base64_encode("\0" . $username . "\0" . $password);
-    fputs($socket, "AUTH PLAIN $auth_string\r\n");
-    $response = fgets($socket, 512);
-    if (strpos($response, '235') === false) {
-        fclose($socket);
-        return false;
-    }
-    
-    // MAIL FROM
-    fputs($socket, "MAIL FROM: <$from_email>\r\n");
-    $response = fgets($socket, 512);
-    if (strpos($response, '250') === false) {
-        fclose($socket);
-        return false;
-    }
-    
-    // RCPT TO
-    fputs($socket, "RCPT TO: <$to>\r\n");
-    $response = fgets($socket, 512);
-    if (strpos($response, '250') === false) {
-        fclose($socket);
-        return false;
-    }
-    
-    // DATA
-    fputs($socket, "DATA\r\n");
-    $response = fgets($socket, 512);
-    if (strpos($response, '354') === false) {
-        fclose($socket);
-        return false;
-    }
-    
-    // Email content
-    $subject = "CrowdFund - Password Reset OTP";
-    $message = "Your password reset OTP is: $otp\n\nThis OTP will expire in 15 minutes.\n\nIf you didn't request this, please ignore this email.";
-    
-    $email_data = "From: $from_name <$from_email>\r\n";
-    $email_data .= "To: $to\r\n";
-    $email_data .= "Subject: $subject\r\n";
-    $email_data .= "MIME-Version: 1.0\r\n";
-    $email_data .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    $email_data .= "\r\n";
-    $email_data .= $message;
-    $email_data .= "\r\n.\r\n";
-    
-    fputs($socket, $email_data);
-    $response = fgets($socket, 512);
-    
-    // QUIT
-    fputs($socket, "QUIT\r\n");
-    fclose($socket);
-    
-    return strpos($response, '250') !== false;
 }
 
 // Clear session when accessing the page fresh

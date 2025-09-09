@@ -17,7 +17,7 @@ if ($fund_id <= 0) {
 }
 
 try {
-    require_once '../../database/database.php';
+    require_once '../../config/database.php';
     
     // Get current featured status
     $stmt = $pdo->prepare("SELECT featured FROM funds WHERE id = ?");

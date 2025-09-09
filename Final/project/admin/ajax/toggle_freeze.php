@@ -18,7 +18,7 @@ if ($fund_id <= 0 || !in_array($action, ['freeze', 'unfreeze'])) {
 }
 
 try {
-    require_once '../../database/database.php';
+    require_once '../../config/database.php';
     
     $pdo->beginTransaction();
     

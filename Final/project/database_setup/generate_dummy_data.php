@@ -1,5 +1,5 @@
 <?php
-require_once '../database.php';
+require_once '../config/database.php';
 
 echo "<h2>🎲 Generating Sample Data for CrowdFund Platform</h2>\n";
 echo "<p>Creating admin account, sample users, funds, likes, donations, comments, and updates...</p>\n";
