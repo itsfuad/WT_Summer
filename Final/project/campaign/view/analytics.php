@@ -12,7 +12,7 @@ $fundManager = new FundManager();
 $fund_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if (!$fund_id) {
-    header('Location: index.php');
+    header('Location: ../../home/view/index.php');
     exit;
 }
 
@@ -20,7 +20,7 @@ if (!$fund_id) {
 $fund = $fundManager->getFundById($fund_id);
 
 if (!$fund || $fund['fundraiser_id'] != $user['id']) {
-    header('Location: index.php');
+    header('Location: ../../home/view/index.php');
     exit;
 }
 
