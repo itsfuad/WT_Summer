@@ -213,8 +213,7 @@ $days_left = getDaysLeft($fund['end_date']);
                 </div>
 
                 <!-- Comment Form (Always Visible for Logged-in Users) -->
-                <?php if ($user && $fund['status'] !== 'frozen'): ?>
-                <div class="comment-form-section">
+                <div class="comment-form-section" style="display: <?php echo ($user && $fund['status'] !== 'frozen') ? '' : 'none'; ?>;">
                     <form class="comment-form" onsubmit="submitComment(event)">
                         <div class="comment-input-container">
                             <div class="user-avatar">
@@ -246,7 +245,7 @@ $days_left = getDaysLeft($fund['end_date']);
                         </div>
                     </form>
                 </div>
-                <?php elseif ($fund['status'] === 'frozen'): ?>
+                <?php if ($fund['status'] === 'frozen'): ?>
                 <div class="login-prompt">
                     <span style="color: black;"><i class="fas fa-pause"></i> This campaign is currently frozen</span>
                 </div>
