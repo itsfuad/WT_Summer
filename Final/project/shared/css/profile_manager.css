@@ -8,11 +8,7 @@
 /* Header */
 .header {
     background: var(--white);
-    border: var(--border);
-    border-radius: var(--radius);
-    padding: var(--space-6) var(--space-8);
-    margin-bottom: var(--space-8);
-    box-shadow: var(--shadow);
+    padding: var(--space-6) 0;
     display: flex;
     justify-content: space-between;
     align-items: center;

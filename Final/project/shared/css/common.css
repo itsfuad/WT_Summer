@@ -780,6 +780,10 @@ p {
     color: var(--text-muted);
 }
 
+.welcome_title * {
+    color: inherit;
+}
+
 .featured-badge {
     position: absolute;
     right: 0;

@@ -22,8 +22,8 @@ try {
     
     $pdo->beginTransaction();
     
-    // Get current status
-    $stmt = $pdo->prepare("SELECT status FROM funds WHERE id = ?");
+    // Get current status and featured status
+    $stmt = $pdo->prepare("SELECT status, featured FROM funds WHERE id = ?");
     $stmt->execute([$fund_id]);
     $fund = $stmt->fetch();
     
@@ -32,27 +32,42 @@ try {
         exit;
     }
     
+    $was_featured = (bool)$fund['featured'];
+    
     // Set new status based on action
     $new_status = ($action === 'freeze') ? 'frozen' : 'active';
     $stmt = $pdo->prepare("UPDATE funds SET status = ? WHERE id = ?");
     $stmt->execute([$new_status, $fund_id]);
     
-    // If freezing, also resolve any pending reports for this fund
+    // If freezing, also resolve any pending reports and unfeature the campaign
     if ($action === 'freeze') {
+        // Resolve pending reports
         $stmt = $pdo->prepare("UPDATE reports SET status = 'resolved' WHERE fund_id = ? AND status = 'pending'");
+        $stmt->execute([$fund_id]);
+        
+        // Auto-unfeature the campaign if it was featured
+        $stmt = $pdo->prepare("UPDATE funds SET featured = 0 WHERE id = ? AND featured = 1");
         $stmt->execute([$fund_id]);
     }
     
     $pdo->commit();
     
+    $message = $action === 'freeze' ? 'Campaign frozen successfully' : 'Campaign unfrozen successfully';
+    
+    // Add information about auto-unfeaturing if the campaign was featured and got frozen
+    if ($action === 'freeze' && $was_featured) {
+        $message .= ' and automatically unfeatured';
+    }
+    
     echo json_encode([
         'success' => true,
         'status' => $new_status,
-        'message' => $action === 'freeze' ? 'Campaign frozen successfully' : 'Campaign unfrozen successfully'
+        'was_featured' => $was_featured,
+        'action' => $action,
+        'message' => $message
     ]);
     
 } catch (Exception $e) {
     $pdo->rollback();
     echo json_encode(['success' => false, 'message' => 'Database error occurred']);
 }
-?>

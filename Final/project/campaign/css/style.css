@@ -139,6 +139,22 @@
     color: var(--white);
 }
 
+/* Disabled Button Styles */
+.btn-disabled {
+    background: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+    border-color: var(--gray-200) !important;
+    cursor: not-allowed !important;
+}
+
+.btn:disabled {
+    background: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+    border-color: var(--gray-200) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
 /* Description Section */
 .description-section {
     padding: 16px 20px;

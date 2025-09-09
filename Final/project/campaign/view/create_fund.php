@@ -66,8 +66,7 @@
                 }
                 
                 if (!$error) {
-                    // Redirect after 2 seconds
-                    header("refresh:2;url=index.php");
+                    header('Location: ../../' . $user['role'] . '/view/index.php');
                 }
             } else {
                 $error = "Failed to create campaign. Please try again.";

@@ -52,7 +52,7 @@
                     CrowdFund
                 </a>
                 <div class="user-info">
-                    <span>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</span>
+                    <span class="welcome_title">Welcome, <a href="../../public_profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
                     <a href="profile.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>

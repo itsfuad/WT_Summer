@@ -1,5 +1,19 @@
 let reportCommentId = null;
 
+// Check if campaign is frozen (set by PHP)
+const isCampaignFrozen = document.querySelector('.campaign-container').classList.contains('frozen');
+
+// Helper function to check if interaction is allowed
+function isInteractionAllowed(showMessage = true) {
+    if (isCampaignFrozen) {
+        if (showMessage) {
+            showNotification('This campaign is frozen and interactions are disabled', 'error');
+        }
+        return false;
+    }
+    return true;
+}
+
 // Auto-resize textarea
 function autoResize(textarea) {
     textarea.style.height = 'auto';
@@ -8,6 +22,7 @@ function autoResize(textarea) {
 
 // Like functionality
 function toggleLike(fundId) {
+    if (!isInteractionAllowed()) return;
     
     const likeBtn = document.getElementById('like-btn');
     const likeText = document.getElementById('like-text');
@@ -52,6 +67,7 @@ function toggleLike(fundId) {
 
 // Donate Modal handlers
 function openDonateModal() {
+    if (!isInteractionAllowed()) return;
     const m = document.getElementById('donate-modal');
     m.style.display = 'flex';
 }
@@ -176,11 +192,13 @@ function escapeHtml(s){
 
 // Report Modal handlers
 function openReportModal() {
+    if (!isInteractionAllowed()) return;
     reportCommentId = null;
     const m = document.getElementById('report-modal');
     m.style.display = 'flex';
 }
 function openCommentReport(commentId) {
+    if (!isInteractionAllowed()) return;
     reportCommentId = commentId;
     const m = document.getElementById('report-modal');
     m.style.display = 'flex';
@@ -209,6 +227,8 @@ function submitReport(e) {
 // Comment functionality
 function submitComment(event) {
     event.preventDefault();
+    
+    if (!isInteractionAllowed()) return;
     
     const commentText = document.getElementById('comment-text').value.trim();
     if (!commentText) {
@@ -422,6 +442,7 @@ function saveEdit(commentId) {
 }
 
 function shareCampaign() {
+    if (!isInteractionAllowed()) return;
     if (navigator.share) {
         navigator.share({
             title: fundTitle,
@@ -575,10 +596,27 @@ function toggleFreeze(fundId) {
         if (data.success) {
             if (data.status === 'frozen') {
                 btn.innerHTML = '<i class="fas fa-play"></i> Unfreeze';
+                
+                // Auto-unfeature the campaign when frozen (only if it was previously featured)
+                if (data.was_featured) {
+                    const featureBtn = document.getElementById('feature-btn');
+                    if (featureBtn) {
+                        featureBtn.className = 'btn btn-primary';
+                        featureBtn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                    }
+                    
+                    // Hide featured badge if present
+                    const featuredBadge = document.querySelector('.featured-badge');
+                    if (featuredBadge) {
+                        featuredBadge.style.display = 'none';
+                    }
+                }
+                
+                showNotification(data.message, 'success');
             } else {
                 btn.innerHTML = '<i class="fas fa-pause"></i> Freeze';
+                showNotification(data.message, 'success');
             }
-            showNotification(data.message, 'success');
         } else {
             showNotification('Error: ' + data.message, 'error');
         }

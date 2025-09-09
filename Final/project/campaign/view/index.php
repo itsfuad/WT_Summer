@@ -45,6 +45,67 @@ $days_left = getDaysLeft($fund['end_date']);
     <title><?php echo htmlspecialchars($fund['title'] ?? 'Campaign'); ?> - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <?php if ($fund['status'] === 'frozen'): ?>
+    <style>
+        .campaign-frozen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .frozen-notice {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .frozen-notice .icon {
+            font-size: 48px;
+            color: #ff4757;
+            margin-bottom: 20px;
+        }
+        
+        .frozen-notice h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .frozen-notice p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .campaign-container.frozen {
+            filter: grayscale(100%) brightness(50%);
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        .campaign-container.frozen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+    </style>
+    <?php endif; ?>
     <script>
         // Current user ID for comment ownership checks
         const currentUserId = <?php echo $user ? $user['id'] : 'null'; ?>;
@@ -56,7 +117,7 @@ $days_left = getDaysLeft($fund['end_date']);
 </head>
 <body>
     
-    <div class="campaign-container">
+    <div class="campaign-container<?php echo $fund['status'] === 'frozen' ? ' frozen' : ''; ?>">
         <!-- Navigation Bar -->
         <nav class="nav-bar">
             <div class="nav-content">
@@ -143,7 +204,12 @@ $days_left = getDaysLeft($fund['end_date']);
                     
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <?php if ($userRole === 'guest'): ?>
+                        <?php if ($fund['status'] === 'frozen' && $userRole !== 'admin'): ?>
+                            <button class="btn btn-disabled" disabled>
+                                <i class="fas fa-pause"></i>
+                                Campaign Frozen
+                            </button>
+                        <?php elseif ($userRole === 'guest'): ?>
                             <a href="../../login/view/index.php" class="btn btn-primary">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Login to donate
@@ -177,18 +243,18 @@ $days_left = getDaysLeft($fund['end_date']);
                         
             <button class="btn btn-outline like-btn <?php echo $userHasLiked ? 'liked' : ''; ?>"
                 onclick="toggleLike(<?php echo $fund['id']; ?>)"
-                id="like-btn" <?php echo !$user ? 'disabled title="Login required"' : ''; ?>>
+                id="like-btn" <?php echo (!$user || $fund['status'] === 'frozen') ? 'disabled title="' . ($fund['status'] === 'frozen' ? 'Campaign is frozen' : 'Login required') . '"' : ''; ?>>
                             <i class="fas fa-heart"></i>
                             <span id="like-text"><?php echo $userHasLiked ? 'Liked' : 'Like'; ?></span>
                             <span id="likes-count">(<?php echo $likesCount; ?>)</span>
                         </button>
                         
-                        <button class="btn btn-outline" onclick="shareCampaign()">
+                        <button class="btn btn-outline" onclick="shareCampaign()" <?php echo $fund['status'] === 'frozen' ? 'disabled title="Campaign is frozen"' : ''; ?>>
                             <i class="fas fa-share"></i>
                             Share
                         </button>
                         <?php if ($userRole != 'admin'): ?>
-                        <button class="btn btn-outline" onclick="openReportModal()" <?php echo !$user ? 'disabled title="Login required"' : ''; ?>>
+                        <button class="btn btn-outline" onclick="openReportModal()" <?php echo (!$user || $fund['status'] === 'frozen') ? 'disabled title="' . ($fund['status'] === 'frozen' ? 'Campaign is frozen' : 'Login required') . '"' : ''; ?>>
                             <i class="fas fa-flag"></i>
                             Report
                         </button>
@@ -208,7 +274,7 @@ $days_left = getDaysLeft($fund['end_date']);
                 </div>
 
                 <!-- Comment Form (Always Visible for Logged-in Users) -->
-                <?php if ($user): ?>
+                <?php if ($user && $fund['status'] !== 'frozen'): ?>
                 <div class="comment-form-section">
                     <form class="comment-form" onsubmit="submitComment(event)">
                         <div class="comment-input-container">
@@ -240,6 +306,10 @@ $days_left = getDaysLeft($fund['end_date']);
                             </button>
                         </div>
                     </form>
+                </div>
+                <?php elseif ($fund['status'] === 'frozen'): ?>
+                <div class="login-prompt">
+                    <p style="color: #666;"><i class="fas fa-pause"></i> Comments are disabled for frozen campaigns</p>
                 </div>
                 <?php elseif ($commentsCount > 0): ?>
                 <div class="login-prompt">
@@ -403,5 +473,24 @@ $days_left = getDaysLeft($fund['end_date']);
             </form>
         </div>
     </div>
+
+    <!-- Frozen Campaign Overlay -->
+    <?php if ($fund['status'] === 'frozen'): ?>
+    <div class="campaign-frozen-overlay">
+        <div class="frozen-notice">
+            <div class="icon">
+                <i class="fas fa-pause-circle"></i>
+            </div>
+            <h2>Campaign Frozen</h2>
+            <p>This campaign has been temporarily frozen due to policy violations or reports. All interactions including donations, comments, likes, and sharing have been disabled until further review.</p>
+            <p><strong>If you believe this is an error, please contact our support team.</strong></p>
+            <div style="margin-top: 20px;">
+                <a href="../../home/view/index.php" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 </body>
 </html>
