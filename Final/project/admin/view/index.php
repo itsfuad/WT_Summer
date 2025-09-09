@@ -12,8 +12,6 @@ $fundManager = new FundManager();
 // Get platform statistics
 $stats = $fundManager->getPlatformStats();
 $monthlyData = $fundManager->getMonthlyPlatformData();
-$topCampaigns = $fundManager->getTopCampaigns(5);
-$topBackers = $fundManager->getTopBackers(5);
 $fundReports = $fundManager->getFundReports();
 $commentReports = $fundManager->getCommentReports();
 ?>
@@ -99,81 +97,6 @@ $commentReports = $fundManager->getCommentReports();
                     <div class="metric-label">Pending Reports</div>
                     <div class="metric-progress">Need attention</div>
                 </div>
-            </div>
-        </div>
-
-        
-        <!-- Top Performers -->
-        <div class="charts-row">
-            <div class="chart-card">
-                <h3><i class="fas fa-trophy"></i> Top 5 Campaigns</h3>
-                <?php if (empty($topCampaigns)): ?>
-                    <div class="no-data">
-                        <i class="fas fa-chart-bar"></i>
-                        <p>No campaigns found</p>
-                    </div>
-                <?php else: ?>
-                    <div class="top-campaigns-list">
-                        <?php foreach ($topCampaigns as $index => $campaign): ?>
-                            <div class="campaign-item">
-                                <div class="campaign-rank">
-                                    <span class="rank-number"><?php echo $index + 1; ?></span>
-                                </div>
-                                <div class="campaign-info">
-                                    <h4><?php echo htmlspecialchars($campaign['title']); ?></h4>
-                                    <p class="top-campaign-meta">
-                                        <span class="fundraiser">by <?php echo htmlspecialchars($campaign['fundraiser_name']); ?></span>
-                                    </p>
-                                    <div class="campaign-stats">
-                                        <span class="raised"><?php echo formatCurrency($campaign['current_amount']); ?></span>
-                                        <span class="progress"><?php echo number_format($campaign['progress_percentage'], 1); ?>% funded</span>
-                                    </div>
-                                </div>
-                                <div class="campaign-actions">
-                                    <button class="btn btn-sm btn-outline" onclick="openCampaignView(<?php echo $campaign['id']; ?>)">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-            
-            <div class="chart-card">
-                <h3><i class="fas fa-star"></i> Top 5 Backers</h3>
-                <?php if (empty($topBackers)): ?>
-                    <div class="no-data">
-                        <i class="fas fa-users"></i>
-                        <p>No backers found</p>
-                    </div>
-                <?php else: ?>
-                    <div class="top-backers-list">
-                        <?php foreach ($topBackers as $index => $backer): ?>
-                            <div class="backer-item">
-                                <div class="backer-rank">
-                                    <span class="rank-number"><?php echo $index + 1; ?></span>
-                                </div>
-                                <div class="backer-avatar">
-                                    <img src="<?php echo $backer['profile_image_url'] ?: '../../images/default-profile.png'; ?>"
-                                         alt="<?php echo htmlspecialchars($backer['name']); ?>" class="profile-img">
-                                </div>
-                                <div class="backer-info">
-                                    <h4><?php echo htmlspecialchars($backer['name']); ?></h4>
-                                    <p class="backer-email"><?php echo htmlspecialchars($backer['email']); ?></p>
-                                    <div class="backer-stats">
-                                        <span class="total-donated"><?php echo formatCurrency($backer['total_donated']); ?></span>
-                                        <span class="donations-count"><?php echo $backer['total_donations']; ?> donations</span>
-                                        <span class="campaigns-supported"><?php echo $backer['campaigns_supported']; ?> campaigns</span>
-                                    </div>
-                                    <small class="last-donation">
-                                        Last donation: <?php echo date('M j, Y', strtotime($backer['last_donation_date'])); ?>
-                                    </small>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
 

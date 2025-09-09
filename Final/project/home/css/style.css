@@ -39,7 +39,7 @@
 }
 
 .container {
-    max-width: 1200px;
+    max-width: unset;
     margin: 0 auto;
     padding: var(--space-6);
 }
@@ -89,8 +89,8 @@
     position: relative;
     right: -100%;
     translate: -100%;
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    color: #000;
+    background: linear-gradient(135deg, #4ac37b, #00bdd4);
+    color: var(--white);
     padding: 4px 10px;
     border-radius: 999px;
     width: max-content;
@@ -431,6 +431,12 @@
     margin-bottom: var(--space-3);
 }
 
+.feed {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr;
+    gap: 40px;
+}
+
 /* Engagement Stats */
 .engagement-stats {
     display: flex;
@@ -655,6 +661,8 @@
 .pagination {
     transition: opacity 0.3s ease;
 }
+
+
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {

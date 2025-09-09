@@ -10,6 +10,13 @@ $fundManager = new FundManager();
 $isLoggedIn = isLoggedIn();
 $user = $isLoggedIn ? getCurrentUser() : null;
 
+
+$topCampaignCount = 5; // Number of top campaigns to show
+$topBackerCount = 5;   // Number of top backers to show
+
+$topCampaigns = $fundManager->getTopCampaigns($topCampaignCount);
+$topBackers = $fundManager->getTopBackers($topBackerCount);
+
 // Get parameters
 $page = max(1, (int)($_GET['page'] ?? 1));
 $search = $_GET['search'] ?? '';
@@ -76,221 +83,293 @@ $totalPages = ceil($totalFunds / $limit);
             </div>
         <?php endif; ?>
 
-        <!-- Browse All Campaigns Section -->
-        <div class="browse-section">
-            <div class="section-header">
-                <h2><i class="fas fa-search"></i> Browse All Campaigns</h2>
-                <p>Explore <?php echo $totalFunds; ?> active campaigns</p>
-            </div>
-
-            <!-- Filters and Search -->
-            <div class="filters-container">
-                <form id="searchForm" class="filters-form">
-                    <div class="search-bar">
-                        <div class="search-input-wrapper">
-                            <i class="fas fa-search search-icon"></i>
-                            <input 
-                                type="text" 
-                                id="searchInput"
-                                name="search" 
-                                placeholder="Search by title, description, fundraiser, or category..." 
-                                value="<?php echo htmlspecialchars($search); ?>"
-                                class="search-input"
-                                title="Search in: Campaign title, description, fundraiser name, and category"
-                            >
+        <div class="feed">
+            <!-- Browse All Campaigns Section -->
+            <div class="browse-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-search"></i> Browse All Campaigns</h2>
+                    <p>Explore <?php echo $totalFunds; ?> active campaigns</p>
+                </div>
+    
+                <!-- Filters and Search -->
+                <div class="filters-container">
+                    <form id="searchForm" class="filters-form">
+                        <div class="search-bar">
+                            <div class="search-input-wrapper">
+                                <i class="fas fa-search search-icon"></i>
+                                <input 
+                                    type="text" 
+                                    id="searchInput"
+                                    name="search" 
+                                    placeholder="Search by title, description, fundraiser, or category..." 
+                                    value="<?php echo htmlspecialchars($search); ?>"
+                                    class="search-input"
+                                    title="Search in: Campaign title, description, fundraiser name, and category"
+                                >
+                            </div>
                         </div>
-                    </div>
-                    <div class="search-help">
-                        <small><i class="fas fa-info-circle"></i> Search across campaign titles, descriptions, fundraiser names, and categories</small>
-                    </div>
-
-                    <div class="filter-row">
-                        <div class="filter-item">
-                            <select id="categoryFilter" name="category" class="filter-select">
-                                <option value="">All Categories</option>
-                                <?php foreach ($categories as $cat): ?>
-                                    <option value="<?php echo $cat['id']; ?>" <?php echo $category == $cat['id'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($cat['name']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <?php if ($isLoggedIn && $user['role'] === 'admin'): ?>
-                                    <option value="frozen" <?php echo $category === 'frozen' ? 'selected' : ''; ?>>Frozen Campaigns</option>
-                                <?php endif; ?>
-                            </select>
+                        <div class="search-help">
+                            <small><i class="fas fa-info-circle"></i> Search across campaign titles, descriptions, fundraiser names, and categories</small>
                         </div>
-
-                        <div class="filter-item">
-                            <select id="sortFilter" name="sort" class="filter-select">
-                                <option value="featured" <?php echo $sort === 'featured' ? 'selected' : ''; ?>>Featured First</option>
-                                <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Newest</option>
-                                <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Oldest</option>
-                                <option value="most_funded" <?php echo $sort === 'most_funded' ? 'selected' : ''; ?>>Most Funded</option>
-                                <option value="least_funded" <?php echo $sort === 'least_funded' ? 'selected' : ''; ?>>Least Funded</option>
-                            </select>
-                        </div>
-
-                        <div class="filter-actions">
-                            <button type="submit" class="btn btn-primary btn-large">
-                                <i class="fas fa-search"></i> Search
-                            </button>
-                            <?php if ($search || $category || $sort !== 'newest'): ?>
-                                <button type="button" id="clearFilters" class="btn btn-large btn-secondary">
-                                    <i class="fas fa-times"></i> Clear
+    
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <select id="categoryFilter" name="category" class="filter-select">
+                                    <option value="">All Categories</option>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <option value="<?php echo $cat['id']; ?>" <?php echo $category == $cat['id'] ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($cat['name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <?php if ($isLoggedIn && $user['role'] === 'admin'): ?>
+                                        <option value="frozen" <?php echo $category === 'frozen' ? 'selected' : ''; ?>>Frozen Campaigns</option>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+    
+                            <div class="filter-item">
+                                <select id="sortFilter" name="sort" class="filter-select">
+                                    <option value="featured" <?php echo $sort === 'featured' ? 'selected' : ''; ?>>Featured First</option>
+                                    <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Newest</option>
+                                    <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Oldest</option>
+                                    <option value="most_funded" <?php echo $sort === 'most_funded' ? 'selected' : ''; ?>>Most Funded</option>
+                                    <option value="least_funded" <?php echo $sort === 'least_funded' ? 'selected' : ''; ?>>Least Funded</option>
+                                </select>
+                            </div>
+    
+                            <div class="filter-actions">
+                                <button type="submit" class="btn btn-primary btn-large">
+                                    <i class="fas fa-search"></i> Search
                                 </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Results Summary -->
-            <div class="results-summary">
-                <span class="results-count">
-                    <strong id="resultsCount"><?php echo count($allFunds); ?></strong> of <strong id="totalCount"><?php echo $totalFunds; ?></strong> campaigns
-                </span>
-                <span class="page-info" id="pageInfo">
-                    <?php if ($totalPages > 1): ?>
-                        Page <?php echo $page; ?> of <?php echo $totalPages; ?>
-                    <?php endif; ?>
-                </span>
-            </div>
-
-            <!-- Campaigns Grid -->
-            <div id="campaignsGrid" class="campaigns-grid">
-                <?php if (empty($allFunds)): ?>
-                    <div class="no-campaigns">
-                        <i class="fas fa-search"></i>
-                        <h3>No campaigns found</h3>
-                        <p>Try adjusting your search or filter criteria.</p>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($allFunds as $fund): ?>
-                        <?php 
-                        $percentage = calculatePercentage($fund['current_amount'], $fund['goal_amount']);
-                        $days_left = getDaysLeft($fund['end_date']);
-                        ?>
-                        <div class="campaign-card">
-                            <?php if ($fund['featured']): ?>
-                                <div class="featured-badge">
-                                    <i class="fas fa-star"></i> Featured
-                                </div>
-                            <?php endif; ?>
-                            <?php if ($fund['status'] === 'frozen'): ?>
-                                <div class="frozen-badge">
-                                    <i class="fas fa-pause"></i> Frozen
-                                </div>
-                            <?php endif; ?>
-                            <div class="campaign-header">
-                                <i class="campaign-icon <?php echo htmlspecialchars($fund['category_icon'] ?? 'fas fa-folder'); ?>"></i>
-                                <div>
-                                    <div class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></div>
-                                    <div class="campaign-fundraiser">by <?php echo htmlspecialchars($fund['fundraiser_name']); ?></div>
-                                </div>
-                            </div>
-
-                            <div class="campaign-description">
-                                <?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 150) . '...'); ?>
-                            </div>
-
-                            <div class="campaign-stats">
-                                <div class="stat-box">
-                                    <div class="stat-value"><?php echo formatCurrency($fund['current_amount']); ?></div>
-                                    <div class="stat-label">Raised</div>
-                                </div>
-                                <div class="stat-box">
-                                    <div class="stat-value"><?php echo $fund['backer_count']; ?></div>
-                                    <div class="stat-label">Backers</div>
-                                </div>
-                                <div class="stat-box">
-                                    <div class="stat-value"><?php echo $days_left; ?></div>
-                                    <div class="stat-label">Days Left</div>
-                                </div>
-                            </div>
-
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
-                            </div>
-                            <div class="progress-text">
-                                <?php echo $percentage; ?>% of <?php echo formatCurrency($fund['goal_amount']); ?> goal
-                            </div>
-
-                            <!-- Engagement Stats -->
-                            <div class="engagement-stats">
-                                <div class="engagement-item like-stat">
-                                    <button class="engagement-btn like-btn <?php echo in_array($fund['id'], $userLikedFunds) ? 'liked' : ''; ?>" 
-                                            onclick="toggleLike(<?php echo $fund['id']; ?>, this)"
-                                            <?php echo !$isLoggedIn ? 'disabled title="Login to like"' : ''; ?>>
-                                        <i class="<?php echo in_array($fund['id'], $userLikedFunds) ? 'fas' : 'far'; ?> fa-heart"></i>
-                                        <span class="count"><?php echo $fund['likes_count']; ?></span>
+                                <?php if ($search || $category || $sort !== 'newest'): ?>
+                                    <button type="button" id="clearFilters" class="btn btn-large btn-secondary">
+                                        <i class="fas fa-times"></i> Clear
                                     </button>
-                                </div>
-                                <div class="engagement-item comment-stat">
-                                    <div class="engagement-btn comment-btn">
-                                        <i class="far fa-comment"></i>
-                                        <span class="count"><?php echo $fund['comments_count']; ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+    
+                <!-- Results Summary -->
+                <div class="results-summary">
+                    <span class="results-count">
+                        <strong id="resultsCount"><?php echo count($allFunds); ?></strong> of <strong id="totalCount"><?php echo $totalFunds; ?></strong> campaigns
+                    </span>
+                    <span class="page-info" id="pageInfo">
+                        <?php if ($totalPages > 1): ?>
+                            Page <?php echo $page; ?> of <?php echo $totalPages; ?>
+                        <?php endif; ?>
+                    </span>
+                </div>
+    
+                <!-- Campaigns Grid -->
+                <div id="campaignsGrid" class="campaigns-grid">
+                    <?php if (empty($allFunds)): ?>
+                        <div class="no-campaigns">
+                            <i class="fas fa-search"></i>
+                            <h3>No campaigns found</h3>
+                            <p>Try adjusting your search or filter criteria.</p>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($allFunds as $fund): ?>
+                            <?php 
+                            $percentage = calculatePercentage($fund['current_amount'], $fund['goal_amount']);
+                            $days_left = getDaysLeft($fund['end_date']);
+                            ?>
+                            <div class="campaign-card">
+                                <?php if ($fund['featured']): ?>
+                                    <div class="featured-badge">
+                                        <i class="fas fa-star"></i> Featured
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($fund['status'] === 'frozen'): ?>
+                                    <div class="frozen-badge">
+                                        <i class="fas fa-pause"></i> Frozen
+                                    </div>
+                                <?php endif; ?>
+                                <div class="campaign-header">
+                                    <i class="campaign-icon <?php echo htmlspecialchars($fund['category_icon'] ?? 'fas fa-folder'); ?>"></i>
+                                    <div>
+                                        <div class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></div>
+                                        <div class="campaign-fundraiser">by <?php echo htmlspecialchars($fund['fundraiser_name']); ?></div>
                                     </div>
                                 </div>
+    
+                                <div class="campaign-description">
+                                    <?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 150) . '...'); ?>
+                                </div>
+    
+                                <div class="campaign-stats">
+                                    <div class="stat-box">
+                                        <div class="stat-value"><?php echo formatCurrency($fund['current_amount']); ?></div>
+                                        <div class="stat-label">Raised</div>
+                                    </div>
+                                    <div class="stat-box">
+                                        <div class="stat-value"><?php echo $fund['backer_count']; ?></div>
+                                        <div class="stat-label">Backers</div>
+                                    </div>
+                                    <div class="stat-box">
+                                        <div class="stat-value"><?php echo $days_left; ?></div>
+                                        <div class="stat-label">Days Left</div>
+                                    </div>
+                                </div>
+    
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <?php echo $percentage; ?>% of <?php echo formatCurrency($fund['goal_amount']); ?> goal
+                                </div>
+    
+                                <!-- Engagement Stats -->
+                                <div class="engagement-stats">
+                                    <div class="engagement-item like-stat">
+                                        <button class="engagement-btn like-btn <?php echo in_array($fund['id'], $userLikedFunds) ? 'liked' : ''; ?>" 
+                                                onclick="toggleLike(<?php echo $fund['id']; ?>, this)"
+                                                <?php echo !$isLoggedIn ? 'disabled title="Login to like"' : ''; ?>>
+                                            <i class="<?php echo in_array($fund['id'], $userLikedFunds) ? 'fas' : 'far'; ?> fa-heart"></i>
+                                            <span class="count"><?php echo $fund['likes_count']; ?></span>
+                                        </button>
+                                    </div>
+                                    <div class="engagement-item comment-stat">
+                                        <div class="engagement-btn comment-btn">
+                                            <i class="far fa-comment"></i>
+                                            <span class="count"><?php echo $fund['comments_count']; ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="campaign-actions">
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+                                </div>
                             </div>
-
-                            <div class="campaign-actions">
-                                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
-                                    <i class="fas fa-eye"></i> View Details
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+    
+                <!-- Pagination -->
+                <div id="paginationContainer">
+                    <?php if ($totalPages > 1): ?>
+                        <div class="pagination">
+                            <?php if ($page > 1): ?>
+                                <a href="#" class="btn btn-secondary page-btn" data-page="<?php echo $page - 1; ?>">
+                                    <i class="fas fa-chevron-left"></i> Previous
                                 </a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-
-            <!-- Pagination -->
-            <div id="paginationContainer">
-                <?php if ($totalPages > 1): ?>
-                    <div class="pagination">
-                        <?php if ($page > 1): ?>
-                            <a href="#" class="btn btn-secondary page-btn" data-page="<?php echo $page - 1; ?>">
-                                <i class="fas fa-chevron-left"></i> Previous
-                            </a>
-                        <?php endif; ?>
-
-                        <div class="page-numbers">
-                            <?php 
-                            $start = max(1, $page - 2);
-                            $end = min($totalPages, $page + 2);
-                            ?>
-                            
-                            <?php if ($start > 1): ?>
-                                <a href="#" class="page-number" data-page="1">1</a>
-                                <?php if ($start > 2): ?><span>...</span><?php endif; ?>
                             <?php endif; ?>
-
-                            <?php for ($i = $start; $i <= $end; $i++): ?>
-                                <?php if ($i == $page): ?>
-                                    <span class="page-number active"><?php echo $i; ?></span>
-                                <?php else: ?>
-                                    <a href="#" class="page-number" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
+    
+                            <div class="page-numbers">
+                                <?php 
+                                $start = max(1, $page - 2);
+                                $end = min($totalPages, $page + 2);
+                                ?>
+                                
+                                <?php if ($start > 1): ?>
+                                    <a href="#" class="page-number" data-page="1">1</a>
+                                    <?php if ($start > 2): ?><span>...</span><?php endif; ?>
                                 <?php endif; ?>
-                            <?php endfor; ?>
-
-                            <?php if ($end < $totalPages): ?>
-                                <?php if ($end < $totalPages - 1): ?><span>...</span><?php endif; ?>
-                                <a href="#" class="page-number" data-page="<?php echo $totalPages; ?>"><?php echo $totalPages; ?></a>
+    
+                                <?php for ($i = $start; $i <= $end; $i++): ?>
+                                    <?php if ($i == $page): ?>
+                                        <span class="page-number active"><?php echo $i; ?></span>
+                                    <?php else: ?>
+                                        <a href="#" class="page-number" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
+                                    <?php endif; ?>
+                                <?php endfor; ?>
+    
+                                <?php if ($end < $totalPages): ?>
+                                    <?php if ($end < $totalPages - 1): ?><span>...</span><?php endif; ?>
+                                    <a href="#" class="page-number" data-page="<?php echo $totalPages; ?>"><?php echo $totalPages; ?></a>
+                                <?php endif; ?>
+                            </div>
+    
+                            <?php if ($page < $totalPages): ?>
+                                <a href="#" class="btn btn-secondary page-btn" data-page="<?php echo $page + 1; ?>">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
                             <?php endif; ?>
                         </div>
-
-                        <?php if ($page < $totalPages): ?>
-                            <a href="#" class="btn btn-secondary page-btn" data-page="<?php echo $page + 1; ?>">
-                                Next <i class="fas fa-chevron-right"></i>
-                            </a>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="pagination-info">
-                        Page <?php echo $page; ?> of <?php echo $totalPages; ?> 
-                        (<?php echo $totalFunds; ?> total campaigns)
-                    </div>
-                <?php endif; ?>
+    
+                        <div class="pagination-info">
+                            Page <?php echo $page; ?> of <?php echo $totalPages; ?> 
+                            (<?php echo $totalFunds; ?> total campaigns)
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <!-- Top Performers -->
+            <div class="charts-cols">
+                <div class="chart-card">
+                    <h3><i class="fas fa-trophy"></i> Top <?php echo $topCampaignCount; ?> Campaigns</h3>
+                    <?php if (empty($topCampaigns)): ?>
+                        <div class="no-data">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>No campaigns found</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="top-campaigns-list">
+                            <?php foreach ($topCampaigns as $index => $campaign): ?>
+                                <div class="campaign-item border-middle">
+                                    <div class="campaign-rank">
+                                        <span class="rank-number"><?php echo $index + 1; ?></span>
+                                    </div>
+                                    <div class="campaign-info">
+                                        <h4><a href="../../campaign/view?id=<?php echo $campaign['id']; ?>" target="_blank"><?php echo htmlspecialchars($campaign['title']); ?></a></h4>
+                                        <p class="top-campaign-meta">
+                                            <span class="fundraiser">by <?php echo htmlspecialchars($campaign['fundraiser_name']); ?></span>
+                                        </p>
+                                        <div class="campaign-stats">
+                                            <span class="raised"><?php echo formatCurrency($campaign['current_amount']); ?></span>
+                                            <!-- color1 for < 50%, color2 for >= 50%, color3 for >100% --> 
+                                            <span class="progress" style="<?php echo "color: " . (($campaign['progress_percentage'] >= 100 ? 'var(--success)' : ($campaign['progress_percentage'] >= 50 ? 'var(--warning)' : 'var(--error)'))) ?>"><?php echo number_format($campaign['progress_percentage'], 1); ?>% funded</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                
+                <div class="chart-card stick">
+                    <h3><i class="fas fa-star"></i> Top <?php echo $topBackerCount; ?> Backers</h3>
+                    <?php if (empty($topBackers)): ?>
+                        <div class="no-data">
+                            <i class="fas fa-users"></i>
+                            <p>No backers found</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="top-backers-list">
+                            <?php foreach ($topBackers as $index => $backer): ?>
+                                <div class="backer-item border-middle">
+                                    <div class="backer-rank">
+                                        <span class="rank-number"><?php echo $index + 1; ?></span>
+                                    </div>
+                                    <div class="backer-avatar">
+                                        <img src="<?php echo $backer['profile_image_url'] ?: '../../images/default-profile.png'; ?>"
+                                             alt="<?php echo htmlspecialchars($backer['name']); ?>" class="profile-img">
+                                    </div>
+                                    <div class="backer-info">
+                                        <h4><?php echo htmlspecialchars($backer['name']); ?></h4>
+                                        <p class="backer-email"><?php echo htmlspecialchars($backer['email']); ?></p>
+                                        <div class="backer-stats">
+                                            <span class="total-donated"><?php echo formatCurrency($backer['total_donated']); ?></span>
+                                            <span class="donations-count"><?php echo $backer['total_donations']; ?> donations</span>
+                                            <span class="campaigns-supported"><?php echo $backer['campaigns_supported']; ?> campaigns</span>
+                                        </div>
+                                        <small class="last-donation">
+                                            Last donation: <?php echo date('M j, Y', strtotime($backer['last_donation_date'])); ?>
+                                        </small>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
+
     </div>
 
     <!-- Loading Overlay -->

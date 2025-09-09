@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../../shared/css/profile_manager.css">
     <link rel="stylesheet" href="../../shared/css/upload.css">
+    <script src="../../shared/js/profile_manager.js"></script>
 </head>
 <body>
 <?php
