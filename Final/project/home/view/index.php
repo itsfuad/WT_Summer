@@ -191,7 +191,7 @@ $totalPages = ceil($totalFunds / $limit);
                                 <div class="campaign-header">
                                     <i class="campaign-icon <?php echo htmlspecialchars($fund['category_icon'] ?? 'fas fa-folder'); ?>"></i>
                                     <div>
-                                        <div class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></div>
+                                        <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></a>
                                         <div class="campaign-fundraiser">by <?php echo htmlspecialchars($fund['fundraiser_name']); ?></div>
                                     </div>
                                 </div>
@@ -351,7 +351,7 @@ $totalPages = ceil($totalFunds / $limit);
                                              alt="<?php echo htmlspecialchars($backer['name']); ?>" class="profile-img">
                                     </div>
                                     <div class="backer-info">
-                                        <h4><?php echo htmlspecialchars($backer['name']); ?></h4>
+                                        <h4><a href="../../public_profile/view?id=<?php echo $backer['id']; ?>"><?php echo htmlspecialchars($backer['name']); ?></a></h4>
                                         <p class="backer-email"><?php echo htmlspecialchars($backer['email']); ?></p>
                                         <div class="backer-stats">
                                             <span class="total-donated"><?php echo formatCurrency($backer['total_donated']); ?></span>

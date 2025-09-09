@@ -52,13 +52,12 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
     <title>Donation Analytics - CrowdFund</title>
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../../shared/css/analytics.css">
-    <link rel="stylesheet" href="../css/style.css">
     <script src="../../shared/libs/chart.min.js"></script>
     <script>
         const monthlyData = <?php echo json_encode($monthlyDonations); ?>;
         const categoryData = <?php echo json_encode($categoryBreakdown); ?>;
     </script>
-    <script src="../js/script.js" defer></script>
+    <script src="../js/analytics.js" defer></script>
 </head>
 <body>
 
@@ -66,7 +65,7 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <a href="<?php echo $user['role'] === 'backer' ? 'index.php' : '../../fundraiser/view/index.php'; ?>" class="back-btn">
+                <a href="<?php echo $user['role'] === 'backer' ? '../../backer/view/index.php' : '../../fundraiser/view/index.php'; ?>" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
@@ -124,14 +123,14 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
             <!-- Monthly Donation Timeline -->
             <div class="chart-card">
                 <h3><i class="fas fa-chart-line"></i> Monthly Donation Trend</h3>
-                <canvas id="monthlyChart"></canvas>
+                <canvas id="donationChart"></canvas>
             </div>
             
             <!-- Category Breakdown -->
             <div class="chart-card">
                 <h3><i class="fas fa-chart-pie"></i> Donations by Category</h3>
                 <div class="progress-chart">
-                    <canvas id="categoryChart"></canvas>
+                    <canvas id="progressChart"></canvas>
                 </div>
             </div>
         </div>
@@ -147,16 +146,16 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
                         <p>No donations yet</p>
                     </div>
                 <?php else: ?>
-                    <div class="donations-list">
+                    <div class="donations-table">
                         <?php foreach ($recentDonations as $donation): ?>
-                            <div class="donation-item">
-                                <div class="donation-info">
-                                    <div class="donation-title">
+                            <div class="donation-row">
+                                <div class="donor-info">
+                                    <div class="donor-name">
                                         <a href="../../campaign/view?id=<?php echo $donation['fund_id']; ?>">
                                             <?php echo htmlspecialchars($donation['fund_title']); ?>
                                         </a>
                                     </div>
-                                    <div class="donation-meta">
+                                    <div class="donation-date">
                                         <?php echo date('M j, Y', strtotime($donation['created_at'])); ?>
                                     </div>
                                 </div>
@@ -178,7 +177,7 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
                         <p>No campaigns supported yet</p>
                     </div>
                 <?php else: ?>
-                    <div class="top-campaigns-list">
+                    <div class="donations-table">
                         <?php 
                         // Sort by total donated descending
                         usort($donatedFunds, function($a, $b) {
@@ -187,18 +186,18 @@ $avgDonationAmount = $totalDonationCount > 0 ? $totalDonated / $totalDonationCou
                         $topCampaigns = array_slice($donatedFunds, 0, 5);
                         ?>
                         <?php foreach ($topCampaigns as $campaign): ?>
-                            <div class="campaign-item">
-                                <div class="campaign-info">
-                                    <div class="campaign-title">
+                            <div class="donation-row">
+                                <div class="donor-info">
+                                    <div class="donor-name">
                                         <a href="../../campaign/view?id=<?php echo $campaign['id']; ?>">
                                             <?php echo htmlspecialchars($campaign['title']); ?>
                                         </a>
                                     </div>
-                                    <div class="campaign-meta">
+                                    <div class="donation-date">
                                         <?php echo $campaign['donation_count']; ?> donation<?php echo $campaign['donation_count'] > 1 ? 's' : ''; ?>
                                     </div>
                                 </div>
-                                <div class="campaign-amount">
+                                <div class="donation-amount">
                                     <?php echo formatCurrency($campaign['total_donated']); ?>
                                 </div>
                             </div>

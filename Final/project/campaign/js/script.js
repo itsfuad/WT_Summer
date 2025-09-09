@@ -159,7 +159,7 @@ function prependBackerItem(d) {
         <div class="backer-info">
             <div class="backer-avatar">${avatarHtml}</div>
             <div class="backer-details">
-                <div class="backer-name">${d.anonymous ? 'Anonymous' : escapeHtml(d.backer_name)}</div>
+                <div class="backer-name">${d.anonymous ? 'Anonymous' : `<a class="username" href="../../public_profile/view?id=${d.backer_id}">${escapeHtml(d.backer_name)}</a>`}</div>
                 <div class="backer-time js-timeago" data-time="${new Date().toISOString().slice(0,19).replace('T',' ')}">just now</div>
             </div>
         </div>
@@ -287,7 +287,7 @@ function addCommentToList(comment) {
                         </div>
                         <div class="user-info">
                             <span class="username">
-                                ${comment.user_name}
+                                <a class="username" href="../../public_profile/view?id=${comment.user_id}">${comment.user_name}</a>
                                 ${comment.user_role === 'fundraiser' ? '<span class="role-badge fundraiser">Creator</span>' : ''}
                                 ${comment.user_role === 'backer' ? '<span class="role-badge backer">Backer</span>' : ''}
                             </span>

@@ -57,6 +57,14 @@
     gap: 12px;
 }
 
+.sub-title {
+    color: var(--gray-600);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
 /* Metrics Grid */
 .metrics-grid {
     display: grid;
@@ -144,6 +152,36 @@
     color: var(--gray-900);
     font-weight: 600;
     font-size: 1.1rem;
+}
+
+/* Charts Row */
+.charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.chart-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    box-shadow: var(--shadow);
+    border: var(--border);
+}
+
+.chart-card h3 {
+    color: var(--gray-900);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.chart-card h3 i {
+    color: var(--gray-400);
 }
 
 /* Tables Row */

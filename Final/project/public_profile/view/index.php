@@ -1,6 +1,6 @@
 <?php
-require_once '../shared/includes/session.php';
-require_once '../shared/includes/functions.php';
+require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
 
 // Get user ID from URL parameter
 $profileUserId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -11,9 +11,9 @@ if ($profileUserId <= 0) {
     $userManager = new UserManager();
     $profileImageUrl = $userManager->getProfileImageFilename($profileUserId);
     if (!$profileImageUrl) {
-        $profileImageUrl = '../images/default-profile.png'; // Fallback to default image
+        $profileImageUrl = '../../images/default-profile.png'; // Fallback to default image
     } else {
-        $profileImageUrl = '../uploads/profiles/' . $profileImageUrl; // Construct the path
+        $profileImageUrl = '../../uploads/profiles/' . $profileImageUrl; // Construct the path
     }
     // Get the user profile to display
     $profileUser = $userManager->getCompleteUserProfile($profileUserId);
@@ -30,25 +30,6 @@ try {
 } catch (Exception $e) {
     // User not logged in, which is fine for public profiles
 }
-
-// Determine where to redirect back to
-$backUrl = '../home/view/index.php'; // Default to home
-if ($currentUser) {
-    // If user is logged in, determine their role-based dashboard
-    switch ($currentUser['role']) {
-        case 'admin':
-            $backUrl = '../admin/view/index.php';
-            break;
-        case 'fundraiser':
-            $backUrl = '../fundraiser/view/index.php';
-            break;
-        case 'backer':
-            $backUrl = '../backer/view/index.php';
-            break;
-        default:
-            $backUrl = '../home/view/index.php';
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -59,8 +40,8 @@ if ($currentUser) {
     <title><?php echo isset($profileUser) ? htmlspecialchars($profileUser['name']) . ' - Profile' : 'User Profile'; ?> | CrowdFund Platform</title>
     
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../shared/css/profile_manager.css">
+    <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../../shared/css/profile_manager.css">
 </head>
 <body>
     <div class="profile-form-container">
@@ -68,7 +49,7 @@ if ($currentUser) {
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <a href="<?php echo htmlspecialchars($backUrl); ?>" class="back-btn">
+                <a href="../../home/view/index.php" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>

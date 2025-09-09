@@ -1,5 +1,5 @@
 // Monthly Donation Chart
-const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+const monthlyCtx = document.getElementById('donationChart').getContext('2d');
 
 new Chart(monthlyCtx, {
     type: 'line',
@@ -36,7 +36,7 @@ new Chart(monthlyCtx, {
 });
 
 // Category Breakdown Chart
-const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+const categoryCtx = document.getElementById('progressChart').getContext('2d');
 
 new Chart(categoryCtx, {
     type: 'doughnut',

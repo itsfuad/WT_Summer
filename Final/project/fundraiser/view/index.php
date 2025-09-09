@@ -140,7 +140,9 @@
                             </div>
                             
                             <div class="campaign-content">
-                                <h3><?php echo htmlspecialchars($fund['title']); ?></h3>
+                                <h3>
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>"><?php echo htmlspecialchars($fund['title']); ?></a>
+                                </h3>
                                 <p><?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 100) . '...'); ?></p>
                                 
                                 <div class="campaign-stats">
@@ -162,12 +164,6 @@
                                     <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
                                 </div>
                                 <div class="progress-text"><?php echo $percentage; ?>% funded</div>
-                                
-                                <div class="campaign-actions">
-                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-eye"></i> View Details
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -209,7 +205,9 @@
                             </div>
                             
                             <div class="campaign-content">
-                                <h3><?php echo htmlspecialchars($fund['title']); ?></h3>
+                                <h3>
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>"><?php echo htmlspecialchars($fund['title']); ?></a>
+                                </h3>
                                 <p><?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 100) . '...'); ?></p>
                                 
                                 <div class="donation-info" style="background: #f3f4f6; padding: 12px; border-radius: 8px; margin: 12px 0;">
@@ -242,12 +240,6 @@
                                     <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
                                 </div>
                                 <div class="progress-text"><?php echo $percentage; ?>% funded</div>
-                                
-                                <div class="campaign-actions">
-                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
-                                        <i class="fas fa-eye"></i> View Details
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>

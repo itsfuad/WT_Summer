@@ -263,7 +263,7 @@ $days_left = getDaysLeft($fund['end_date']);
                                             </div>
                                             <div class="user-info">
                                                 <span class="username">
-                                                    <?php echo htmlspecialchars($comment['user_name']); ?>
+                                                    <a class="username" href="../../public_profile/view?id=<?php echo htmlspecialchars($comment['user_id']); ?>"><?php echo htmlspecialchars($comment['user_name']); ?></a>
                                                     <?php if ($comment['user_role'] === 'fundraiser'): ?>
                                                         <span class="role-badge fundraiser">Creator</span>
                                                     <?php elseif ($comment['user_role'] === 'backer'): ?>
@@ -323,7 +323,10 @@ $days_left = getDaysLeft($fund['end_date']);
                                     </div>
                                     <div class="backer-details">
                                         <div class="backer-name">
-                                            <?php echo $donation['anonymous'] ? 'Anonymous' : htmlspecialchars($donation['backer_name']); ?>
+                                            <?php 
+                                                echo $donation['anonymous'] ? 'Anonymous' : 
+                                                '<a class="username" href="../../public_profile/view?id=' . htmlspecialchars($donation['backer_id']) . '">' . htmlspecialchars($donation['backer_name']) . '</a>'; 
+                                            ?>
                                         </div>
                                         <div class="backer-time js-timeago" data-time="<?php echo htmlspecialchars($donation['created_at']); ?>">
                                             <?php echo timeAgo($donation['created_at']); ?>
