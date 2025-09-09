@@ -9,18 +9,9 @@
     <link rel="stylesheet" href="../../shared/css/upload.css">
 </head>
 <body>
-    <?php
-    
+<?php
+    $showNameField = FALSE; // Do not show name field for admin
     require_once '../../shared/includes/profile_manager.php';
-
-    renderProfileForm([
-        'user' => $fullUser,
-        'errors' => $errors,
-        'success' => $success,
-        'showNameField' => false, // Admin doesn't have name field
-        'backUrl' => 'index.php',
-        'formAction' => ''
-    ]);
-    ?>
+?>
 </body>
 </html>
