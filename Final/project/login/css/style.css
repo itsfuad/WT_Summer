@@ -78,6 +78,28 @@ body {
     color: var(--gray-700);
 }
 
+/* Forgot Password Link */
+.forgot-password-link {
+    text-align: center;
+    margin: var(--spacing-4) 0;
+}
+
+.forgot-password-link a {
+    color: var(--blue-600);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.forgot-password-link a:hover {
+    color: var(--blue-700);
+    text-decoration: underline;
+}
+
+.forgot-password-link i {
+    margin-right: var(--spacing-2);
+}
+
 /* Signup Links */
 .signup-links {
     text-align: center;

@@ -120,6 +120,12 @@
             </button>
         </form>
 
+        <div class="forgot-password-link">
+            <a href="../../forgot_password/index.php">
+                <i class="fas fa-key"></i> Forgot Password?
+            </a>
+        </div>
+
         <div class="signup-links">
             <p>Don't have an account?</p>
             <div class="role-links">

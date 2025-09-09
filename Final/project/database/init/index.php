@@ -24,7 +24,7 @@ try {
     echo "<p>3. Cleaning up existing tables...</p>\n";
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
     $dropTables = [
-        'fund_likes', 'reports', 'comments',
+        'password_reset_tokens', 'fund_likes', 'reports', 'comments',
         'donations', 'funds', 'categories', 'users'
     ];
     
@@ -175,6 +175,22 @@ try {
         )
     ");
     echo "<span style='color:green;'>✓ Fund likes table created</span><br>\n";
+    
+    // Password reset tokens table
+    echo "<p>Creating password_reset_tokens table...</p>\n";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS password_reset_tokens (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(100) NOT NULL,
+            token VARCHAR(6) NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            used TINYINT(1) DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_email (email),
+            INDEX idx_token (token),
+            INDEX idx_expires (expires_at)
+        )
+    ");
+    echo "<span style='color:green;'>✓ Password reset tokens table created</span><br>\n";
     
     
     echo "<div style='background:#d4edda;padding:20px;border-radius:5px;margin:20px 0;'>\n";
