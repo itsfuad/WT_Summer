@@ -1,5 +1,68 @@
 let reportCommentId = null;
 
+// Simple functions to handle frozen state
+function applyFrozenState() {
+    // Add frozen class to campaign container
+    const campaignContainer = document.querySelector('.campaign-container');
+    if (campaignContainer) {
+        campaignContainer.classList.add('frozen');
+    }
+    
+    // Hide comment form (if user is logged in)
+    const commentFormSection = document.querySelector('.comment-form-section');
+    if (commentFormSection) {
+        commentFormSection.style.display = 'none';
+    }
+    
+    // Add frozen message
+    if (!document.querySelector('.login-prompt')) {
+        const frozenMessage = document.createElement('div');
+        frozenMessage.className = 'login-prompt';
+        frozenMessage.innerHTML = '<span style="color: black;"><i class="fas fa-pause"></i> This campaign is currently frozen</span>';
+        
+        const descriptionSection = document.querySelector('.description-section');
+        if (descriptionSection) {
+            descriptionSection.parentNode.insertBefore(frozenMessage, descriptionSection.nextSibling);
+        }
+    } else {
+        // Update existing login prompt
+        const loginPrompt = document.querySelector('.login-prompt');
+        loginPrompt.innerHTML = '<span style="color: black;"><i class="fas fa-pause"></i> This campaign is currently frozen</span>';
+    }
+}
+
+function removeFrozenState() {
+    // Remove frozen class from campaign container
+    const campaignContainer = document.querySelector('.campaign-container');
+    if (campaignContainer) {
+        campaignContainer.classList.remove('frozen');
+    }
+    
+    // Show comment form (if user is logged in)
+    const commentFormSection = document.querySelector('.comment-form-section');
+    if (commentFormSection) {
+        commentFormSection.style.display = '';
+    }
+    
+    // Remove or restore login prompt
+    const loginPrompt = document.querySelector('.login-prompt');
+    if (loginPrompt && loginPrompt.innerHTML.includes('frozen')) {
+        const isLoggedIn = currentUserId !== null;
+        const hasComments = document.querySelector('.comments-section');
+        
+        if (isLoggedIn) {
+            // User is logged in, remove the login prompt (comment form will be shown above)
+            loginPrompt.remove();
+        } else if (hasComments) {
+            // User not logged in but there are comments, show login prompt
+            loginPrompt.innerHTML = '<p><a href="../../login/view/index.php">Login</a> to join the conversation</p>';
+        } else {
+            // No comments and not logged in, remove the prompt
+            loginPrompt.remove();
+        }
+    }
+}
+
 
 
 // Auto-resize textarea
@@ -264,7 +327,7 @@ function addCommentToList(comment) {
         commentsSection.className = 'comments-section';
         commentsSection.innerHTML = `
             <div class="comments-header">
-                <h3>Comments (1)</h3>
+                <h3>Comments (0)</h3>
             </div>
             <div class="comments-list" id="comments-list"></div>
         `;
@@ -349,6 +412,10 @@ function deleteComment(commentId) {
             const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`);
             if (commentElement) {
                 commentElement.remove();
+                
+                // Update comment count
+                const currentCount = document.querySelectorAll('[data-comment-id]').length;
+                updateCommentCount(currentCount);
             }
             showNotification('Comment deleted successfully!', 'success');
         } else {
@@ -578,6 +645,9 @@ function toggleFreeze(fundId) {
             if (data.status === 'frozen') {
                 btn.innerHTML = '<i class="fas fa-play"></i> Unfreeze';
                 
+                // Apply frozen visual state
+                applyFrozenState();
+                
                 // Auto-unfeature the campaign when frozen (only if it was previously featured)
                 if (data.was_featured) {
                     const featureBtn = document.getElementById('feature-btn');
@@ -596,6 +666,10 @@ function toggleFreeze(fundId) {
                 showNotification(data.message, 'success');
             } else {
                 btn.innerHTML = '<i class="fas fa-pause"></i> Freeze';
+                
+                // Remove frozen visual state
+                removeFrozenState();
+                
                 showNotification(data.message, 'success');
             }
         } else {
@@ -603,8 +677,21 @@ function toggleFreeze(fundId) {
         }
     });
 }
+
+// Check if campaign is frozen on page load
+function initializeFrozenState() {
+    const campaignContainer = document.querySelector('.campaign-container');
+    if (campaignContainer && campaignContainer.classList.contains('frozen')) {
+        applyFrozenState();
+    }
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startTimeUpdates);
+    document.addEventListener('DOMContentLoaded', () => {
+        startTimeUpdates();
+        initializeFrozenState();
+    });
 } else {
     startTimeUpdates();
+    initializeFrozenState();
 }
