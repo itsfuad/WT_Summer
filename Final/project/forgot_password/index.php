@@ -171,8 +171,9 @@ unset($_SESSION['reset_verified']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - CrowdFund</title>
-    <link rel="stylesheet" href="../login/css/style.css">
     <link rel="stylesheet" href="../shared/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../shared/css/common.css">
+    <link rel="stylesheet" href="../login/css/style.css">
 </head>
 <body>
     <div class="login-container">
@@ -189,9 +190,11 @@ unset($_SESSION['reset_verified']);
                 <div class="form-group">
                     <label for="email"><i class="fas fa-envelope"></i> Email Address:</label>
                     <input type="email" id="email" name="email" class="form-control" required>
+                    <span class="error-message" id="email-error" style="display: none;"></span>
                 </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> Send OTP
+                <button type="submit" class="submit-btn" id="sendOtpBtn">
+                    <span class="btn-text"><i class="fas fa-paper-plane"></i> Send OTP</span>
+                    <span class="btn-loader" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Sending...</span>
                 </button>
             </form>
         </div>
@@ -206,9 +209,11 @@ unset($_SESSION['reset_verified']);
                     <label for="otp"><i class="fas fa-shield-alt"></i> Enter 6-digit OTP:</label>
                     <input type="text" id="otp" name="otp" class="form-control" maxlength="6" pattern="[0-9]{6}"
                            style="text-align: center; font-size: 18px; letter-spacing: 3px;" required>
+                    <span class="error-message" id="otp-error" style="display: none;"></span>
                 </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-check"></i> Verify OTP
+                <button type="submit" class="submit-btn" id="verifyOtpBtn">
+                    <span class="btn-text"><i class="fas fa-check"></i> Verify OTP</span>
+                    <span class="btn-loader" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Verifying...</span>
                 </button>
             </form>
             <div style="text-align: center; margin-top: 15px;">
@@ -223,14 +228,23 @@ unset($_SESSION['reset_verified']);
             <form id="passwordForm">
                 <div class="form-group">
                     <label for="new_password"><i class="fas fa-lock"></i> New Password:</label>
-                    <input type="password" id="new_password" name="new_password" class="form-control" required minlength="6">
+                    <div class="password-container">
+                        <input type="password" id="new_password" name="new_password" class="form-control" required minlength="6">
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('new_password')" id="new_password-toggle"></i>
+                    </div>
+                    <span class="error-message" id="new_password-error" style="display: none;"></span>
                 </div>
                 <div class="form-group">
                     <label for="confirm_password"><i class="fas fa-lock"></i> Confirm Password:</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" required minlength="6">
+                    <div class="password-container">
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required minlength="6">
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm_password')" id="confirm_password-toggle"></i>
+                    </div>
+                    <span class="error-message" id="confirm_password-error" style="display: none;"></span>
                 </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-save"></i> Reset Password
+                <button type="submit" class="submit-btn" id="resetPasswordBtn">
+                    <span class="btn-text"><i class="fas fa-save"></i> Reset Password</span>
+                    <span class="btn-loader" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Updating...</span>
                 </button>
             </form>
         </div>
@@ -242,7 +256,95 @@ unset($_SESSION['reset_verified']);
         </div>
     </div>
 
+    <style>
+        .btn-loader {
+            display: none;
+        }
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            opacity: 0.65;
+        }
+        .submit-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+    </style>
+
     <script>
+        // Password toggle functionality
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById(fieldId + '-toggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Form helpers
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement && inputElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                inputElement.classList.add('error');
+            }
+        }
+
+        function clearError(fieldId) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement && inputElement) {
+                errorElement.style.display = 'none';
+                inputElement.classList.remove('error');
+            }
+        }
+
+        function setLoading(formId, isLoading) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            
+            const submitBtn = form.querySelector('.submit-btn');
+            const btnText = submitBtn?.querySelector('.btn-text');
+            const btnLoader = submitBtn?.querySelector('.btn-loader');
+            const inputs = form.querySelectorAll('input');
+
+            if (isLoading) {
+                if (btnText) btnText.style.display = 'none';
+                if (btnLoader) btnLoader.style.display = 'inline';
+                if (submitBtn) submitBtn.disabled = true;
+                inputs.forEach(input => input.disabled = true);
+            } else {
+                if (btnText) btnText.style.display = 'inline';
+                if (btnLoader) btnLoader.style.display = 'none';
+                if (submitBtn) submitBtn.disabled = false;
+                inputs.forEach(input => input.disabled = false);
+            }
+        }
+
+        // Password validation
+        function validatePassword(password, confirmPassword = null) {
+            if (!password) {
+                return "Password is required";
+            }
+            if (password.length < 6) {
+                return "Password must be at least 6 characters";
+            }
+            if (confirmPassword !== null && password !== confirmPassword) {
+                return "Passwords do not match";
+            }
+            return null;
+        }
+
         function showMessage(message, isSuccess = false) {
             const messageArea = document.getElementById('message-area');
             messageArea.innerHTML = `
@@ -269,6 +371,17 @@ unset($_SESSION['reset_verified']);
             e.preventDefault();
             const email = document.getElementById('email').value;
             
+            // Clear previous errors
+            clearError('email');
+            
+            // Validate email
+            if (!email || !email.includes('@')) {
+                showError('email', 'Please enter a valid email address');
+                return;
+            }
+            
+            setLoading('emailForm', true);
+            
             fetch('', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -276,19 +389,34 @@ unset($_SESSION['reset_verified']);
             })
             .then(response => response.json())
             .then(data => {
+                setLoading('emailForm', false);
                 showMessage(data.message, data.success);
                 if (data.success) {
                     document.getElementById('user-email').textContent = email;
                     showStep(2);
                 }
             })
-            .catch(() => showMessage('Network error. Please try again.'));
+            .catch(() => {
+                setLoading('emailForm', false);
+                showMessage('Network error. Please try again.');
+            });
         };
 
         // Step 2: Verify OTP
         document.getElementById('otpForm').onsubmit = function(e) {
             e.preventDefault();
             const otp = document.getElementById('otp').value;
+            
+            // Clear previous errors
+            clearError('otp');
+            
+            // Validate OTP
+            if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+                showError('otp', 'Please enter a valid 6-digit OTP');
+                return;
+            }
+            
+            setLoading('otpForm', true);
             
             fetch('', {
                 method: 'POST',
@@ -297,12 +425,16 @@ unset($_SESSION['reset_verified']);
             })
             .then(response => response.json())
             .then(data => {
+                setLoading('otpForm', false);
                 showMessage(data.message, data.success);
                 if (data.success) {
                     showStep(3);
                 }
             })
-            .catch(() => showMessage('Network error. Please try again.'));
+            .catch(() => {
+                setLoading('otpForm', false);
+                showMessage('Network error. Please try again.');
+            });
         };
 
         // Step 3: Reset Password
@@ -311,10 +443,31 @@ unset($_SESSION['reset_verified']);
             const newPassword = document.getElementById('new_password').value;
             const confirmPassword = document.getElementById('confirm_password').value;
             
-            if (newPassword !== confirmPassword) {
-                showMessage('Passwords do not match!');
+            // Clear previous errors
+            clearError('new_password');
+            clearError('confirm_password');
+            
+            let hasError = false;
+            
+            // Validate password
+            const passwordError = validatePassword(newPassword);
+            if (passwordError) {
+                showError('new_password', passwordError);
+                hasError = true;
+            }
+            
+            // Validate confirm password
+            const confirmError = validatePassword(newPassword, confirmPassword);
+            if (confirmError && confirmError.includes('match')) {
+                showError('confirm_password', confirmError);
+                hasError = true;
+            }
+            
+            if (hasError) {
                 return;
             }
+            
+            setLoading('passwordForm', true);
             
             fetch('', {
                 method: 'POST',
@@ -323,17 +476,27 @@ unset($_SESSION['reset_verified']);
             })
             .then(response => response.json())
             .then(data => {
+                setLoading('passwordForm', false);
                 showMessage(data.message, data.success);
                 if (data.success && data.redirect) {
                     setTimeout(() => window.location.href = data.redirect, 2000);
                 }
             })
-            .catch(() => showMessage('Network error. Please try again.'));
+            .catch(() => {
+                setLoading('passwordForm', false);
+                showMessage('Network error. Please try again.');
+            });
         };
 
         // Resend OTP
         function resendOTP() {
             const email = document.getElementById('user-email').textContent;
+            const resendBtn = document.getElementById('resendBtn');
+            
+            // Disable resend button temporarily
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
             fetch('', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -342,9 +505,68 @@ unset($_SESSION['reset_verified']);
             .then(response => response.json())
             .then(data => {
                 showMessage(data.message, data.success);
+                
+                // Re-enable button after 30 seconds
+                setTimeout(() => {
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+                }, 30000);
             })
-            .catch(() => showMessage('Network error. Please try again.'));
+            .catch(() => {
+                showMessage('Network error. Please try again.');
+                resendBtn.disabled = false;
+                resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+            });
         }
+
+        // Real-time validation for password fields
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password field validation
+            const newPasswordField = document.getElementById('new_password');
+            const confirmPasswordField = document.getElementById('confirm_password');
+            
+            if (newPasswordField) {
+                newPasswordField.addEventListener('input', function() {
+                    clearError('new_password');
+                    const error = validatePassword(this.value);
+                    if (error && this.value.length > 0) {
+                        showError('new_password', error);
+                    }
+                });
+            }
+            
+            if (confirmPasswordField) {
+                confirmPasswordField.addEventListener('input', function() {
+                    clearError('confirm_password');
+                    const password = newPasswordField.value;
+                    const error = validatePassword(password, this.value);
+                    if (error && error.includes('match') && this.value.length > 0) {
+                        showError('confirm_password', error);
+                    }
+                });
+            }
+            
+            // Email field validation
+            const emailField = document.getElementById('email');
+            if (emailField) {
+                emailField.addEventListener('blur', function() {
+                    clearError('email');
+                    if (this.value && !this.value.includes('@')) {
+                        showError('email', 'Please enter a valid email address');
+                    }
+                });
+            }
+            
+            // OTP field validation
+            const otpField = document.getElementById('otp');
+            if (otpField) {
+                otpField.addEventListener('input', function() {
+                    // Only allow digits
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    clearError('otp');
+                });
+            }
+        });
     </script>
 </body>
 </html>
