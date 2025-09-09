@@ -1,0 +1,11 @@
+.btn-loader {
+    display: none;
+}
+.form-control:disabled {
+    background-color: #f8f9fa;
+    opacity: 0.65;
+}
+.submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}

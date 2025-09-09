@@ -133,7 +133,7 @@
         </form>
 
         <div class="forgot-password-link">
-            <a href="../../forgot_password/index.php">
+            <a href="../../forgot_password/view/index.php">
                 <i class="fas fa-key"></i> Forgot Password?
             </a>
         </div>
