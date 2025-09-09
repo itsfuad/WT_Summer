@@ -239,12 +239,6 @@ $totalPages = ceil($totalFunds / $limit);
                                         </div>
                                     </div>
                                 </div>
-    
-                                <div class="campaign-actions">
-                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-primary">
-                                        <i class="fas fa-eye"></i> View Details
-                                    </a>
-                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>

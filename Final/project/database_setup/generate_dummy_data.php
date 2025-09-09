@@ -321,15 +321,15 @@ try {
     echo "</div>\n";
 
     echo "<div style='margin:20px 0;'>\n";
-    echo "<a href='../../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;margin-right:10px;'>🎉 View Homepage</a>\n";
+    echo "<a href='../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;margin-right:10px;'>🎉 View Homepage</a>\n";
     echo "<a href='test.php' style='background:#6c757d;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>🔧 Test Database</a>\n";
     echo "</div>\n";
 
 } catch (Exception $e) {
     echo "<div style='background:#f8d7da;padding:15px;border-radius:5px;margin:10px 0;'>\n";
     echo "<strong>❌ Error:</strong> " . $e->getMessage() . "<br><br>\n";
-    echo "<strong>Solution:</strong> Make sure to run index.php first to create the database structure.<br>\n";
-    echo "<a href='index.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Run Database Setup</a>\n";
+    echo "<strong>Solution:</strong> Make sure to run create_db.php first to create the database structure.<br>\n";
+    echo "<a href='create_db.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Run Database Setup</a>\n";
     echo "</div>\n";
 }
 ?>

@@ -46,7 +46,7 @@ function removeFrozenState() {
     
     // Remove or restore login prompt
     const loginPrompt = document.querySelector('.login-prompt');
-    if (loginPrompt && loginPrompt.innerHTML.includes('frozen')) {
+    if (loginPrompt?.innerHTML.includes('frozen')) {
         const isLoggedIn = currentUserId !== null;
         const hasComments = document.querySelector('.comments-section');
         
@@ -129,7 +129,7 @@ function submitDonation(e) {
     const amount = parseFloat(document.getElementById('donation-amount').value || '0');
     const comment = document.getElementById('donation-comment').value.trim();
     const anonymous = document.getElementById('donation-anonymous').checked ? 1 : 0;
-    if (!(amount > 0)) { showNotification('Enter a valid amount', 'error'); return; }
+    if (amount <= 0) { showNotification('Enter a valid amount', 'error'); return; }
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing';
     fetch('../ajax/donate.php', {

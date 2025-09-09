@@ -4,8 +4,8 @@ echo "<h2>🔧 CrowdFund Database Test</h2>\n";
 
 try {
 
-    require_once '../database.php';
-    require_once '../../shared/includes/functions.php';
+    require_once '../config/database.php';
+    require_once '../shared/includes/functions.php';
 
     // Test database connection
     echo "<p>1. Testing database connection...</p>\n";
@@ -68,7 +68,7 @@ try {
         
         echo "<div style='background:#d4edda;padding:20px;border-radius:5px;margin:20px 0;'>\n";
         echo "<h3 style='color:green;'>🎉 Everything is working correctly!</h3>\n";
-        echo "<a href='../../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>Visit Homepage</a>\n";
+        echo "<a href='../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>Visit Homepage</a>\n";
         echo "</div>\n";
     } else {
         echo "<div style='background:#fff3cd;padding:15px;border-radius:5px;margin:10px 0;'>\n";
@@ -82,8 +82,8 @@ try {
     echo "<strong>❌ Error:</strong> " . htmlspecialchars($e->getMessage()) . "<br><br>\n";
     
     if (strpos($e->getMessage(), 'Unknown database') !== false) {
-        echo "<strong>🔧 Solution:</strong> Run setup.php first to create the database<br>\n";
-        echo "<a href='setup.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Setup Database</a>\n";
+        echo "<strong>🔧 Solution:</strong> Run create_db.php first to create the database<br>\n";
+        echo "<a href='create_db.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Setup Database</a>\n";
     } elseif (strpos($e->getMessage(), 'Connection refused') !== false || strpos($e->getMessage(), 'Connection failed') !== false) {
         echo "<strong>🔧 Solution:</strong> Make sure XAMPP MySQL service is running<br>\n";
     } else {
