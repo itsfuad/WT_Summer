@@ -14,6 +14,13 @@ function applyFrozenState() {
         commentFormSection.style.display = 'none';
     }
     
+    // Disable all freeze-toggle buttons
+    const buttons = document.querySelectorAll('.freeze-toggle');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.title = 'Campaign is frozen';
+    });
+    
     // Add frozen message
     if (!document.querySelector('.login-prompt')) {
         const frozenMessage = document.createElement('div');
@@ -43,6 +50,13 @@ function removeFrozenState() {
     if (commentFormSection) {
         commentFormSection.style.display = '';
     }
+    
+    // Enable all freeze-toggle buttons
+    const buttons = document.querySelectorAll('.freeze-toggle');
+    buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.removeAttribute('title');
+    });
     
     // Remove or restore login prompt
     const loginPrompt = document.querySelector('.login-prompt');

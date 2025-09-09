@@ -163,7 +163,7 @@ $days_left = getDaysLeft($fund['end_date']);
                                 <?php echo $fund['status'] === 'frozen' ? 'Unfreeze' : 'Freeze'; ?>
                             </button>
                         <?php elseif ($userRole === 'backer' || ($userRole === 'fundraiser' && $fund['fundraiser_id'] != $user['id'])): ?>
-                            <button class="btn btn-primary" onclick="openDonateModal()" <?php echo $fund['status'] === 'frozen' ? 'disabled title="Campaign is frozen"' : ''; ?>>
+                            <button class="btn btn-primary freeze-toggle" onclick="openDonateModal()" <?php echo $fund['status'] === 'frozen' ? 'disabled title="Campaign is frozen"' : ''; ?>>
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Donate
                             </button>
@@ -180,20 +180,20 @@ $days_left = getDaysLeft($fund['end_date']);
                             </a>
                         <?php endif; ?>
                         
-            <button class="btn btn-outline like-btn <?php echo $userHasLiked ? 'liked' : ''; ?>"
-                onclick="toggleLike(<?php echo $fund['id']; ?>)"
-                id="like-btn" <?php echo (!$user || $fund['status'] === 'frozen') ? 'disabled title="' . ($fund['status'] === 'frozen' ? 'Campaign is frozen' : 'Login required') . '"' : ''; ?>>
+                        <button class="btn btn-outline like-btn freeze-toggle <?php echo $userHasLiked ? 'liked' : ''; ?>"
+                            onclick="toggleLike(<?php echo $fund['id']; ?>)"
+                            id="like-btn" <?php echo (!$user || $fund['status'] === 'frozen') ? 'disabled title="' . ($fund['status'] === 'frozen' ? 'Campaign is frozen' : 'Login required') . '"' : ''; ?>>
                             <i class="fas fa-heart"></i>
                             <span id="like-text"><?php echo $userHasLiked ? 'Liked' : 'Like'; ?></span>
                             <span id="likes-count">(<?php echo $likesCount; ?>)</span>
                         </button>
                         
-                        <button class="btn btn-outline" onclick="shareCampaign()" <?php echo $fund['status'] === 'frozen' ? 'disabled title="Campaign is frozen"' : ''; ?>>
+                        <button class="btn btn-outline freeze-toggle" onclick="shareCampaign()" <?php echo $fund['status'] === 'frozen' ? 'disabled title="Campaign is frozen"' : ''; ?>>
                             <i class="fas fa-share"></i>
                             Share
                         </button>
                         <?php if ($userRole != 'admin'): ?>
-                        <button class="btn btn-outline" onclick="openReportModal()" <?php echo (!$user || $fund['status'] === 'frozen') ? 'disabled title="' . ($fund['status'] === 'frozen' ? 'Campaign is frozen' : 'Login required') . '"' : ''; ?>>
+                        <button class="btn btn-outline freeze-toggle" onclick="openReportModal()" <?php echo (!$user || $fund['status'] === 'frozen') ? 'disabled title="' . ($fund['status'] === 'frozen' ? 'Campaign is frozen' : 'Login required') . '"' : ''; ?>>
                             <i class="fas fa-flag"></i>
                             Report
                         </button>
@@ -245,11 +245,12 @@ $days_left = getDaysLeft($fund['end_date']);
                         </div>
                     </form>
                 </div>
+                
                 <?php if ($fund['status'] === 'frozen'): ?>
                 <div class="login-prompt">
                     <span style="color: black;"><i class="fas fa-pause"></i> This campaign is currently frozen</span>
                 </div>
-                <?php elseif ($commentsCount > 0): ?>
+                <?php elseif (!$user && $commentsCount > 0): ?>
                 <div class="login-prompt">
                     <p><a href="../../login/view/index.php">Login</a> to join the conversation</p>
                 </div>
