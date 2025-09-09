@@ -1253,6 +1253,91 @@ class UserManager {
         $user = $stmt->fetch();
         return $user ? $user['profile_image'] : null;
     }
+    
+    /**
+     * Get fundraiser statistics
+     */
+    public function getFundraiserStats($userId) {
+        $stats = [
+            'total_campaigns' => 0,
+            'active_campaigns' => 0,
+            'total_raised' => 0,
+            'completed_campaigns' => 0
+        ];
+        
+        // Get total campaigns count
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM funds WHERE fundraiser_id = ?");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['total_campaigns'] = $result['count'];
+        
+        // Get active campaigns count
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM funds WHERE fundraiser_id = ? AND status = 'active' AND end_date >= CURDATE()");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['active_campaigns'] = $result['count'];
+        
+        // Get completed campaigns count
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as count FROM funds WHERE fundraiser_id = ? AND (status = 'completed' OR end_date < CURDATE())");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['completed_campaigns'] = $result['count'];
+        
+        // Get total amount raised
+        $stmt = $this->pdo->prepare("SELECT SUM(current_amount) as total FROM funds WHERE fundraiser_id = ?");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['total_raised'] = $result['total'] ?? 0;
+        
+        return $stats;
+    }
+    
+    /**
+     * Get backer statistics
+     */
+    public function getBackerStats($userId) {
+        $stats = [
+            'campaigns_supported' => 0,
+            'total_donated' => 0,
+            'last_donation_date' => null,
+            'favorite_category' => null
+        ];
+        
+        // Get campaigns supported count
+        $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT fund_id) as count FROM donations WHERE backer_id = ? AND payment_status = 'completed'");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['campaigns_supported'] = $result['count'];
+        
+        // Get total donated amount
+        $stmt = $this->pdo->prepare("SELECT SUM(amount) as total FROM donations WHERE backer_id = ? AND payment_status = 'completed'");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['total_donated'] = $result['total'] ?? 0;
+        
+        // Get last donation date
+        $stmt = $this->pdo->prepare("SELECT MAX(created_at) as last_date FROM donations WHERE backer_id = ? AND payment_status = 'completed'");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['last_donation_date'] = $result['last_date'];
+        
+        // Get favorite category (most donated to)
+        $stmt = $this->pdo->prepare("
+            SELECT c.name, SUM(d.amount) as total_amount 
+            FROM donations d 
+            JOIN funds f ON d.fund_id = f.id 
+            JOIN categories c ON f.category_id = c.id 
+            WHERE d.backer_id = ? AND d.payment_status = 'completed' 
+            GROUP BY c.id 
+            ORDER BY total_amount DESC 
+            LIMIT 1
+        ");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        $stats['favorite_category'] = $result ? $result['name'] : null;
+        
+        return $stats;
+    }
 }
 
 // Utility functions

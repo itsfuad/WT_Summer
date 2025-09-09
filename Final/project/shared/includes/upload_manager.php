@@ -1,8 +1,4 @@
 <?php
-/**
- * Simple File Upload Manager
- * Handles basic file upload and storage without image processing
- */
 
 class UploadManager {
     private $uploadsDir;
@@ -15,24 +11,15 @@ class UploadManager {
         $this->webRoot = '../..';
         $this->uploadsDir = $this->webRoot . '/uploads';
     }
-    
-    /**
-     * Upload profile image
-     */
+
     public function uploadProfileImage($file, $userId) {
         return $this->uploadFile($file, 'profile', $userId);
     }
     
-    /**
-     * Upload cover image
-     */
     public function uploadCoverImage($file, $fundId) {
         return $this->uploadFile($file, 'cover', $fundId);
     }
     
-    /**
-     * Main upload handler
-     */
     private function uploadFile($file, $type, $entityId) {
         // Validate file
         $validation = $this->validateFile($file);
@@ -90,9 +77,6 @@ class UploadManager {
         }
     }
     
-    /**
-     * Validate uploaded file
-     */
     private function validateFile($file) {
         // Check for upload errors
         if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -116,25 +100,16 @@ class UploadManager {
         return ['success' => true];
     }
     
-    /**
-     * Generate unique filename
-     */
     private function generateUniqueFilename($entityId, $type, $extension) {
         $timestamp = time();
         $hash = substr(hash('sha256', $entityId . $type . $timestamp . uniqid()), 0, 16);
         return $type . '_' . $entityId . '_' . $hash . '.' . $extension;
     }
     
-    /**
-     * Get file extension
-     */
     private function getFileExtension($filename) {
         return strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     }
     
-    /**
-     * Update database with new file path
-     */
     private function updateDatabase($type, $entityId, $filename) {
         if ($type === 'profile') {
             $userManager = new UserManager();
@@ -145,9 +120,6 @@ class UploadManager {
         }
     }
     
-    /**
-     * Get image URL based on type and filename
-     */
     public function getImageUrl($type, $filename = null) {
         if ($filename) {
             $path = $this->uploadsDir . '/' . $type . 's/' . $filename;
@@ -158,9 +130,6 @@ class UploadManager {
         return $this->webRoot . '/images/default-' . $type . '.png';
     }
     
-    /**
-     * Render upload form
-     */
     public function renderUploadForm($type, $currentImage = null) {
         $inputName = $type . '_image';
         $previewId = $type . '_preview';
