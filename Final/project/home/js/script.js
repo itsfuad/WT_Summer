@@ -96,6 +96,7 @@ function showNotification(message, type) {
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
+    const statusFilter = document.getElementById('statusFilter');
     const sortFilter = document.getElementById('sortFilter');
     const searchForm = document.getElementById('searchForm');
     const clearFiltersBtn = document.getElementById('clearFilters');
@@ -113,17 +114,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const search = urlParams.get('search') || '';
         const category = urlParams.get('category') || '';
+        const status = urlParams.get('status') || 'active';
         const sort = urlParams.get('sort') || 'featured';
         const page = parseInt(urlParams.get('page')) || 1;
 
         searchInput.value = search;
         categoryFilter.value = category;
+        statusFilter.value = status;
         sortFilter.value = sort;
         currentPage = page;
 
         // Only load campaigns via AJAX if we have active filters
         // Otherwise, let the PHP-rendered page show (with featured section)
-        if (search || category || sort !== 'featured' || page > 1) {
+        if (search || category || status !== 'active' || sort !== 'featured' || page > 1) {
             loadCampaigns();
         }
     }
@@ -133,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.state) {
             searchInput.value = event.state.search || '';
             categoryFilter.value = event.state.category || '';
+            statusFilter.value = event.state.status || 'active';
             sortFilter.value = event.state.sort || 'featured';
             currentPage = event.state.page || 1;
             loadCampaigns();
@@ -149,8 +153,13 @@ document.addEventListener('DOMContentLoaded', function() {
         loadCampaigns();
     });
 
-    // Auto-filter on category/sort change
+    // Auto-filter on category/status/sort change
     categoryFilter.addEventListener('change', function() {
+        currentPage = 1;
+        loadCampaigns();
+    });
+
+    statusFilter.addEventListener('change', function() {
         currentPage = 1;
         loadCampaigns();
     });
@@ -180,12 +189,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadCampaigns() {
         const search = searchInput.value.trim();
         const category = categoryFilter.value;
+        const status = statusFilter.value;
         const sort = sortFilter.value;
 
         // Build clean params object (exclude empty values)
         const params = new URLSearchParams();
         if (search) params.set('search', search);
         if (category) params.set('category', category);
+        if (status && status !== 'active') params.set('status', status);
         if (sort && sort !== 'featured') params.set('sort', sort);
         if (currentPage > 1) params.set('page', currentPage);
 
@@ -193,12 +204,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const newUrl = params.toString() ? 
             window.location.pathname + '?' + params.toString() : 
             window.location.pathname;
-        window.history.pushState({search, category, sort, page: currentPage}, '', newUrl);
+        window.history.pushState({search, category, status, sort, page: currentPage}, '', newUrl);
 
         // For AJAX call, include all params even if default
         const ajaxParams = new URLSearchParams({
             search: search,
             category: category,
+            status: status,
             sort: sort,
             page: currentPage
         });
@@ -228,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     // Update clear button visibility
-                    const hasFilters = search || category || sort !== 'featured';
+                    const hasFilters = search || category || status !== 'active' || sort !== 'featured';
                     if (clearFiltersBtn) {
                         clearFiltersBtn.style.display = hasFilters ? 'inline-flex' : 'none';
                     }

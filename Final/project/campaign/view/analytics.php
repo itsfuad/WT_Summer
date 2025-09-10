@@ -27,8 +27,8 @@ if (!$fund || $fund['fundraiser_id'] != $user['id']) {
 // Get analytics data
 $analytics = $fundManager->getFundAnalytics($fund_id);
 $dailyData = $fundManager->getDailyDonationData($fund_id);
-$topDonations = $fundManager->getTopDonations($fund_id, 5);
-$recentActivity = $fundManager->getRecentActivity($fund_id, 10);
+$topDonations = $fundManager->getFundDonations($fund_id, 'top', 5);
+$recentActivity = $fundManager->getFundDonations($fund_id, 'recent', 10);
 
 // Get engagement data
 $commentsCount = $fundManager->getCommentsCount($fund_id);

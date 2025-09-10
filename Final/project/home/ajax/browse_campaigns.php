@@ -12,14 +12,13 @@ try {
     // Get parameters
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
     $category = isset($_GET['category']) ? $_GET['category'] : '';
+    $status = isset($_GET['status']) ? $_GET['status'] : 'active';
     $sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
     $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     $limit = 6;
     
-    // Modify search/category parameters for getAllFunds method
-    if ($category === 'frozen') {
-        $categoryParam = 'frozen';
-    } elseif ($category !== '' && is_numeric($category)) {
+    // Modify category parameters for getAllFunds method
+    if ($category !== '' && is_numeric($category)) {
         $categoryParam = (int)$category;
     } else {
         $categoryParam = null;
@@ -29,11 +28,11 @@ try {
     $excludeFeatured = ($sort !== 'featured');
     
     // Get total count first for pagination calculation
-    $totalFunds = $fundManager->getTotalFundsCount($categoryParam, $search, $excludeFeatured);
+    $totalFunds = $fundManager->getTotalFundsCount($categoryParam, $search, $excludeFeatured, $status);
     $totalPages = ceil($totalFunds / $limit);
     
     // Get only the records needed for this page from database
-    $campaigns = $fundManager->getAllFunds($page, $limit, $categoryParam, $search, $sort, $excludeFeatured);
+    $campaigns = $fundManager->getAllFunds($page, $limit, $categoryParam, $search, $sort, $excludeFeatured, $status);
     
     // Get user likes for all funds if user is logged in
     $userLikedFunds = [];

@@ -25,7 +25,7 @@ $user = isLoggedIn() ? getCurrentUser() : null;
 $userRole = $user ? $user['role'] : 'guest';
 
 // Get recent donations
-$donations = $fundManager->getRecentDonations($fund_id, 5);
+$donations = $fundManager->getFundDonations($fund_id, 'recent', 5);
 
 // Get comments and engagement data
 $comments = $fundManager->getFundComments($fund_id, 20);

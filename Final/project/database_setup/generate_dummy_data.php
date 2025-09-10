@@ -158,8 +158,11 @@ try {
         $fundraiser_id = $fundraiser_ids[array_rand($fundraiser_ids)];
         $category_id = $categories[array_rand($categories)];
         $icon = $icons[array_rand($icons)];
-        $start_date = date('Y-m-d', strtotime('-'.rand(0,365).' days'));
-        $end_date = date('Y-m-d', strtotime($start_date.' + '.rand(30,180).' days'));
+        // Generate dates to ensure most campaigns are still active
+        // Start date: between 90 days ago and 30 days in the future
+        $start_date = date('Y-m-d', strtotime('-'.rand(0,90).' days + '.rand(0,30).' days'));
+        // End date: 60 to 365 days from start date (ensuring campaigns are still active)
+        $end_date = date('Y-m-d', strtotime($start_date.' + '.rand(60,365).' days'));
         $featured = rand(1,10)==1?1:0;
         $views = rand(50,5000);
         $created_at = date('Y-m-d H:i:s', strtotime('-'.rand(0,365).' days'));

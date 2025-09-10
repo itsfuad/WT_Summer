@@ -21,6 +21,7 @@ $topBackers = $fundManager->getTopBackers($topBackerCount);
 $page = max(1, (int)($_GET['page'] ?? 1));
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
+$status = $_GET['status'] ?? 'active'; // all, active, completed, paused, frozen
 $sort = $_GET['sort'] ?? 'featured'; // featured, newest, oldest, most_funded, least_funded
 $limit = 6;
 
@@ -29,7 +30,7 @@ $categories = $fundManager->getCategories();
 
 // Get all funds with pagination and filters
 $excludeFeatured = ($sort !== 'featured');
-$allFunds = $fundManager->getAllFunds($page, $limit, $category, $search, $sort, $excludeFeatured);
+$allFunds = $fundManager->getAllFunds($page, $limit, $category, $search, $sort, $excludeFeatured, $status);
 
 // Get user likes for all funds if user is logged in
 $userLikedFunds = [];
@@ -39,7 +40,7 @@ if ($isLoggedIn && !empty($allFunds)) {
 }
 
 // Get total count for pagination
-$totalFunds = $fundManager->getTotalFundsCount($category, $search, $excludeFeatured);
+$totalFunds = $fundManager->getTotalFundsCount($category, $search, $excludeFeatured, $status);
 $totalPages = ceil($totalFunds / $limit);
 ?>
 <!DOCTYPE html>
@@ -121,8 +122,17 @@ $totalPages = ceil($totalFunds / $limit);
                                             <?php echo htmlspecialchars($cat['name']); ?>
                                         </option>
                                     <?php endforeach; ?>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-item">
+                                <select id="statusFilter" name="status" class="filter-select">
+                                    <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Active</option>
+                                    <option value="all" <?php echo $status === 'all' ? 'selected' : ''; ?>>All Status</option>
+                                    <option value="completed" <?php echo $status === 'completed' ? 'selected' : ''; ?>>Completed</option>
+                                    <option value="paused" <?php echo $status === 'paused' ? 'selected' : ''; ?>>Paused</option>
                                     <?php if ($isLoggedIn && $user['role'] === 'admin'): ?>
-                                        <option value="frozen" <?php echo $category === 'frozen' ? 'selected' : ''; ?>>Frozen Campaigns</option>
+                                        <option value="frozen" <?php echo $status === 'frozen' ? 'selected' : ''; ?>>Frozen</option>
                                     <?php endif; ?>
                                 </select>
                             </div>
@@ -141,7 +151,7 @@ $totalPages = ceil($totalFunds / $limit);
                                 <button type="submit" class="btn btn-primary btn-large">
                                     <i class="fas fa-search"></i> Search
                                 </button>
-                                <?php if ($search || $category || $sort !== 'newest'): ?>
+                                <?php if ($search || $category || $status !== 'active' || $sort !== 'featured'): ?>
                                     <button type="button" id="clearFilters" class="btn btn-large btn-secondary">
                                         <i class="fas fa-times"></i> Clear
                                     </button>
@@ -154,7 +164,7 @@ $totalPages = ceil($totalFunds / $limit);
                 <!-- Results Summary -->
                 <div class="results-summary">
                     <span class="results-count">
-                        <strong id="resultsCount"><?php echo count($allFunds); ?></strong> of <strong id="totalCount"><?php echo $totalFunds; ?></strong> campaigns
+                        <strong id="resultsCount">Showing <?php echo count($allFunds); ?></strong> of <strong id="totalCount"><?php echo $totalFunds; ?></strong> campaigns
                     </span>
                     <span class="page-info" id="pageInfo">
                         <?php if ($totalPages > 1): ?>

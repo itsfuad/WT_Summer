@@ -29,14 +29,12 @@ class FundManager {
                 c.name as category_name,
                 c.icon as category_icon,
                 c.color as category_color,
-                COUNT(d.id) as backer_count,
+                (SELECT COUNT(DISTINCT d.backer_id) FROM donations d WHERE d.fund_id = f.id AND d.payment_status = 'completed') as backer_count,
                 DATEDIFF(f.end_date, CURDATE()) as days_left
             FROM funds f
             LEFT JOIN users u ON f.fundraiser_id = u.id
             LEFT JOIN categories c ON f.category_id = c.id
-            LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
             WHERE f.status = 'active' AND f.end_date >= CURDATE()
-            GROUP BY f.id
             ORDER BY f.featured DESC, f.current_amount DESC, f.created_at DESC
             LIMIT $limit
         ";
@@ -47,23 +45,30 @@ class FundManager {
     }
     
     /**
-     * Get all active funds with pagination
+     * Get all funds with pagination and filters
      */
-    public function getAllFunds($page = 1, $limit = 12, $category = null, $search = null, $sort = 'featured', $excludeFeatured = false) {
+    public function getAllFunds($page = 1, $limit = 12, $category = null, $search = null, $sort = 'featured', $excludeFeatured = false, $status = 'active') {
         // Ensure numeric values are integers
         $page = (int)$page;
         $limit = (int)$limit;
         $offset = ($page - 1) * $limit;
         
-        // Base conditions - show only frozen campaigns for 'frozen' category, otherwise only active
-        if ($category === 'frozen') {
-            $conditions = ["f.status = 'frozen'", "f.end_date >= CURDATE()"];
-        } else {
-            $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
-        }
+        // Base conditions
+        $conditions = [];
         $params = [];
         
-        if ($category && $category !== 'frozen') {
+        // Handle status filter
+        if ($status && $status !== 'all') {
+            $conditions[] = "f.status = ?";
+            $params[] = $status;
+        }
+        
+        // Only show non-expired campaigns for active status
+        if ($status === 'active' || $status === 'all') {
+            $conditions[] = "f.end_date >= CURDATE()";
+        }
+        
+        if ($category) {
             $conditions[] = "f.category_id = ?";
             $params[] = $category;
         }
@@ -110,18 +115,12 @@ class FundManager {
                     c.name as category_name,
                     c.icon as category_icon,
                     c.color as category_color,
-                    COUNT(DISTINCT d.id) as backer_count,
-                    COUNT(DISTINCT l.id) as likes_count,
-                    COUNT(DISTINCT cm.id) as comments_count,
+                    (SELECT COUNT(DISTINCT d.backer_id) FROM donations d WHERE d.fund_id = f.id AND d.payment_status = 'completed') as backer_count,
                     DATEDIFF(f.end_date, CURDATE()) as days_left
                 FROM funds f
                 LEFT JOIN users u ON f.fundraiser_id = u.id
                 LEFT JOIN categories c ON f.category_id = c.id
-                LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
-                LEFT JOIN fund_likes l ON f.id = l.fund_id
-                LEFT JOIN comments cm ON f.id = cm.fund_id
                 WHERE $whereClause
-                GROUP BY f.id, u.name, c.name, c.icon, c.color
                 ORDER BY $orderBy
                 LIMIT $limit OFFSET $offset
             ";
@@ -145,18 +144,25 @@ class FundManager {
     }
     
     /**
-     * Get total count of active funds
+     * Get total count of funds with filters
      */
-    public function getTotalFundsCount($category = null, $search = null, $excludeFeatured = false) {
-        // Base conditions - show only frozen campaigns for 'frozen' category, otherwise only active
-        if ($category === 'frozen') {
-            $conditions = ["f.status = 'frozen'", "f.end_date >= CURDATE()"];
-        } else {
-            $conditions = ["f.status = 'active'", "f.end_date >= CURDATE()"];
-        }
+    public function getTotalFundsCount($category = null, $search = null, $excludeFeatured = false, $status = 'active') {
+        // Base conditions
+        $conditions = [];
         $params = [];
         
-        if ($category && $category !== 'frozen') {
+        // Handle status filter
+        if ($status && $status !== 'all') {
+            $conditions[] = "f.status = ?";
+            $params[] = $status;
+        }
+        
+        // Only show non-expired campaigns for active status
+        if ($status === 'active' || $status === 'all') {
+            $conditions[] = "f.end_date >= CURDATE()";
+        }
+        
+        if ($category) {
             $conditions[] = "f.category_id = ?";
             $params[] = $category;
         }
@@ -196,14 +202,12 @@ class FundManager {
                 c.name as category_name,
                 c.icon as category_icon,
                 c.color as category_color,
-                COUNT(d.id) as backer_count,
+                (SELECT COUNT(DISTINCT d.backer_id) FROM donations d WHERE d.fund_id = f.id AND d.payment_status = 'completed') as backer_count,
                 DATEDIFF(f.end_date, CURDATE()) as days_left
             FROM funds f
             LEFT JOIN users u ON f.fundraiser_id = u.id
             LEFT JOIN categories c ON f.category_id = c.id
-            LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
             WHERE f.id = ?
-            GROUP BY f.id
         ");
         
         $stmt->execute([$id]);
@@ -242,13 +246,11 @@ class FundManager {
                 c.name as category_name,
                 c.icon as category_icon,
                 c.color as category_color,
-                COUNT(d.id) as backer_count,
+                (SELECT COUNT(DISTINCT d.backer_id) FROM donations d WHERE d.fund_id = f.id AND d.payment_status = 'completed') as backer_count,
                 DATEDIFF(f.end_date, CURDATE()) as days_left
             FROM funds f
             LEFT JOIN categories c ON f.category_id = c.id
-            LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
             WHERE f.fundraiser_id = ?
-            GROUP BY f.id
             ORDER BY f.created_at DESC
         ");
         
@@ -356,29 +358,7 @@ class FundManager {
         return $donations;
     }
 
-    /**
-     * Legacy function - use getFundDonations with sort='recent' instead
-     * @deprecated
-     */
-    public function getRecentDonations($fund_id, $limit = 10) {
-        return $this->getFundDonations($fund_id, 'recent', $limit);
-    }
 
-    /**
-     * Legacy function - use getFundDonations with sort='top' instead  
-     * @deprecated
-     */
-    public function getTopDonations($fund_id, $limit = 5) {
-        return $this->getFundDonations($fund_id, 'top', $limit);
-    }
-
-    /**
-     * Legacy function - use getFundDonations with sort='recent' instead
-     * @deprecated
-     */
-    public function getRecentActivity($fund_id, $limit = 10) {
-        return $this->getFundDonations($fund_id, 'recent', $limit);
-    }
     
     /**
      * Get fund analytics data
@@ -444,26 +424,41 @@ class FundManager {
      * Add a comment to a fund
      */
     public function addComment($fund_id, $user_id, $comment) {
-        $stmt = $this->pdo->prepare("INSERT INTO comments (fund_id, user_id, comment) 
-            VALUES (?, ?, ?)
-        ");
+        $this->pdo->beginTransaction();
         
-        if ($stmt->execute([$fund_id, $user_id, $comment])) {
-            return $this->pdo->lastInsertId();
+        try {
+            // Insert the comment
+            $stmt = $this->pdo->prepare("INSERT INTO comments (fund_id, user_id, comment) 
+                VALUES (?, ?, ?)
+            ");
+            
+            if ($stmt->execute([$fund_id, $user_id, $comment])) {
+                $comment_id = $this->pdo->lastInsertId();
+                
+                // Update the comments count in the funds table
+                $stmt = $this->pdo->prepare("UPDATE funds SET comments_count = comments_count + 1 WHERE id = ?");
+                $stmt->execute([$fund_id]);
+                
+                $this->pdo->commit();
+                return $comment_id;
+            }
+            
+            $this->pdo->rollBack();
+            return false;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            throw $e;
         }
-        return false;
     }
     
     /**
-     * Get comments count for a fund
+     * Get comments count for a fund (using stored count for better performance)
      */
     public function getCommentsCount($fund_id) {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM comments 
-            WHERE fund_id = ? AND status = 'active'
-        ");
-        
+        $stmt = $this->pdo->prepare("SELECT comments_count FROM funds WHERE id = ?");
         $stmt->execute([$fund_id]);
-        return $stmt->fetchColumn();
+        $count = $stmt->fetchColumn();
+        return $count !== false ? (int)$count : 0;
     }
     
     /**
@@ -482,12 +477,40 @@ class FundManager {
      * Delete a comment (soft delete)
      */
     public function deleteComment($comment_id) {
-        $stmt = $this->pdo->prepare("UPDATE comments 
-            SET status = 'deleted', updated_at = NOW() 
-            WHERE id = ?
-        ");
+        $this->pdo->beginTransaction();
         
-        return $stmt->execute([$comment_id]);
+        try {
+            // Get the fund_id before deleting the comment
+            $stmt = $this->pdo->prepare("SELECT fund_id FROM comments WHERE id = ? AND status = 'active'");
+            $stmt->execute([$comment_id]);
+            $fund_id = $stmt->fetchColumn();
+            
+            if (!$fund_id) {
+                $this->pdo->rollBack();
+                return false;
+            }
+            
+            // Soft delete the comment
+            $stmt = $this->pdo->prepare("UPDATE comments 
+                SET status = 'deleted', updated_at = NOW() 
+                WHERE id = ?
+            ");
+            
+            if ($stmt->execute([$comment_id])) {
+                // Update the comments count in the funds table
+                $stmt = $this->pdo->prepare("UPDATE funds SET comments_count = comments_count - 1 WHERE id = ? AND comments_count > 0");
+                $stmt->execute([$fund_id]);
+                
+                $this->pdo->commit();
+                return true;
+            }
+            
+            $this->pdo->rollBack();
+            return false;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
     }
     
     /**
@@ -1053,6 +1076,42 @@ class FundManager {
         $stmt->execute([$fundId]);
         $fund = $stmt->fetch();
         return $fund ? $fund['image_url'] : null;
+    }
+    
+    /**
+     * Debug function to check campaign status
+     */
+    public function getCampaignStats() {
+        $stmt = $this->pdo->query("SELECT 
+            COUNT(*) as total_campaigns,
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_campaigns,
+            SUM(CASE WHEN status = 'active' AND end_date >= CURDATE() THEN 1 ELSE 0 END) as active_not_expired,
+            SUM(CASE WHEN status = 'active' AND end_date < CURDATE() THEN 1 ELSE 0 END) as active_expired,
+            SUM(CASE WHEN featured = 1 THEN 1 ELSE 0 END) as featured_campaigns
+        FROM funds");
+        return $stmt->fetch();
+    }
+    
+    /**
+     * Get all funds including expired ones (for debugging)
+     */
+    public function getAllFundsIncludingExpired($limit = 50) {
+        $limit = (int)$limit;
+        $stmt = $this->pdo->prepare("SELECT 
+            f.*, 
+            u.name as fundraiser_name,
+            c.name as category_name,
+            DATEDIFF(f.end_date, CURDATE()) as days_left,
+            CASE WHEN f.end_date < CURDATE() THEN 'EXPIRED' ELSE 'ACTIVE' END as expiry_status
+        FROM funds f
+        LEFT JOIN users u ON f.fundraiser_id = u.id
+        LEFT JOIN categories c ON f.category_id = c.id
+        WHERE f.status = 'active'
+        ORDER BY f.created_at DESC
+        LIMIT $limit");
+        
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }
 
