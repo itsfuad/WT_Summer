@@ -61,14 +61,14 @@ try {
 
             if ($campaign['status'] === 'frozen') {
                 $campaignsHtml .= "
-                <div class='frozen-badge'>
+                <div class='status-badge status-frozen'>
                     <i class='fas fa-pause'></i> Frozen
                 </div>";
             }
             
             if ($campaign['featured']) {
                 $campaignsHtml .= "
-                <div class='featured-badge'>
+                <div class='status-badge status-featured'>
                     <i class='fas fa-star'></i> Featured
                 </div>";
             }

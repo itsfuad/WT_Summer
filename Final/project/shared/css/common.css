@@ -791,42 +791,6 @@ p {
     color: inherit;
 }
 
-.featured-badge {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: linear-gradient(135deg, #4ac37b, #00bdd4);
-    color: var(--white);
-    padding: 4px 10px;
-    border-radius: 25px 0 0 25px;
-    width: max-content;
-    font-size: var(--font-sm);
-    font-weight: 600;
-    z-index: 1;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.frozen-badge {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 25px 0 0 25px;
-    width: max-content;
-    font-size: var(--font-sm);
-    font-weight: 600;
-    z-index: 1;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* show only last badge */
-.featured-badge + .frozen-badge,
-.frozen-badge + .featured-badge {
-    display: none;
-}
-
 /* Charts Row */
 .charts-row {
     display: grid;
@@ -863,6 +827,70 @@ p {
 .chart-card h3 i {
     color: var(--gray-400);
 }
+
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    margin-left: auto;
+    font-weight: 700;
+    width: max-content;
+}
+
+.status-active {
+    color: #16a34a; /* green - ongoing, positive */
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+
+.status-completed {
+    color: #2563eb; /* blue - stable, finished */
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+.status-cancelled {
+    color: #dc2626; /* red - error, stop */
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+.status-frozen {
+    color: #0ea5e9; /* icy blue */
+    border-color: #bae6fd;
+    background: #f0f9ff;
+}
+
+.status-paused {
+    color: #d97706; /* amber/orange - waiting */
+    border-color: #fde68a;
+    background: #fffbeb;
+}
+
+.status-featured {
+    color: #eab308; /* gold - highlight */
+    border-color: #fef08a;
+    background: #fefce8;
+}
+
+
+.by {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-500);
+}
+
+.by a {
+    color: inherit;
+    filter: brightness(0.5);
+}
+
+.no-pad.status-badge {
+    margin-left: 5px;
+}
+
 
 @media (max-width: 768px) {
     .header-content {

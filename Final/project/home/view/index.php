@@ -189,21 +189,26 @@ $totalPages = ceil($totalFunds / $limit);
                             ?>
                             <div class="campaign-card">
                                 <?php if ($fund['status'] === 'frozen'): ?>
-                                    <div class="frozen-badge badge">
+                                    <div class="status-badge status-frozen">
                                         <i class="fas fa-pause"></i> Frozen
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($fund['featured']): ?>
-                                    <div class="featured-badge">
+                                    <div class="status-badge status-featured">
                                         <i class="fas fa-star"></i> Featured
                                     </div>
                                 <?php endif; ?>
                                 <div class="campaign-header">
-                                    <i class="campaign-icon <?php echo htmlspecialchars($fund['category_icon'] ?? 'fas fa-folder'); ?>"></i>
                                     <div>
                                         <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></a>
-                                        <div class="campaign-fundraiser">by <?php echo htmlspecialchars($fund['fundraiser_name']); ?></div>
+                                        <div class="by">
+                                           by <a href="../../public_profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
+                                        </div>
                                     </div>
+                                    <span class="status-badge no-pad category" style="color: <?php echo $fund['category_color'] ?? '#000'; ?>;">
+                                        <i class="<?php echo $fund['category_icon'] ?? 'fas fa-tag'; ?>"></i>
+                                        <?php echo htmlspecialchars($fund['category_name']); ?>
+                                    </span>
                                 </div>
     
                                 <div class="campaign-description">

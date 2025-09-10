@@ -96,29 +96,30 @@ $days_left = getDaysLeft($fund['end_date']);
                     <?php endif; ?>
                 </div>
                 <div class="campaign-info">
-                    <div class="campaign-meta">
-                        <span class="category">
-                            <i class="<?php echo $fund['category_icon'] ?? 'fas fa-tag'; ?>"></i>
-                            <?php echo htmlspecialchars($fund['category_name']); ?>
-                        </span>
-                        <span class="fundraiser">
-                            by <?php echo htmlspecialchars($fund['fundraiser_name']); ?>
-                        </span>
-                    </div>
-                    
-                    <h1 class="campaign-title">
-                        <?php echo htmlspecialchars($fund['title']); ?>
+                    <div class="badges">
                         <?php if ($fund['status'] === 'frozen'): ?>
-                            <div class="frozen-badge">
+                            <div class="status-badge status-frozen">
                                 <i class="fas fa-pause"></i> Frozen
                             </div>
                         <?php endif; ?>
                         <?php if ($fund['featured']): ?>
-                            <div class="featured-badge">
+                            <div class="status-badge status-featured">
                                 <i class="fas fa-star"></i> Featured
                             </div>
                         <?php endif; ?>
-                    </h1>
+                    </div>
+                    <div class="title-section">
+                        <h1 class="campaign-title">
+                            <?php echo htmlspecialchars($fund['title']); ?>
+                        </h1>
+                        <span class="status-badge no-pad category" style="color: <?php echo $fund['category_color'] ?? '#000'; ?>;">
+                            <i class="<?php echo $fund['category_icon'] ?? 'fas fa-tag'; ?>"></i>
+                            <?php echo htmlspecialchars($fund['category_name']); ?>
+                        </span>
+                    </div>
+                    <span class="by">
+                        by <a href="../../public_profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
+                    </span>
                     <!-- Progress Stats -->
                     <div class="progress-section">
                         <div class="progress-bar">
@@ -154,7 +155,8 @@ $days_left = getDaysLeft($fund['end_date']);
                                 Login to donate
                             </a>
                         <?php elseif ($userRole === 'admin'): ?>
-                            <button class="btn <?php echo $fund['featured'] ? 'btn-outline' : 'btn-primary'; ?>" onclick="toggleFeature(<?php echo $fund['id']; ?>)" id="feature-btn">
+                            <button class="btn <?php echo $fund['featured'] ? 'btn-outline' : 'btn-primary'; ?>" onclick="toggleFeature(<?php echo $fund['id']; ?>)" id="feature-btn" 
+                                <?php echo $fund['status'] === 'frozen' ? 'disabled title="Cannot feature a frozen campaign"' : ''; ?>>
                                 <i class="fas fa-star"></i>
                                 <?php echo $fund['featured'] ? 'Unfeature' : 'Mark as Featured'; ?>
                             </button>

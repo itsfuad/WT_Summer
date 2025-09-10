@@ -139,7 +139,7 @@ foreach ($donatedFunds as $fund) {
                         $statusClass = $fund['status'] === 'active' ? 'active' : $fund['status'];
                         ?>
                         <div class="campaign-card">
-                            <div class="campaign-status status-<?php echo $statusClass; ?>">
+                            <div class="status-badge status-<?php echo $statusClass; ?>">
                                 <?php echo ucfirst($fund['status']); ?>
                             </div>
                             

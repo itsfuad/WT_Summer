@@ -116,21 +116,6 @@
     justify-content: space-between;
 }
 
-.campaign-status {
-    position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: var(--font-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-    border: var(--border);
-    background: var(--white);
-    color: var(--gray-600);
-}
-
-
 .campaign-content h3 {
     font-size: 18px;
     color: var(--gray-900);

@@ -21,6 +21,14 @@ function applyFrozenState() {
         btn.title = 'Campaign is frozen';
     });
     
+    // Disable feature button for admin users
+    const featureBtn = document.getElementById('feature-btn');
+    if (featureBtn) {
+        featureBtn.disabled = true;
+        featureBtn.title = 'Cannot feature a frozen campaign';
+        featureBtn.classList.add('btn-disabled');
+    }
+    
     // Add frozen message
     if (!document.querySelector('.login-prompt')) {
         const frozenMessage = document.createElement('div');
@@ -57,6 +65,14 @@ function removeFrozenState() {
         btn.disabled = false;
         btn.removeAttribute('title');
     });
+    
+    // Re-enable feature button for admin users
+    const featureBtn = document.getElementById('feature-btn');
+    if (featureBtn) {
+        featureBtn.disabled = false;
+        featureBtn.removeAttribute('title');
+        featureBtn.classList.remove('btn-disabled');
+    }
     
     // Remove or restore login prompt
     const loginPrompt = document.querySelector('.login-prompt');
@@ -619,6 +635,14 @@ if (document.readyState === 'loading') {
 
 // Admin functions
 function toggleFeature(fundId) {
+    const btn = document.getElementById('feature-btn');
+    
+    // Check if button is already disabled (e.g., campaign is frozen)
+    if (btn.disabled) {
+        showNotification('Cannot feature a frozen campaign', 'error');
+        return;
+    }
+    
     fetch('../ajax/toggle_feature.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -627,7 +651,6 @@ function toggleFeature(fundId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            const btn = document.getElementById('feature-btn');
             if (data.featured) {
                 btn.className = 'btn btn-outline';
                 btn.innerHTML = '<i class="fas fa-star"></i> Unfeature';
@@ -659,30 +682,34 @@ function toggleFreeze(fundId) {
             if (data.status === 'frozen') {
                 btn.innerHTML = '<i class="fas fa-play"></i> Unfreeze';
                 
-                // Apply frozen visual state
+                // Apply frozen visual state first
                 applyFrozenState();
                 
-                // Auto-unfeature the campaign when frozen (only if it was previously featured)
-                if (data.was_featured) {
-                    const featureBtn = document.getElementById('feature-btn');
-                    if (featureBtn) {
-                        featureBtn.className = 'btn btn-primary';
-                        featureBtn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
-                    }
-                    
-                    // Hide featured badge if present
-                    const featuredBadge = document.querySelector('.featured-badge');
-                    if (featuredBadge) {
-                        featuredBadge.style.display = 'none';
-                    }
+                // Explicitly handle feature button - ensure it's disabled
+                const featureBtn = document.getElementById('feature-btn');
+                if (featureBtn) {
+                    featureBtn.disabled = true;
+                    featureBtn.title = 'Cannot feature a frozen campaign';
+                    featureBtn.classList.add('btn-disabled');
+                    featureBtn.className = 'btn btn-primary btn-disabled';
+                    featureBtn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                    featureBtn.disabled = true;
                 }
                 
                 showNotification(data.message, 'success');
             } else {
                 btn.innerHTML = '<i class="fas fa-pause"></i> Freeze';
                 
-                // Remove frozen visual state
+                // Remove frozen visual state first
                 removeFrozenState();
+                
+                // Explicitly handle feature button - ensure it's enabled
+                const featureBtn = document.getElementById('feature-btn');
+                if (featureBtn) {
+                    featureBtn.disabled = false;
+                    featureBtn.removeAttribute('title');
+                    featureBtn.classList.remove('btn-disabled');
+                }
                 
                 showNotification(data.message, 'success');
             }

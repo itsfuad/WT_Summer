@@ -117,7 +117,7 @@ $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running :
                     <div class="metric-label">Daily Average</div>
                     <div class="metric-progress">
                                             <div class="campaign-info">
-                        <div class="campaign-status">
+                        <div class="status-badge">
                             <span class="status-badge status-<?php echo $fund['status']; ?>">
                                 Status: <?php echo ucfirst($fund['status']); ?>
                             </span>

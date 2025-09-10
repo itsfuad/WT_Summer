@@ -128,38 +128,6 @@
     justify-content: space-between;
 }
 
-.campaign-status {
-    position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: var(--font-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-    border: var(--border);
-    background: var(--white);
-    color: var(--gray-600);
-}
-
-.status-active {
-    color: #059669;
-    border-color: #d1fae5;
-    background: #ecfdf5;
-}
-
-.status-completed {
-    color: #0891b2;
-    border-color: #cffafe;
-    background: #f0fdfa;
-}
-
-.status-cancelled {
-    color: #dc2626;
-    border-color: #fecaca;
-    background: #fef2f2;
-}
-
 .campaign-content h3 {
     font-size: 18px;
     color: var(--gray-900);

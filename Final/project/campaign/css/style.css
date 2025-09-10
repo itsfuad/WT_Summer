@@ -65,22 +65,23 @@
     gap: 4px;
 }
 
+.title-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .campaign-title {
     font-size: 20px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 0;
     color: var(--gray-900);
     position: relative;
 }
 
-.campaign-title .featured-badge,
-.campaign-title .frozen-badge {
-    border-radius: 25px;
-}
-
 /* Progress Section */
 .progress-section {
-    margin-bottom: 20px;
+    margin: 15px 0px;
 }
 
 .progress-bar {
@@ -327,6 +328,15 @@
 .role-badge.backer {
     background: #e8f5e8;
     color: #2e7d32;
+}
+
+.badges {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .comment-time {
