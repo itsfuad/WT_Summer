@@ -82,6 +82,7 @@ try {
             featured BOOLEAN DEFAULT FALSE,
             views_count INT DEFAULT 0,
             likes_count INT DEFAULT 0,
+            comments_count INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (fundraiser_id) REFERENCES users(id) ON DELETE CASCADE,

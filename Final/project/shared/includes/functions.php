@@ -105,26 +105,26 @@ class FundManager {
         $whereClause = implode(' AND ', $conditions);
         
         $sql = "SELECT 
-                f.*,
-                u.name as fundraiser_name,
-                c.name as category_name,
-                c.icon as category_icon,
-                c.color as category_color,
-                COUNT(DISTINCT d.id) as backer_count,
-                COUNT(DISTINCT l.id) as likes_count,
-                COUNT(DISTINCT cm.id) as comments_count,
-                DATEDIFF(f.end_date, CURDATE()) as days_left
-            FROM funds f
-            LEFT JOIN users u ON f.fundraiser_id = u.id
-            LEFT JOIN categories c ON f.category_id = c.id
-            LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
-            LEFT JOIN fund_likes l ON f.id = l.fund_id
-            LEFT JOIN comments cm ON f.id = cm.fund_id
-            WHERE $whereClause
-            GROUP BY f.id, u.name, c.name, c.icon, c.color
-            ORDER BY $orderBy
-            LIMIT $limit OFFSET $offset
-        ";
+                    f.*,
+                    u.name as fundraiser_name,
+                    c.name as category_name,
+                    c.icon as category_icon,
+                    c.color as category_color,
+                    COUNT(DISTINCT d.id) as backer_count,
+                    COUNT(DISTINCT l.id) as likes_count,
+                    COUNT(DISTINCT cm.id) as comments_count,
+                    DATEDIFF(f.end_date, CURDATE()) as days_left
+                FROM funds f
+                LEFT JOIN users u ON f.fundraiser_id = u.id
+                LEFT JOIN categories c ON f.category_id = c.id
+                LEFT JOIN donations d ON f.id = d.fund_id AND d.payment_status = 'completed'
+                LEFT JOIN fund_likes l ON f.id = l.fund_id
+                LEFT JOIN comments cm ON f.id = cm.fund_id
+                WHERE $whereClause
+                GROUP BY f.id, u.name, c.name, c.icon, c.color
+                ORDER BY $orderBy
+                LIMIT $limit OFFSET $offset
+            ";
         
         // Debug: Log the query if category is frozen
         if ($category === 'frozen') {

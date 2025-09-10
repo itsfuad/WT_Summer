@@ -1,110 +1,69 @@
 <?php
 require_once '../config/database.php';
 
-echo "<h2>🎲 Generating Sample Data for CrowdFund Platform</h2>\n";
-echo "<p>Creating admin account, sample users, funds, likes, donations, comments, and updates...</p>\n";
+echo "<h2>🎲 Generating Realistic Sample Data for CrowdFund Platform</h2>\n";
+echo "<p>Creating admin, fundraisers, backers, campaigns, likes, donations, comments...</p>\n";
 
 try {
-    // Check if tables exist
     echo "<p>1. Checking database structure...</p>\n";
     $required_tables = ['users', 'categories', 'funds', 'donations', 'comments', 'fund_likes'];
     foreach ($required_tables as $table) {
         $stmt = $pdo->query("SHOW TABLES LIKE '$table'");
         if (!$stmt->fetch()) {
-            throw new Exception("Table '$table' does not exist. Please run index.php first.");
+            throw new Exception("Table '$table' does not exist. Please run create_db.php first.");
         }
     }
     echo "<span style='color:green;'>✓ All required tables exist</span><br>\n";
-    // Sample data arrays
+
+    // ---------- Bangladeshi names ----------
     $fundraiser_names = [
-        'Tech Innovators LLC', 'Green Future Co.', 'HealthCare Heroes', 'EcoSolutions Inc.',
-        'Creative Collective', 'EduTech Foundation', 'Digital Dreams', 'Smart Solutions',
-        'Future Vision', 'Innovation Labs', 'NextGen Ventures', 'Bright Ideas Co.',
-        'Progressive Tech', 'Modern Solutions', 'Visionary Projects'
+        'Rafiq Ahmed', 'Tanjim Karim', 'Shamima Akter', 'Rumana Begum',
+        'Jahid Hasan', 'Farhana Hossain', 'Imran Khan', 'Nusrat Jahan',
+        'Sabbir Rahman', 'Parvez Hossain', 'Mehnaz Chowdhury', 'Sadia Islam',
+        'Tahsin Ahmed', 'Nabila Akhter', 'Raihanul Islam', 'Mahfuzur Rahman',
+        'Shaila Sultana', 'Fahim Hasan', 'Rifat Chowdhury', 'Sohana Akter',
+        'Tanvir Hossain', 'Afsana Parvin', 'Imtiaz Ahmed', 'Nusrat Sultana',
+        'Rashedul Islam', 'Shirin Akter', 'Saiful Islam', 'Mousumi Rahman',
+        'Arifur Rahman', 'Naznin Akter', 'Rakib Hossain', 'Moushumi Sultana',
+        'Shakil Ahmed', 'Taslima Begum', 'Jannat Ara', 'Hasib Chowdhury',
+        'Tahmid Rahman', 'Rumana Akhter', 'Noman Hossain', 'Farzana Rahman',
+        'Rashed Khan', 'Salma Akter', 'Tanveer Ahmed', 'Mahamudul Hasan',
+        'Nadia Chowdhury', 'Rabiul Islam', 'Sadia Khan', 'Firoz Ahmed', 'Parveen Akhter'
     ];
 
     $backer_names = [
-        'John Smith', 'Emily Johnson', 'Michael Brown', 'Sarah Davis', 'David Wilson',
-        'Lisa Anderson', 'Robert Taylor', 'Jennifer Martinez', 'William Garcia', 'Jessica Rodriguez',
-        'James Wilson', 'Ashley Thompson', 'Christopher Lee', 'Amanda White', 'Matthew Harris',
-        'Stephanie Clark', 'Joshua Lewis', 'Michelle Robinson', 'Andrew Walker', 'Nicole Young'
+        'Rakib Hossain', 'Moushumi Sultana', 'Arifur Rahman', 'Naznin Akter',
+        'Shakil Ahmed', 'Taslima Begum', 'Fahim Hasan', 'Jannat Ara',
+        'Rashedul Islam', 'Sabrina Khan', 'Hasib Chowdhury', 'Shirin Akter',
+        'Tanvir Hossain', 'Afsana Parvin', 'Imtiaz Ahmed', 'Nusrat Sultana',
+        'Rifat Hossain', 'Mahbuba Akter', 'Saiful Islam', 'Mousumi Rahman',
+        'Rakib Ahmed', 'Tanjim Karim', 'Shamima Akter', 'Rumana Begum',
+        'Jahid Hasan', 'Farhana Hossain', 'Imran Khan', 'Nusrat Jahan',
+        'Sabbir Rahman', 'Parvez Hossain', 'Mehnaz Chowdhury', 'Sadia Islam',
+        'Tahsin Ahmed', 'Nabila Akhter', 'Raihanul Islam', 'Mahfuzur Rahman',
+        'Shaila Sultana', 'Fahim Hasan', 'Rifat Chowdhury', 'Sohana Akter',
+        'Tanvir Hossain', 'Afsana Parvin', 'Imtiaz Ahmed', 'Nusrat Sultana',
+        'Rashedul Islam', 'Shirin Akter', 'Saiful Islam', 'Mousumi Rahman',
+        'Arifur Rahman', 'Naznin Akter', 'Rakib Hossain', 'Moushumi Sultana',
+        'Shakil Ahmed', 'Taslima Begum', 'Jannat Ara', 'Hasib Chowdhury'
     ];
 
-    $fund_titles = [
-        'AI-Powered Educational Platform',
-        'Sustainable Urban Farming Initiative',
-        'Community Health Mobile Units',
-        'Renewable Energy for Rural Areas',
-        'Digital Art Gallery Platform',
-        'Open Source Learning Tools',
-        'Clean Water Technology',
-        'Mental Health Support App',
-        'Affordable Housing Project',
-        'Food Security Program',
-        'Youth Sports Development',
-        'Senior Care Innovation',
-        'Disaster Relief Technology',
-        'Wildlife Conservation Effort',
-        'Local Business Recovery Fund',
-        'Scholarship Program Initiative',
-        'Public Library Modernization',
-        'Transportation Accessibility',
-        'Community Garden Network',
-        'Tech Training for Veterans'
-    ];
+    $used_emails = [];
+    function generateUniqueEmail($name, &$used_emails) {
+        $name_clean = strtolower(str_replace(' ', '.', $name));
+        $domains = ['gmail.com', 'outlook.com'];
+        $domain = $domains[array_rand($domains)];
+        $email = $name_clean . '@' . $domain;
+        $counter = 1;
+        while (in_array($email, $used_emails)) {
+            $email = $name_clean . $counter . '@' . $domain;
+            $counter++;
+        }
+        $used_emails[] = $email;
+        return $email;
+    }
 
-    $fund_descriptions = [
-        'Building an AI-powered educational platform to revolutionize online learning with personalized content and adaptive learning algorithms that adjust to each student\'s pace and learning style.',
-        'Creating vertical farming solutions for urban environments to promote sustainable food production, reduce carbon footprint, and provide fresh produce to local communities year-round.',
-        'Providing free health screenings and medical services to underserved communities with mobile health units equipped with modern medical equipment and staffed by qualified healthcare professionals.',
-        'Installing solar panels and wind turbines in rural communities to provide clean, sustainable energy and reduce dependency on fossil fuels while creating local jobs.',
-        'Creating an online platform for emerging digital artists to showcase and sell their work with fair compensation, artist support tools, and community features.',
-        'Developing free, open-source educational tools and resources for students and teachers worldwide, making quality education accessible to everyone regardless of economic status.',
-        'Developing advanced water purification systems for communities without access to clean drinking water, using innovative filtration technology and sustainable practices.',
-        'Creating a comprehensive mental health support application with AI-powered therapy sessions, peer support groups, and professional counseling services.',
-        'Building affordable housing units using sustainable materials and innovative construction techniques to address the housing crisis in urban areas.',
-        'Establishing food banks and distribution networks to combat hunger in low-income communities while supporting local farmers and reducing food waste.',
-        'Developing youth sports programs in underserved areas to promote physical health, teamwork, and leadership skills while providing safe recreational activities.',
-        'Innovating senior care solutions including smart home technology, health monitoring systems, and community engagement programs for elderly populations.',
-        'Creating emergency response technology and disaster preparedness systems to help communities better respond to natural disasters and emergency situations.',
-        'Supporting wildlife conservation efforts through habitat restoration, anti-poaching initiatives, and community education programs to protect endangered species.',
-        'Providing financial assistance and resources to help local small businesses recover from economic challenges and adapt to changing market conditions.',
-        'Establishing scholarship programs for underprivileged students to access higher education and vocational training opportunities in high-demand fields.',
-        'Modernizing public libraries with new technology, expanded digital resources, and community programming to serve as 21st-century learning hubs.',
-        'Improving public transportation accessibility for disabled individuals through vehicle modifications, infrastructure improvements, and assistive technologies.',
-        'Creating a network of community gardens to promote local food production, environmental education, and neighborhood engagement in urban areas.',
-        'Providing technology training and career development programs specifically designed for military veterans transitioning to civilian careers in the tech industry.'
-    ];
-
-    $icons = [
-        'fas fa-robot', 'fas fa-seedling', 'fas fa-heart', 'fas fa-solar-panel',
-        'fas fa-palette', 'fas fa-graduation-cap', 'fas fa-tint', 'fas fa-brain',
-        'fas fa-home', 'fas fa-utensils', 'fas fa-running', 'fas fa-user-clock',
-        'fas fa-shield-alt', 'fas fa-paw', 'fas fa-store', 'fas fa-award',
-        'fas fa-book', 'fas fa-bus', 'fas fa-leaf', 'fas fa-laptop-code'
-    ];
-
-    // Clear existing data and create fresh admin
-    echo "<p>2. Clearing existing data...</p>\n";
-    $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
-    $pdo->exec("DELETE FROM donations WHERE id > 0");
-    $pdo->exec("DELETE FROM comments WHERE id > 0");
-    $pdo->exec("DELETE FROM fund_likes WHERE id > 0");
-    $pdo->exec("DELETE FROM funds WHERE id > 0");
-    $pdo->exec("DELETE FROM users WHERE id > 0");
-    $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
-    echo "<span style='color:orange;'>✓ Cleared existing data</span><br>\n";
-    
-    // Create fresh admin account
-    echo "<p>3. Creating admin account...</p>\n";
-    $adminPassword = 'admin123';
-    $hashedPassword = password_hash($adminPassword, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role, status, email_verified) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute(['Admin', 'admin@crowdfund.com', $hashedPassword, 'admin', 'active', 1]);
-    echo "<span style='color:green;'>✓ Admin account created (Email: admin@crowdfund.com, Password: $adminPassword)</span><br>\n";
-
-    // Create categories if they don't exist
-    echo "<p>📂 Creating/checking categories...</p>\n";
+    // ---------- Fund Categories ----------
     $category_data = [
         ['Technology', 'fas fa-laptop-code', '#3498db'],
         ['Environment', 'fas fa-seedling', '#27ae60'],
@@ -118,225 +77,167 @@ try {
         ['Innovation', 'fas fa-lightbulb', '#f1c40f']
     ];
 
-    foreach ($category_data as $cat) {
-        // Check if category already exists
-        $stmt = $pdo->prepare("SELECT id FROM categories WHERE name = ?");
-        $stmt->execute([$cat[0]]);
-        if (!$stmt->fetch()) {
-            // Category doesn't exist, create it
-            $stmt = $pdo->prepare("INSERT INTO categories (name, icon, color) VALUES (?, ?, ?)");
-            $stmt->execute([$cat[0], $cat[1], $cat[2]]);
-            echo "<span style='color:green;'>✓ Created category: {$cat[0]}</span><br>\n";
-        } else {
-            echo "<span style='color:blue;'>ℹ Category already exists: {$cat[0]}</span><br>\n";
-        }
+    // ---------- Clear Existing Data ----------
+    echo "<p>2. Clearing existing data...</p>\n";
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+    $tables_to_clear = ['categories','comments','donations','funds','fund_likes','password_reset_tokens','reports','users'];
+    foreach ($tables_to_clear as $t) {
+        $pdo->exec("DELETE FROM $t WHERE id > 0");
     }
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+    echo "<span style='color:orange;'>✓ Cleared existing data</span><br>\n";
 
-    // Get category IDs
+    // ---------- Create Admin ----------
+    echo "<p>3. Creating admin account...</p>\n";
+    $adminPassword = 'admin123';
+    $hashedPassword = password_hash($adminPassword, PASSWORD_DEFAULT);
+    $stmt = $pdo->prepare("INSERT INTO users (name,email,password,role,status,email_verified) VALUES (?,?,?,?,?,?)");
+    $stmt->execute(['Admin','admin@crowdfund.com',$hashedPassword,'admin','active',1]);
+    echo "<span style='color:green;'>✓ Admin created: admin@crowdfund.com / $adminPassword</span><br>\n";
+
+    // ---------- Create Categories ----------
+    echo "<p>4. Creating categories...</p>\n";
+    foreach($category_data as $cat) {
+        $stmt = $pdo->prepare("INSERT INTO categories (name,icon,color) VALUES (?,?,?)");
+        $stmt->execute([$cat[0],$cat[1],$cat[2]]);
+    }
     $categories = $pdo->query("SELECT id FROM categories")->fetchAll(PDO::FETCH_COLUMN);
 
-    // Insert fundraisers
-    echo "<p>4. Creating fundraiser accounts...</p>\n";
+    // ---------- Create Fundraisers ----------
+    echo "<p>5. Creating fundraiser accounts...</p>\n";
     $fundraiser_ids = [];
-    for ($i = 0; $i < 15; $i++) {
-        $name = $fundraiser_names[$i];
-        $email = strtolower(str_replace([' ', '.', ','], ['', '', ''], $name)) . '@fundraiser.com';
+    foreach ($fundraiser_names as $name) {
+        $email = generateUniqueEmail($name, $used_emails);
         $password = password_hash('password123', PASSWORD_DEFAULT);
-        
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role, email_verified, bio) VALUES (?, ?, ?, 'fundraiser', 1, ?)");
-        $bio = "Passionate about making a positive impact in the world through innovative projects and community engagement.";
-        $stmt->execute([$name, $email, $password, $bio]);
+        $bio = "Passionate about making a positive impact through innovative projects.";
+        $stmt = $pdo->prepare("INSERT INTO users (name,email,password,role,email_verified,bio) VALUES (?,?,?,?,?,?)");
+        $stmt->execute([$name,$email,$password,'fundraiser',1,$bio]);
         $fundraiser_ids[] = $pdo->lastInsertId();
     }
 
-    // Insert backers
-    echo "<p>5. Creating backer accounts...</p>\n";
+    // ---------- Create Backers ----------
+    echo "<p>6. Creating backer accounts...</p>\n";
     $backer_ids = [];
-    for ($i = 0; $i < 20; $i++) {
-        $name = $backer_names[$i];
-        $email = strtolower(str_replace(' ', '.', $name)) . '@backer.com';
+    foreach ($backer_names as $name) {
+        $email = generateUniqueEmail($name, $used_emails);
         $password = password_hash('password123', PASSWORD_DEFAULT);
-        
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role, email_verified, bio) VALUES (?, ?, ?, 'backer', 1, ?)");
-        $bio = "Supporting amazing projects and helping bring innovative ideas to life.";
-        $stmt->execute([$name, $email, $password, $bio]);
+        $bio = "Supporting amazing projects and helping innovative ideas come to life.";
+        $stmt = $pdo->prepare("INSERT INTO users (name,email,password,role,email_verified,bio) VALUES (?,?,?,?,?,?)");
+        $stmt->execute([$name,$email,$password,'backer',1,$bio]);
         $backer_ids[] = $pdo->lastInsertId();
     }
 
-    // Insert funds
-    echo "<p>6. Creating funds/campaigns...</p>\n";
+    // ---------- Fund Campaigns ----------
+    echo "<p>7. Creating fund campaigns...</p>\n";
     $fund_ids = [];
-    for ($i = 0; $i < 20; $i++) {
-        $title = $fund_titles[$i];
-        $description = $fund_descriptions[$i];
-        $short_description = substr($description, 0, 150) . '...';
-        $goal_amount = rand(10000, 100000);
+    $fund_titles = [
+        'Clean Water for Rural Villages','Solar Energy for Schools','Digital Learning Platform',
+        'Community Health Clinic','Tree Plantation Drive','Women Empowerment Workshops',
+        'Local Library Modernization','Youth Sports Program','Emergency Relief for Flood Victims',
+        'Affordable Housing Initiative'
+    ];
+    $fund_descriptions = [
+        'Providing access to clean drinking water to underprivileged communities across rural Bangladesh.',
+        'Installing solar panels in schools to ensure uninterrupted learning and promote renewable energy awareness.',
+        'Developing an online learning platform tailored for Bangladeshi students with local content and resources.',
+        'Setting up community health clinics to offer affordable and accessible medical services.',
+        'Organizing tree plantation drives to promote environmental sustainability in urban and rural areas.',
+        'Hosting workshops for women to enhance skills, promote entrepreneurship, and empower local communities.',
+        'Modernizing local libraries to provide digital resources and learning tools to students and residents.',
+        'Launching youth sports programs to encourage physical fitness, teamwork, and leadership skills.',
+        'Providing emergency relief to flood-affected families with food, clothing, and temporary shelter.',
+        'Creating affordable housing solutions using sustainable building materials for low-income families.'
+    ];
+    $icons = ['fas fa-tint','fas fa-solar-panel','fas fa-laptop-code','fas fa-heart','fas fa-seedling','fas fa-female','fas fa-book','fas fa-running','fas fa-shield-alt','fas fa-home'];
+
+    for($i=0;$i<50;$i++){
+        $title = $fund_titles[array_rand($fund_titles)];
+        $description = $fund_descriptions[array_rand($fund_descriptions)];
+        $short_desc = substr($description,0,150).'...';
+        $goal_amount = rand(20000,100000);
         $fundraiser_id = $fundraiser_ids[array_rand($fundraiser_ids)];
         $category_id = $categories[array_rand($categories)];
-        $icon = $icons[$i];
-        
-        // Random start and end dates
-        $start_date = date('Y-m-d', strtotime('-' . rand(1, 30) . ' days'));
-        $end_date = date('Y-m-d', strtotime('+' . rand(10, 90) . ' days'));
-        
-        // Some campaigns are featured
-        $featured = rand(1, 5) == 1 ? 1 : 0;
-        
-        // Random views
-        $views = rand(50, 1000);
-        
-        $stmt = $pdo->prepare("
-            INSERT INTO funds (title, description, short_description, goal_amount, fundraiser_id, category_id, 
-                             start_date, end_date, featured, views_count, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        
-        $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(1, 30) . ' days'));
-        $stmt->execute([
-            $title, $description, $short_description, $goal_amount, $fundraiser_id, $category_id,
-            $start_date, $end_date, $featured, $views, $created_at
-        ]);
-        
+        $icon = $icons[array_rand($icons)];
+        $start_date = date('Y-m-d', strtotime('-'.rand(0,365).' days'));
+        $end_date = date('Y-m-d', strtotime($start_date.' + '.rand(30,180).' days'));
+        $featured = rand(1,10)==1?1:0;
+        $views = rand(50,5000);
+        $created_at = date('Y-m-d H:i:s', strtotime('-'.rand(0,365).' days'));
+        $stmt = $pdo->prepare("INSERT INTO funds (title,description,short_description,goal_amount,fundraiser_id,category_id,start_date,end_date,featured,views_count,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([$title,$description,$short_desc,$goal_amount,$fundraiser_id,$category_id,$start_date,$end_date,$featured,$views,$created_at]);
         $fund_ids[] = $pdo->lastInsertId();
     }
 
-    // Seed likes for each fund
-    echo "<p>7. Creating likes...</p>\n";
-    foreach ($fund_ids as $fund_id) {
-        // Each fund gets random number of unique likes
-        $like_count = rand(3, 25);
+    // ---------- Likes ----------
+    echo "<p>8. Creating likes...</p>\n";
+    foreach($fund_ids as $fund_id){
+        $like_count = rand(5,50);
         $liked_users = [];
-        for ($i = 0; $i < $like_count; $i++) {
+        for($i=0;$i<$like_count;$i++){
             $user_id = $backer_ids[array_rand($backer_ids)];
-            if (in_array($user_id, $liked_users)) { continue; }
+            if(in_array($user_id,$liked_users)) continue;
             $liked_users[] = $user_id;
-            $stmt = $pdo->prepare("INSERT IGNORE INTO fund_likes (fund_id, user_id, created_at) VALUES (?, ?, ?)");
-            $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(1, 25) . ' days'));
-            $stmt->execute([$fund_id, $user_id, $created_at]);
+            $stmt = $pdo->prepare("INSERT INTO fund_likes (fund_id,user_id,created_at) VALUES (?,?,?)");
+            $created_at = date('Y-m-d H:i:s', strtotime('-'.rand(0,365).' days'));
+            $stmt->execute([$fund_id,$user_id,$created_at]);
         }
-        // Sync likes_count on funds
-        $stmt = $pdo->prepare("UPDATE funds f SET likes_count = (SELECT COUNT(*) FROM fund_likes fl WHERE fl.fund_id = f.id) WHERE f.id = ?");
+        $stmt = $pdo->prepare("UPDATE funds f SET likes_count=(SELECT COUNT(*) FROM fund_likes fl WHERE fl.fund_id=f.id) WHERE f.id=?");
         $stmt->execute([$fund_id]);
     }
 
-    // Insert donations
-    echo "<p>8. Creating donations...</p>\n";
-    foreach ($fund_ids as $fund_id) {
-        // Each fund gets random number of donations
-        $donation_count = rand(5, 25);
+    // ---------- Donations ----------
+    echo "<p>9. Creating donations...</p>\n";
+    foreach($fund_ids as $fund_id){
+        $donation_count = rand(10,50);
         $total_raised = 0;
-        
-        for ($j = 0; $j < $donation_count; $j++) {
+        for($j=0;$j<$donation_count;$j++){
             $backer_id = $backer_ids[array_rand($backer_ids)];
-            $amount = rand(25, 1000);
-            $anonymous = rand(1, 10) <= 2 ? 1 : 0; // 20% anonymous
-            $payment_status = rand(1, 20) == 1 ? 'failed' : 'completed'; // 5% failed
-            
-            $comments = [
-                'Great project! Happy to support this initiative.',
-                'Looking forward to seeing this come to life!',
-                'Amazing work, keep it up!',
-                'This is exactly what we need in our community.',
-                'Proud to be a part of this project.',
-                'Wishing you all the best with this campaign.',
-                'Can\'t wait to see the results!',
-                'This will make a real difference.',
-                'Fantastic idea, well executed!',
-                'Supporting innovation and positive change.'
-            ];
-            
-            $comment = rand(1, 3) == 1 ? $comments[array_rand($comments)] : null;
-            
-            $stmt = $pdo->prepare("INSERT INTO donations (fund_id, backer_id, amount, payment_status, comment, anonymous, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            
-            $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(1, 25) . ' days'));
-            $stmt->execute([$fund_id, $backer_id, $amount, $payment_status, $comment, $anonymous, $created_at]);
-            
-            if ($payment_status == 'completed') {
-                $total_raised += $amount;
-            }
+            $amount = rand(50,2000);
+            $anonymous = rand(1,10)<=2?1:0;
+            $payment_status = rand(1,20)==1?'failed':'completed';
+            $comments = ['Great initiative!','Excited to see progress','Wishing success','Amazing work!','Keep it up!'];
+            $comment = rand(1,3)==1?$comments[array_rand($comments)]:null;
+            $created_at = date('Y-m-d H:i:s', strtotime('-'.rand(0,365).' days'));
+            $stmt = $pdo->prepare("INSERT INTO donations (fund_id,backer_id,amount,payment_status,comment,anonymous,created_at) VALUES (?,?,?,?,?,?,?)");
+            $stmt->execute([$fund_id,$backer_id,$amount,$payment_status,$comment,$anonymous,$created_at]);
+            if($payment_status=='completed') $total_raised+=$amount;
         }
-        
-        // Update fund's current amount
-        $stmt = $pdo->prepare("UPDATE funds SET current_amount = ? WHERE id = ?");
-        $stmt->execute([$total_raised, $fund_id]);
+        $stmt = $pdo->prepare("UPDATE funds SET current_amount=? WHERE id=?");
+        $stmt->execute([$total_raised,$fund_id]);
     }
 
-    // Insert comments
-    echo "<p>9. Creating comments...</p>\n";
-    foreach ($fund_ids as $fund_id) {
-        $comment_count = rand(3, 15);
-        
-        for ($j = 0; $j < $comment_count; $j++) {
-            // Mix of fundraisers and backers commenting
-            $all_user_ids = array_merge($fundraiser_ids, $backer_ids);
-            $user_id = $all_user_ids[array_rand($all_user_ids)];
-            
-            $comment_texts = [
-                'This is such an inspiring project! I love the vision and the potential impact it could have.',
-                'Have you considered partnering with local organizations? It might help amplify your reach.',
-                'The progress so far is amazing. Keep up the excellent work!',
-                'I\'d love to see more updates on how the funds are being utilized.',
-                'This project addresses a real need in our community. Thank you for your dedication.',
-                'The team behind this seems very passionate and knowledgeable.',
-                'I\'m curious about the timeline for implementation. Any updates?',
-                'What measures are in place to ensure sustainability?',
-                'This could be a game-changer if executed properly.',
-                'I appreciate the transparency in your campaign description.',
-                'How can supporters get more involved beyond just donating?',
-                'The potential social impact of this project is incredible.',
-                'I\'ve shared this with my network. Hope it helps with visibility!',
-                'Looking forward to regular updates on the progress.',
-                'This aligns perfectly with values I care about.',
-                'The technical approach seems well thought out.',
-                'I hope this gets the funding it deserves.',
-                'Great job on explaining the project clearly.',
-                'This is exactly the kind of innovation we need.',
-                'Wishing you success in reaching your funding goal!'
-            ];
-            
+    // ---------- Comments ----------
+    echo "<p>10. Creating comments...</p>\n";
+    $comment_texts = [
+        'This is an inspiring project!','Looking forward to the updates','Amazing work, keep it up!',
+        'This helps our community','Great initiative','Wishing all the best','Excited to support this'
+    ];
+    foreach($fund_ids as $fund_id){
+        $comment_count = rand(5,20);
+        $all_users = array_merge($fundraiser_ids,$backer_ids);
+        for($j=0;$j<$comment_count;$j++){
+            $user_id = $all_users[array_rand($all_users)];
             $comment = $comment_texts[array_rand($comment_texts)];
-            
-            $stmt = $pdo->prepare("INSERT INTO comments (fund_id, user_id, comment, created_at) \n                VALUES (?, ?, ?, ?)\n            ");
-            
-            $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(1, 20) . ' days'));
-            $stmt->execute([$fund_id, $user_id, $comment, $created_at]);
+            $created_at = date('Y-m-d H:i:s', strtotime('-'.rand(0,365).' days'));
+            $stmt = $pdo->prepare("INSERT INTO comments (fund_id,user_id,comment,created_at) VALUES (?,?,?,?)");
+            $stmt->execute([$fund_id,$user_id,$comment,$created_at]);
+            $stmt = $pdo->prepare("UPDATE funds f SET comments_count=(SELECT COUNT(*) FROM comments c WHERE c.fund_id=f.id) WHERE f.id=?");
+            $stmt->execute([$fund_id]);
         }
     }
 
-    echo "<div style='background:#d4edda;padding:20px;border-radius:5px;margin:20px 0;'>\n";
-    echo "<h3>✅ Dummy data generation completed!</h3>\n";
-    echo "<strong>Generated:</strong><br>\n";
-    echo "- 15 Fundraiser accounts<br>\n";
-    echo "- 20 Backer accounts<br>\n";
-    echo "- 20 Fund campaigns<br>\n";
-    echo "- Likes, donations, comments, and updates<br>\n";
-    echo "</div>\n";
-    
-    echo "<div style='background:#e7f3ff;padding:15px;border-radius:5px;margin:10px 0;'>\n";
-    echo "<strong>Login credentials:</strong><br>\n";
-    echo "<strong>Admin:</strong> admin@crowdfund.com / admin123<br>\n";
-    echo "</div>\n";
+    echo "<div style='background:#d4edda;padding:20px;border-radius:5px;margin:20px 0;'>";
+    echo "<h3>✅ Dummy data generation completed!</h3>";
+    echo "<strong>Generated:</strong><br>";
+    echo "- ".count($fundraiser_ids)." Fundraiser accounts<br>";
+    echo "- ".count($backer_ids)." Backer accounts<br>";
+    echo "- ".count($fund_ids)." Fund campaigns<br>";
+    echo "- Likes, donations, comments<br>";
+    echo "</div>";
 
-    echo "<div style='margin:20px 0;'>\n";
-    echo "<a href='../home/view/index.php' style='background:#28a745;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;margin-right:10px;'>🎉 View Homepage</a>\n";
-    echo "<a href='test.php' style='background:#6c757d;color:white;padding:15px 25px;text-decoration:none;border-radius:5px;'>🔧 Test Database</a>\n";
-    echo "</div>\n";
-
-} catch (Exception $e) {
-    echo "<div style='background:#f8d7da;padding:15px;border-radius:5px;margin:10px 0;'>\n";
-    echo "<strong>❌ Error:</strong> " . $e->getMessage() . "<br><br>\n";
-    echo "<strong>Solution:</strong> Make sure to run create_db.php first to create the database structure.<br>\n";
-    echo "<a href='create_db.php' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:3px;'>Run Database Setup</a>\n";
-    echo "</div>\n";
+} catch(Exception $e){
+    echo "<div style='background:#f8d7da;padding:15px;border-radius:5px;margin:10px 0;'>";
+    echo "<strong>❌ Error:</strong> ".$e->getMessage();
+    echo "</div>";
 }
 ?>
-
-<style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
-h2, h3 { color: #333; }
-p { margin: 10px 0; }
-a { display: inline-block; margin: 5px; }
-</style>
