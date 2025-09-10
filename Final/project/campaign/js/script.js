@@ -651,12 +651,22 @@ function toggleFeature(fundId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            const featuredBadge = document.getElementById('featured-badge');
+            
             if (data.featured) {
                 btn.className = 'btn btn-outline';
                 btn.innerHTML = '<i class="fas fa-star"></i> Unfeature';
+                // Show featured badge
+                if (featuredBadge) {
+                    featuredBadge.style.display = 'inline-block';
+                }
             } else {
                 btn.className = 'btn btn-primary';
                 btn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                // Hide featured badge
+                if (featuredBadge) {
+                    featuredBadge.style.display = 'none';
+                }
             }
             showNotification(data.message, 'success');
         } else {
@@ -682,23 +692,40 @@ function toggleFreeze(fundId) {
             if (data.status === 'frozen') {
                 btn.innerHTML = '<i class="fas fa-play"></i> Unfreeze';
                 
+                // Update status badge to show frozen
+                updateStatusBadge('frozen');
+                
                 // Apply frozen visual state first
                 applyFrozenState();
                 
-                // Explicitly handle feature button - ensure it's disabled
+                // Handle feature button and badge when frozen
                 const featureBtn = document.getElementById('feature-btn');
+                const featuredBadge = document.getElementById('featured-badge');
+                
                 if (featureBtn) {
                     featureBtn.disabled = true;
                     featureBtn.title = 'Cannot feature a frozen campaign';
                     featureBtn.classList.add('btn-disabled');
-                    featureBtn.className = 'btn btn-primary btn-disabled';
-                    featureBtn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
-                    featureBtn.disabled = true;
+                    
+                    // Auto-unfeature the campaign when frozen (only if it was previously featured)
+                    if (data.was_featured) {
+                        featureBtn.className = 'btn btn-primary btn-disabled';
+                        featureBtn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                        featureBtn.disabled = true;
+                        
+                        // Hide featured badge
+                        if (featuredBadge) {
+                            featuredBadge.style.display = 'none';
+                        }
+                    }
                 }
                 
                 showNotification(data.message, 'success');
             } else {
                 btn.innerHTML = '<i class="fas fa-pause"></i> Freeze';
+                
+                // Update status badge to show active (or hide it)
+                updateStatusBadge('active');
                 
                 // Remove frozen visual state first
                 removeFrozenState();
@@ -717,6 +744,33 @@ function toggleFreeze(fundId) {
             showNotification('Error: ' + data.message, 'error');
         }
     });
+}
+
+// Function to update status badge dynamically
+function updateStatusBadge(status) {
+    const statusBadge = document.getElementById('status-badge');
+    if (!statusBadge) return;
+    
+    // Clear existing classes
+    statusBadge.className = 'status-badge';
+    
+    switch(status) {
+        case 'frozen':
+            statusBadge.classList.add('status-frozen');
+            statusBadge.innerHTML = '<i class="fas fa-pause"></i> Frozen';
+            statusBadge.style.display = 'inline-block';
+            break;
+        case 'paused':
+            statusBadge.classList.add('status-paused');
+            statusBadge.innerHTML = '<i class="fas fa-pause-circle"></i> Paused';
+            statusBadge.style.display = 'inline-block';
+            break;
+        case 'active':
+        default:
+            // Hide the status badge for active campaigns (normal state)
+            statusBadge.style.display = 'none';
+            break;
+    }
 }
 
 // Check if campaign is frozen on page load

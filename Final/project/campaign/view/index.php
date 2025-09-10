@@ -97,16 +97,12 @@ $days_left = getDaysLeft($fund['end_date']);
                 </div>
                 <div class="campaign-info">
                     <div class="badges">
-                        <?php if ($fund['status'] === 'frozen'): ?>
-                            <div class="status-badge status-frozen">
-                                <i class="fas fa-pause"></i> Frozen
-                            </div>
-                        <?php endif; ?>
-                        <?php if ($fund['featured']): ?>
-                            <div class="status-badge status-featured">
-                                <i class="fas fa-star"></i> Featured
-                            </div>
-                        <?php endif; ?>
+                        <div class="status-badge status-frozen" id="status-badge" style="display: <?php echo $fund['status'] === 'frozen' ? 'inline-block' : 'none'; ?>;">
+                            <i class="fas fa-pause"></i> Frozen
+                        </div>
+                        <div class="status-badge status-featured" id="featured-badge" style="display: <?php echo $fund['featured'] ? 'inline-block' : 'none'; ?>;">
+                            <i class="fas fa-star"></i> Featured
+                        </div>
                     </div>
                     <div class="title-section">
                         <h1 class="campaign-title">
