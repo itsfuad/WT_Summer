@@ -201,14 +201,14 @@ $totalPages = ceil($totalFunds / $limit);
                                 <div class="campaign-header">
                                     <div>
                                         <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></a>
-                                        <div class="by">
-                                           by <a href="../../public_profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
-                                        </div>
+                                        <span class="status-badge no-pad category" style="color: <?php echo $fund['category_color'] ?? '#000'; ?>;">
+                                            <i class="<?php echo $fund['category_icon'] ?? 'fas fa-tag'; ?>"></i>
+                                            <?php echo htmlspecialchars($fund['category_name']); ?>
+                                        </span>
                                     </div>
-                                    <span class="status-badge no-pad category" style="color: <?php echo $fund['category_color'] ?? '#000'; ?>;">
-                                        <i class="<?php echo $fund['category_icon'] ?? 'fas fa-tag'; ?>"></i>
-                                        <?php echo htmlspecialchars($fund['category_name']); ?>
-                                    </span>
+                                    <div class="by">
+                                       by <a href="../../profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
+                                    </div>
                                 </div>
     
                                 <div class="campaign-description">
@@ -360,7 +360,7 @@ $totalPages = ceil($totalFunds / $limit);
                                              alt="<?php echo htmlspecialchars($backer['name']); ?>" class="profile-img">
                                     </div>
                                     <div class="backer-info">
-                                        <h4><a href="../../public_profile/view?id=<?php echo $backer['id']; ?>"><?php echo htmlspecialchars($backer['name']); ?></a></h4>
+                                        <h4><a href="../../profile/view?id=<?php echo $backer['id']; ?>"><?php echo htmlspecialchars($backer['name']); ?></a></h4>
                                         <p class="backer-email"><?php echo htmlspecialchars($backer['email']); ?></p>
                                         <div class="backer-stats">
                                             <span class="total-donated"><?php echo formatCurrency($backer['total_donated']); ?></span>

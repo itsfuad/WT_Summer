@@ -240,19 +240,10 @@ p {
     color: var(--gray-900);
 }
 
-.btn:hover {
-    background: var(--gray-50);
-}
-
 .btn-primary {
     background: var(--primary);
     color: var(--white);
     border-color: var(--primary);
-}
-
-.btn-primary:hover {
-    background: var(--gray-900);
-    border-color: var(--gray-900);
 }
 
 .btn-success {
@@ -830,12 +821,13 @@ p {
 
 
 .status-badge {
+    display: inline-block;
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 0.75rem;
     text-transform: uppercase;
-    margin-left: auto;
     font-weight: 700;
+    min-width: max-content;
     width: max-content;
 }
 
@@ -888,7 +880,7 @@ p {
 }
 
 .no-pad.status-badge {
-    margin-left: 5px;
+    margin-left: 0px;
 }
 
 

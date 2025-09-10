@@ -326,6 +326,7 @@
 .campaign-header {
     display: flex;
     margin: var(--space-3) 0;
+    flex-direction: column;
 }
 
 .campaign-icon {

@@ -1,4 +1,4 @@
-@import url('./common.css');
+@import url('../../shared/css/common.css');
 
 .profile-form-container {
     max-width: 800px;

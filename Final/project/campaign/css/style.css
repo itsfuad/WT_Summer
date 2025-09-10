@@ -334,9 +334,10 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     flex-wrap: wrap;
     gap: 4px;
+    width: 100%;
 }
 
 .comment-time {

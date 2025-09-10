@@ -7,6 +7,8 @@ $profileUserId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($profileUserId <= 0) {
     $error = "Invalid user ID provided.";
+    header("Location: ../../home/view/index.php");
+    exit;
 } else {
     $userManager = new UserManager();
     $profileImageUrl = $userManager->getProfileImageFilename($profileUserId);
@@ -41,7 +43,8 @@ try {
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../../shared/css/profile_manager.css">
+
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="profile-form-container">
@@ -54,9 +57,15 @@ try {
                 </a>
             </div>
             <div class="header-actions">
-                <div class="sub-title">
-                    <i class="fas fa-user"></i> View Profile
-                </div>
+                <?php if ($currentUser && $currentUser['id'] === $profileUserId): ?>
+                    <a href="edit.php" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                <?php else: ?>
+                    <div class="sub-title">
+                        <i class="fas fa-user"></i> Viewing Profile
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -73,8 +82,8 @@ try {
                     <h2><i class="fas fa-user"></i> <?php echo htmlspecialchars($profileUser['name']); ?></h2>
                     <div style="text-align: center; margin-bottom: var(--space-4);">
                         <img src="<?php echo htmlspecialchars($profileImageUrl); ?>" 
-                             alt="Profile Picture" 
-                             style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--white); box-shadow: var(--shadow);">
+                             alt="Profile" 
+                             style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 3px solid var(--white); box-shadow: var(--shadow);">
                     </div>
                     <p class="section-description">
                         <?php 

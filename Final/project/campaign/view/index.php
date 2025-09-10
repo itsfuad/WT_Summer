@@ -118,7 +118,7 @@ $days_left = getDaysLeft($fund['end_date']);
                         </span>
                     </div>
                     <span class="by">
-                        by <a href="../../public_profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
+                        by <a href="../../profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
                     </span>
                     <!-- Progress Stats -->
                     <div class="progress-section">
@@ -284,7 +284,7 @@ $days_left = getDaysLeft($fund['end_date']);
                                             </div>
                                             <div class="user-info">
                                                 <span class="username">
-                                                    <a class="username" href="../../public_profile/view?id=<?php echo htmlspecialchars($comment['user_id']); ?>"><?php echo htmlspecialchars($comment['user_name']); ?></a>
+                                                    <a class="username" href="../../profile/view?id=<?php echo htmlspecialchars($comment['user_id']); ?>"><?php echo htmlspecialchars($comment['user_name']); ?></a>
                                                     <?php if ($comment['user_role'] === 'fundraiser'): ?>
                                                         <span class="role-badge fundraiser">Creator</span>
                                                     <?php elseif ($comment['user_role'] === 'backer'): ?>
@@ -346,7 +346,7 @@ $days_left = getDaysLeft($fund['end_date']);
                                         <div class="backer-name">
                                             <?php 
                                                 echo $donation['anonymous'] ? 'Anonymous' : 
-                                                '<a class="username" href="../../public_profile/view?id=' . htmlspecialchars($donation['backer_id']) . '">' . htmlspecialchars($donation['backer_name']) . '</a>'; 
+                                                '<a class="username" href="../../profile/view?id=' . htmlspecialchars($donation['backer_id']) . '">' . htmlspecialchars($donation['backer_name']) . '</a>'; 
                                             ?>
                                         </div>
                                         <div class="backer-time js-timeago" data-time="<?php echo htmlspecialchars($donation['created_at']); ?>">

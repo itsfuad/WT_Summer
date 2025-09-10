@@ -1,7 +1,7 @@
 <?php
-require_once 'session.php';
-require_once 'functions.php';
-require_once 'upload_manager.php';
+require_once '../../shared/includes/session.php';
+require_once '../../shared/includes/functions.php';
+require_once '../../shared/includes/upload_manager.php';
 
 requireLogin();
 
@@ -15,7 +15,8 @@ $fullUser = $userManager->getCompleteUserProfile($user['id']);
 
 $success = '';
 $errors = [];
-$showNameField = isset($showNameField) ? $showNameField : true; // Default to showing name field
+// dont show name field for 'admin' role
+$showNameField = ($user['role'] !== 'admin');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
@@ -121,6 +122,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Profile - CrowdFund</title>
+    <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../../shared/css/upload.css">
+    <script src="../js/edit.js"></script>
+</head>
 
 <div class="profile-form-container">
 <!-- Header -->

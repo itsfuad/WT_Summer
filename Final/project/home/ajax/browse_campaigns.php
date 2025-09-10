@@ -75,10 +75,15 @@ try {
             
             $campaignsHtml .= "
                 <div class='campaign-header'>
-                    <i class='campaign-icon " . htmlspecialchars($campaign['category_icon'] ?? 'fas fa-folder') . "'></i>
                     <div>
-                        <a href='../../campaign/view?id=" . htmlspecialchars($campaign['id']) . "' class='campaign-title'>" . htmlspecialchars($campaign['title']) . "</a>
-                        <div class='campaign-fundraiser'>by " . htmlspecialchars($campaign['fundraiser_name']) . "</div>
+                        <a href='../../campaign/view?id=" . $campaign['id'] . "' class='campaign-title'>" . htmlspecialchars($campaign['title']) . "</a>
+                        <span class='status-badge no-pad category' style='color: " . (isset($campaign['category_color']) ? $campaign['category_color'] : '#000') . ";'>
+                            <i class='" . (isset($campaign['category_icon']) ? $campaign['category_icon'] : 'fas fa-tag') . "'></i>
+                            " . htmlspecialchars($campaign['category_name']) . "
+                        </span>
+                        </div>
+                    <div class='by'>
+                        by <a href='../../profile/view/index.php?id=" . $campaign['fundraiser_id'] . "'>" . htmlspecialchars($campaign['fundraiser_name']) . "</a>
                     </div>
                 </div>
                 

@@ -52,8 +52,8 @@
                     CrowdFund
                 </a>
                 <div class="user-info">
-                    <span class="welcome_title">Welcome, <a href="../../public_profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
-                    <a href="profile.php" class="btn btn-primary">
+                    <span class="welcome_title">Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
+                    <a href="../../profile/view/index.php?id=<?php echo $user['id']; ?>" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
                     <a href="../../shared/includes/logout.php" class="btn-destructive">

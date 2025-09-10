@@ -40,11 +40,11 @@ $commentReports = $fundManager->getCommentReports();
                     CrowdFund
                 </a>
                 <div class="user-info">
-                    <span class="welcome_title">Welcome, <a href="../../public_profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
+                    <span class="welcome_title">Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
                     <a href="../../home/view/index.php" class="btn btn-primary">
                         <i class="fas fa-search"></i> Browse Campaigns
                     </a>
-                    <a href="profile.php" class="btn btn-primary">
+                    <a href="../../profile/view/edit.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
                     <a href="../../shared/includes/logout.php" class="btn-destructive">
