@@ -48,6 +48,9 @@ class FundManager {
      * Get all funds with pagination and filters
      */
     public function getAllFunds($page = 1, $limit = 12, $category = null, $search = null, $sort = 'featured', $excludeFeatured = false, $status = 'active') {
+        // Auto-update expired funds to completed status
+        $this->updateExpiredFunds();
+        
         // Ensure numeric values are integers
         $page = (int)$page;
         $limit = (int)$limit;
@@ -293,14 +296,30 @@ class FundManager {
      * Update an existing fund
      */
     public function updateFund($fund_id, $data) {
-        // Get current fund status to prevent unauthorized status changes
-        $currentStmt = $this->pdo->prepare("SELECT status FROM funds WHERE id = ?");
-        $currentStmt->execute([$fund_id]);
-        $currentStatus = $currentStmt->fetchColumn();
+        // Get current fund data
+        $currentFund = $this->getFundById($fund_id);
+        if (!$currentFund) {
+            throw new RuntimeException('Fund not found');
+        }
+        
+        // Validate end date - cannot be set to past date
+        if (isset($data['end_date']) && strtotime($data['end_date']) < strtotime(date('Y-m-d'))) {
+            throw new InvalidArgumentException('End date cannot be set to a past date');
+        }
+        
+        // Handle status logic
+        $newStatus = $data['status'] ?? $currentFund['status'];
         
         // If fund is in admin-controlled status (frozen/removed), preserve it
-        if (in_array($currentStatus, ['frozen', 'removed'])) {
-            $data['status'] = $currentStatus;
+        if (in_array($currentFund['status'], ['frozen', 'removed'])) {
+            $newStatus = $currentFund['status'];
+        }
+        
+        // If updating end date on a completed fund, reactivate it
+        if ($currentFund['status'] === 'completed' && 
+            isset($data['end_date']) && 
+            strtotime($data['end_date']) >= strtotime(date('Y-m-d'))) {
+            $newStatus = 'active';
         }
         
         $stmt = $this->pdo->prepare("UPDATE funds SET 
@@ -317,7 +336,7 @@ class FundManager {
             $data['goal_amount'],
             $data['category_id'],
             $data['end_date'],
-            $data['status'],
+            $newStatus,
             $data['featured'] ?? 0,
             $fund_id
         ]);
@@ -608,16 +627,27 @@ class FundManager {
             throw new InvalidArgumentException('Amount must be greater than 0');
         }
 
-        // Ensure fund exists and is active/not ended
+        // Update expired funds first
+        $this->updateExpiredFunds();
+        
+        // Ensure fund exists and check donation eligibility
         $fund = $this->getFundById($fund_id);
         if (!$fund) {
             throw new RuntimeException('Fund not found');
         }
-        if ($fund['status'] !== 'active') {
-            throw new RuntimeException('Fund is not accepting donations');
-        }
-        if (strtotime($fund['end_date']) < strtotime(date('Y-m-d'))) {
-            throw new RuntimeException('Campaign has ended');
+        
+        // Check if fund can accept donations
+        if (!$this->canAcceptDonations($fund_id)) {
+            switch ($fund['status']) {
+                case 'paused':
+                    throw new RuntimeException('Fund is currently paused and not accepting donations');
+                case 'frozen':
+                    throw new RuntimeException('Fund is frozen and not accepting donations');
+                case 'removed':
+                    throw new RuntimeException('Fund is no longer available');
+                default:
+                    throw new RuntimeException('Fund is not currently accepting donations');
+            }
         }
 
         // Create donation as completed (no external payment for now)
@@ -1079,14 +1109,49 @@ class FundManager {
     }
     
     /**
+     * Auto-update expired active funds to completed status
+     */
+    public function updateExpiredFunds() {
+        $stmt = $this->pdo->prepare("UPDATE funds 
+            SET status = 'completed', updated_at = NOW() 
+            WHERE status = 'active' AND end_date < CURDATE()");
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+    
+    /**
+     * Check if a fund can accept donations
+     */
+    public function canAcceptDonations($fund_id) {
+        $fund = $this->getFundById($fund_id);
+        if (!$fund) {
+            return false;
+        }
+        
+        // Update expired funds first
+        $this->updateExpiredFunds();
+        
+        // Re-fetch fund data after potential status update
+        $fund = $this->getFundById($fund_id);
+        
+        // Only active funds can accept donations (not paused, frozen, or removed)
+        return !in_array($fund['status'], ['paused', 'frozen', 'removed']);
+    }
+    
+    /**
      * Debug function to check campaign status
      */
     public function getCampaignStats() {
+        // First update expired funds
+        $this->updateExpiredFunds();
+        
         $stmt = $this->pdo->query("SELECT 
             COUNT(*) as total_campaigns,
             SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_campaigns,
             SUM(CASE WHEN status = 'active' AND end_date >= CURDATE() THEN 1 ELSE 0 END) as active_not_expired,
             SUM(CASE WHEN status = 'active' AND end_date < CURDATE() THEN 1 ELSE 0 END) as active_expired,
+            SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_campaigns,
+            SUM(CASE WHEN status = 'paused' THEN 1 ELSE 0 END) as paused_campaigns,
             SUM(CASE WHEN featured = 1 THEN 1 ELSE 0 END) as featured_campaigns
         FROM funds");
         return $stmt->fetch();
@@ -1267,7 +1332,6 @@ class UserManager {
         
         // Only delete file if it's not the default and exists
         if ($currentFilename && $currentFilename !== 'default-profile.png') {
-            $uploadManager = new UploadManager();
             $currentImagePath = '../../uploads/profiles/' . $currentFilename;
             if (file_exists($currentImagePath)) {
                 unlink($currentImagePath);

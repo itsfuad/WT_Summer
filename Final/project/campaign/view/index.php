@@ -163,7 +163,7 @@ $days_left = getDaysLeft($fund['end_date']);
                                 <?php echo $fund['status'] === 'frozen' ? 'Unfreeze' : 'Freeze'; ?>
                             </button>
                         <?php elseif ($userRole === 'backer' || ($userRole === 'fundraiser' && $fund['fundraiser_id'] != $user['id'])): ?>
-                            <button class="btn btn-primary freeze-toggle" onclick="openDonateModal()" <?php echo $fund['status'] === 'frozen' ? 'disabled title="Campaign is frozen"' : ''; ?>>
+                            <button class="btn btn-primary freeze-toggle" onclick="openDonateModal()" <?php echo in_array($fund['status'], ['paused', 'frozen', 'removed']) ? 'disabled title="Campaign is not accepting donations because it is ' . htmlspecialchars($fund['status']) . '"' : ''; ?>>
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Donate
                             </button>
@@ -365,7 +365,7 @@ $days_left = getDaysLeft($fund['end_date']);
     </div>
 
     <!-- Donate Modal -->
-    <div id="donate-modal" class="modal" style="display:none; position:fixed; inset:0; background: rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+    <div id="donate-modal" class="modal" style="display:none; position:fixed; inset:0; background: rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index: 999;">
         <div class="modal-content" style="background:#fff; border-radius:12px; padding:20px; width:100%; max-width:420px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
                 <h3 style="margin:0;">Donate to <?php echo htmlspecialchars($fund['title']); ?></h3>
