@@ -43,25 +43,38 @@
     }
     ?>
     
-    <div class="dashboard">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <div class="header-content">
-                <a href="../../home/view/index.php" class="logo">
-                    <i class="fas fa-hand-holding-heart"></i>
-                    CrowdFund
-                </a>
-                <div class="user-info">
-                    <span class="welcome_title">Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
-                    <a href="../../profile/view/index.php?id=<?php echo $user['id']; ?>" class="btn btn-primary">
-                        <i class="fas fa-user-edit"></i> Manage Profile
-                    </a>
-                    <a href="../../shared/includes/logout.php" class="btn-destructive">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </div>
-            </div>
+<!-- Header -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <a href="../../home/view/index.php" class="nav-logo">
+            <i class="fas fa-hand-holding-heart"></i>
+            <span>CrowdFund</span>
+        </a>
+
+        <div class="nav-actions">
+            <span class="welcome-text">
+                <i class="fas fa-user"></i>
+                Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>">
+                    <?php echo htmlspecialchars($user['name']); ?>
+                </a>!
+            </span>
+
+            <a href="../../profile/view?id=<?php echo $user['id']; ?>" class="btn btn-primary">
+                <i class="fas fa-user-edit"></i> Manage Profile
+            </a>
+
+            <a href="../../shared/includes/logout.php" class="btn-destructive">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+    <h1>Fundraiser Dashboard</h1>
+    <p>Manage your campaigns, monitor contributions, and grow your projects effectively.</p>
+</div>
 
         <!-- Statistics Cards -->
         <div class="stats-grid">
