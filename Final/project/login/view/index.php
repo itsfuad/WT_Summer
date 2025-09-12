@@ -71,7 +71,6 @@
                 if ($user) {
                     // Start session and store user data
                     loginUser($user);
-                    
                     // Redirect based on user role
                     $redirectUrl = redirectBasedOnRole();
                     header("Location: $redirectUrl");
