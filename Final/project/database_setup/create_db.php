@@ -1,12 +1,13 @@
 <?php
-echo "<h2>🔧 Database Table Creation</h2>\n";
-echo "<p>Creating database and table structure for CrowdFund Platform...</p>\n";
+
+require_once '../config/database.php';
 
 try {
+
+    echo "<h2>🔧 Database Table Creation</h2>\n";
+    echo "<p>Creating database and table structure for CrowdFund Platform...</p>\n";
     // First, connect without selecting a database to create it
     echo "<p>1. Connecting to MySQL server...</p>\n";
-
-    require_once '../config/database.php';
     
     // Create database
     echo "<p>2. Creating database '$database'...</p>\n";
