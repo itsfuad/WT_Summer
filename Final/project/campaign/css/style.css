@@ -1,13 +1,12 @@
 @import url('../../shared/css/common.css');
 
-/* Main Container */
 .campaign-container {
-    min-height: 100vh;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
 .main-content {
-    max-width: 614px;
-    margin: 20px auto;
+    margin-bottom: 20px;
     background: var(--white);
     border: var(--border);
     border-radius: var(--radius);
@@ -468,10 +467,6 @@
 
     .campaign-image {
         height: 250px;
-    }
-
-    .action-buttons {
-        flex-direction: column;
     }
 
     .progress-stats {

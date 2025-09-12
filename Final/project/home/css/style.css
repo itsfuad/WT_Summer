@@ -1,19 +1,19 @@
 @import url('../../shared/css/common.css');
 
-.header {
+.header-main {
     background: var(--white);
     border-bottom: var(--border);
     padding: var(--space-6) 0;
     text-align: center;
 }
 
-.header h1 {
+.header-main h1 {
     margin-bottom: var(--space-2);
     font-size: 28px;
     color: var(--gray-900);
 }
 
-.header p {
+.header-main p {
     font-size: var(--font-base);
     color: var(--gray-600);
     margin-bottom: var(--space-4);

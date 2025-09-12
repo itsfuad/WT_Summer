@@ -54,7 +54,7 @@ $totalPages = ceil($totalFunds / $limit);
     <script src="../js/script.js"></script>
 </head>
 <body>
-    <div class="header">
+    <div class="header-main">
         <h1><i class="fas fa-hand-holding-usd"></i> CrowdFund</h1>
         <p>Discover amazing projects and help bring them to life</p>
         <div class="header-actions">

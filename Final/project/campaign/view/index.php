@@ -57,29 +57,18 @@ $days_left = getDaysLeft($fund['end_date']);
 <body>
     
     <div class="campaign-container <?php echo $fund['status'] === 'frozen' ? 'frozen' : ''; ?>">
-        <!-- Navigation Bar -->
-        <nav class="nav-bar">
-            <div class="nav-content">
-                <div class="nav-left">
-                    <a href="../../home/view/index.php" class="nav-brand">
-                        <i class="fas fa-hand-holding-heart"></i>
-                        CrowdFund
-                    </a>
-                </div>
-                <div class="nav-right">
-                    <?php if (!$user): ?>
-                        <div class="auth-links">
-                            <a href="../../login/view/index.php" class="nav-link">Login</a>
-                            <a href="../../signup/view/index.php" class="nav-link">Sign Up</a>
-                        </div>
-                    <?php else: ?>
-                        <div class="user-menu">
-                            <a href="../../<?php echo $userRole; ?>/view/index.php" class="nav-link">Back to Dashboard</a>
-                        </div>
-                    <?php endif; ?>
+        <div class="header">
+            <div class="header-left">
+                <a href="../../home/view/index.php" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            <div class="header-actions">
+                <div class="sub-title">
+                    <i class="fas fa-info-circle"></i> Campaign Information
                 </div>
             </div>
-        </nav>
+        </div>
 
         <!-- Main Content -->
         <div class="main-content">

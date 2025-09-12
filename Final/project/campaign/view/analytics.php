@@ -116,14 +116,9 @@ $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running :
                     <div class="metric-value"><?php echo formatCurrency($avg_daily_raise); ?></div>
                     <div class="metric-label">Daily Average</div>
                     <div class="metric-progress">
-                                            <div class="campaign-info">
-                        <div class="status-badge">
-                            <span class="status-badge status-<?php echo $fund['status']; ?>">
-                                Status: <?php echo ucfirst($fund['status']); ?>
-                            </span>
+                        <div class="campaign-info">
+                            <?php echo $days_running; ?> days running • <?php echo $days_left; ?> days left
                         </div>
-                        <?php echo $days_running; ?> days running • <?php echo $days_left; ?> days left
-                    </div>
                     </div>
                 </div>
             </div>
