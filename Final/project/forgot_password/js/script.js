@@ -101,8 +101,9 @@ document.getElementById('emailForm').onsubmit = function(e) {
     e.preventDefault();
     const email = document.getElementById('email').value;
     
-    // Clear previous errors
+    // Clear previous errors and messages
     clearError('email');
+    document.getElementById('message-area').innerHTML = '';
     
     // Validate email
     if (!email || !email.includes('@')) {
@@ -252,12 +253,15 @@ function resendOTP() {
     const email = document.getElementById('user-email').textContent;
     const resendBtn = document.getElementById('resendBtn');
     
+    // Clear any existing messages
+    document.getElementById('message-area').innerHTML = '';
+    
     // Disable resend button and show loading
     resendBtn.disabled = true;
     resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     
-    // Disable OTP form during resend
-    setLoading('otpForm', true);
+    // Disable only the OTP input during resend
+    document.getElementById('otp').disabled = true;
     
     fetch('', {
         method: 'POST',
@@ -266,7 +270,8 @@ function resendOTP() {
     })
     .then(response => response.json())
     .then(data => {
-        setLoading('otpForm', false);
+        // Re-enable OTP input
+        document.getElementById('otp').disabled = false;
         showMessage(data.message, data.success);
         
         if (data.success) {
@@ -280,7 +285,8 @@ function resendOTP() {
         }
     })
     .catch(() => {
-        setLoading('otpForm', false);
+        // Re-enable OTP input
+        document.getElementById('otp').disabled = false;
         showMessage('Network error. Please try again.');
         resendBtn.disabled = false;
         resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';

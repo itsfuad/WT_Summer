@@ -183,35 +183,6 @@
     cursor: not-allowed;
 }
 
-/* Statistics Grid (Edit mode only) */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--space-4);
-    margin-top: var(--space-4);
-}
-
-.stat-item {
-    background: var(--gray-50);
-    border: var(--border);
-    border-radius: var(--radius);
-    padding: var(--space-4);
-    text-align: center;
-}
-
-.stat-label {
-    font-size: 14px;
-    color: var(--gray-600);
-    font-weight: 500;
-    margin-bottom: var(--space-1);
-}
-
-.stat-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--gray-900);
-}
-
 /* Form Actions */
 .form-actions {
     display: flex;

@@ -47,10 +47,10 @@ foreach ($donatedFunds as $fund) {
                 </a>
                 <div class="user-info">
                     <span class="welcome_title">Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
-                    <a href="../../profile/view?id=<?php echo $user['id']; ?>" class="btn btn-primary">
+                    <a href="../../profile/view/edit.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
-                    <a href="../../shared/includes/logout.php" class="btn-destructive">
+                    <a href="../../shared/includes/logout.php" class="btn-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
@@ -139,49 +139,64 @@ foreach ($donatedFunds as $fund) {
                         $statusClass = $fund['status'] === 'active' ? 'active' : $fund['status'];
                         ?>
                         <div class="campaign-card">
-                            <div class="status-badge status-<?php echo $statusClass; ?>">
-                                <?php echo ucfirst($fund['status']); ?>
+                            <?php if ($fund['status'] === 'frozen'): ?>
+                                <div class="status-badge status-frozen">
+                                    <i class="fas fa-pause"></i> Frozen
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($fund['featured']): ?>
+                                <div class="status-badge status-featured">
+                                    <i class="fas fa-star"></i> Featured
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="campaign-header">
+                                <div>
+                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="campaign-title"><?php echo htmlspecialchars($fund['title']); ?></a>
+                                    <span class="status-badge no-pad category" style="color: <?php echo $fund['category_color'] ?? '#000'; ?>;">
+                                        <i class="<?php echo $fund['category_icon'] ?? 'fas fa-tag'; ?>"></i>
+                                        <?php echo htmlspecialchars($fund['category_name']); ?>
+                                    </span>
+                                </div>
+                                <div class="by">
+                                   by <a href="../../profile/view/index.php?id=<?php echo $fund['fundraiser_id']; ?>"><?php echo htmlspecialchars($fund['fundraiser_name']); ?></a>
+                                </div>
+                            </div>
+
+                            <div class="campaign-description">
+                                <?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 150) . '...'); ?>
+                            </div>
+
+                            <div class="donation-info" style="background: #f3f4f6; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span><strong>Your contribution:</strong> <?php echo formatCurrency($fund['total_donated']); ?></span>
+                                    <span style="color: #6b7280; font-size: 14px;"><?php echo $fund['donation_count']; ?> donation<?php echo $fund['donation_count'] > 1 ? 's' : ''; ?></span>
+                                </div>
+                                <div style="margin-top: 4px; color: #6b7280; font-size: 12px;">
+                                    First donation: <?php echo date('M j, Y', strtotime($fund['first_donation_date'])); ?>
+                                </div>
+                            </div>
+
+                            <div class="campaign-stats">
+                                <div class="stat-box raised">
+                                    <div class="stat-value"><?php echo formatCurrency($fund['current_amount']); ?></div>
+                                    <div class="stat-label">Raised</div>
+                                </div>
+                                <div class="stat-box backer">
+                                    <div class="stat-value"><?php echo $fund['backer_count']; ?></div>
+                                    <div class="stat-label">Backers</div>
+                                </div>
+                                <div class="stat-box days-left">
+                                    <div class="stat-value"><?php echo $daysLeft; ?></div>
+                                    <div class="stat-label">Days Left</div>
+                                </div>
                             </div>
                             
-                            <div class="campaign-content">
-                                <h3>
-                                    <a href="../../campaign/view?id=<?php echo $fund['id']; ?>"><?php echo htmlspecialchars($fund['title']); ?></a>
-                                </h3>
-                                <p><?php echo htmlspecialchars($fund['short_description'] ?? substr($fund['description'], 0, 100) . '...'); ?></p>
-                                
-                                <div class="donation-info" style="background: #f3f4f6; padding: 12px; border-radius: 8px; margin: 12px 0;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span><strong>Your contribution:</strong> <?php echo formatCurrency($fund['total_donated']); ?></span>
-                                        <span style="color: #6b7280; font-size: 14px;"><?php echo $fund['donation_count']; ?> donation<?php echo $fund['donation_count'] > 1 ? 's' : ''; ?></span>
-                                    </div>
-                                    <div style="margin-top: 4px; color: #6b7280; font-size: 12px;">
-                                        First donation: <?php echo date('M j, Y', strtotime($fund['first_donation_date'])); ?>
-                                    </div>
-                                </div>
-                                
-                                <div class="campaign-stats">
-                                    <div class="stat">
-                                        <strong><?php echo formatCurrency($fund['current_amount']); ?></strong>
-                                        <span>of <?php echo formatCurrency($fund['goal_amount']); ?></span>
-                                    </div>
-                                    <div class="stat">
-                                        <strong><?php echo $fund['backer_count']; ?></strong>
-                                        <span>backers</span>
-                                    </div>
-                                    <div class="stat">
-                                        <strong><?php echo $daysLeft; ?></strong>
-                                        <span>days left</span>
-                                    </div>
-                                    <div class="stat">
-                                        <strong>by</strong>
-                                        <span><?php echo htmlspecialchars($fund['fundraiser_name']); ?></span>
-                                    </div>
-                                </div>
-                                
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
-                                </div>
-                                <div class="progress-text"><?php echo $percentage; ?>% funded</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: <?php echo $percentage; ?>%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <?php echo $percentage; ?>% of <?php echo formatCurrency($fund['goal_amount']); ?> goal
                             </div>
                         </div>
                     <?php endforeach; ?>

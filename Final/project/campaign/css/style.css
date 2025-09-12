@@ -50,15 +50,6 @@
     font-size: 48px;
 }
 
-.campaign-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: var(--gray-600);
-}
-
 .category {
     display: flex;
     align-items: center;
@@ -69,14 +60,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-}
-
-.campaign-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 0;
-    color: var(--gray-900);
-    position: relative;
 }
 
 /* Progress Section */
@@ -110,52 +93,6 @@
     flex: 1;
 }
 
-.stat-value {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gray-900);
-}
-
-.stat-label {
-    font-size: 12px;
-    color: var(--gray-600);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.like-btn.liked {
-    background: #f54897;
-    color: var(--white);
-    border-color: var(--white);
-}
-
-.like-btn.liked i {
-    color: var(--white);
-}
-
-/* Disabled Button Styles */
-.btn-disabled {
-    background: var(--gray-100) !important;
-    color: var(--gray-400) !important;
-    border-color: var(--gray-200) !important;
-    cursor: not-allowed !important;
-}
-
-.btn:disabled {
-    background: var(--gray-100) !important;
-    color: var(--gray-400) !important;
-    border-color: var(--gray-200) !important;
-    cursor: not-allowed !important;
-    opacity: 0.6;
-}
-
 /* Description Section */
 .description-section {
     padding: 16px 20px;
@@ -186,10 +123,36 @@
     gap: 12px;
 }
 
+
 .user-avatar {
-    color: #262626;
-    font-size: 32px;
     flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    color: var(--gray-400);
+    font-size: 20px;
+}
+
+.backer-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    color: var(--gray-400);
+    font-size: 24px;
+}
+
+.backer-avatar .user-profile-img {
+    border: 1px solid var(--gray-200);
 }
 
 .comment-form textarea {
@@ -435,11 +398,6 @@
     gap: 12px;
 }
 
-.backer-avatar {
-    color: var(--gray-400);
-    font-size: 24px;
-}
-
 .backer-details {
     display: flex;
     flex-direction: column;
@@ -556,7 +514,6 @@
     }
 }
 
-/* User Profile Images */
 .user-profile-img {
     width: 100%;
     height: 100%;
@@ -565,41 +522,10 @@
     border: 2px solid var(--gray-200);
 }
 
-/* Anonymous and default profile image filters */
 .user-profile-img.anonymous {
     filter: saturate(0) brightness(0.8);
 }
 
 .user-profile-img.default {
     filter: saturate(0) brightness(0.8);
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--gray-100);
-    color: var(--gray-400);
-    font-size: 20px;
-}
-
-.backer-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--gray-100);
-    color: var(--gray-400);
-    font-size: 16px;
-}
-
-.backer-avatar .user-profile-img {
-    border: 1px solid var(--gray-200);
 }

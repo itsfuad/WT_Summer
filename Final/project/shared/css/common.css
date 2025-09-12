@@ -1,14 +1,21 @@
 :root {
     /* Clean Color Palette */
     --primary: #000000;
+    --primary-light: #f0f0f0;
     /* Pure black like Vercel */
     --secondary: #666666;
+    --secondary-light: #f7f7f7;
     /* Clean gray */
     --success: #00C851;
+    --success-light: #E6F9F0;
     /* Clean green */
     --error: #FF4444;
+    --error-light: #FFE6E6;
     /* Clean red */
     --warning: #FF8800;
+    --warning-light: #FFF3E0;
+    --blue: #007BFF;
+    --blue-light: #E0F0FF;
     /* Clean orange */
 
     /* Neutral Colors */
@@ -57,7 +64,6 @@
     --secondary-color: var(--secondary);
     --success-color: var(--success);
     --error-color: var(--error);
-    --success-light: #ecfdf5;
     --radius-md: var(--radius);
     --spacing-1: var(--space-1);
     --spacing-2: var(--space-2);
@@ -223,7 +229,6 @@ p {
     color: var(--gray-900);
 }
 
-/* Clean Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -231,19 +236,24 @@ p {
     padding: var(--space-2) var(--space-4);
     font-size: var(--font-sm);
     font-weight: 500;
-    border: var(--border);
     border-radius: var(--radius);
     cursor: pointer;
     text-decoration: none;
     transition: all var(--transition);
     background: var(--white);
     color: var(--gray-900);
+    border: none;
 }
+
 
 .btn-primary {
     background: var(--primary);
     color: var(--white);
     border-color: var(--primary);
+}
+
+.btn-primary:hover:not(.disabled) {
+    background: var(--gray-800);
 }
 
 .btn-success {
@@ -256,26 +266,26 @@ p {
     opacity: 0.9;
 }
 
-.btn-secondary {
+.btn-outline {
     background: var(--white);
     color: var(--gray-900);
     border-color: var(--gray-200);
 }
 
-.btn-secondary:hover {
+.btn-outline:hover {
     border-color: var(--gray-400);
 }
 
 .btn-outline {
     background: var(--white);
     color: var(--gray-900);
-    border-color: var(--gray-200);
     padding: var(--space-2) var(--space-4);
     font-size: var(--font-sm);
+    border: 1px solid var(--gray-200);
 }
 
 .btn-outline:hover {
-    border-color: var(--gray-400);
+    background: var(--gray-100);
 }
 
 .btn-sm {
@@ -336,23 +346,131 @@ p {
     box-shadow: var(--shadow-lg);
 }
 
-.btn-destructive {
-    color: var(--error);
+.btn-danger {
+    background: var(--error);
+    color: var(--white);
     border: 2px solid var(--error);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius);
     font-size: var(--font-sm);
     cursor: pointer;
-    transition: all var(--transition);
     text-decoration: none;
     font-weight: 500;
 }
-.btn-destructive:hover {
-    background: var(--error);
-    color: var(--white);
-    border-color: var(--error);
-    box-shadow: var(--shadow);
+
+.btn-danger:hover {
     opacity: 0.9;
+}
+
+
+.btn-disabled {
+    background: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+    border-color: var(--gray-200) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
+.btn-feature {
+    background: var(--border-light);
+    color: var(--text-muted);
+}
+
+.btn-feature.featured {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-freeze {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.btn-unfreeze {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.btn-view {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.btn-loader {
+    display: none;
+}
+.form-control:disabled {
+    background-color: #f8f9fa;
+    opacity: 0.65;
+}
+.submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.like-btn.liked {
+    color: #e91e63;
+}
+
+
+.engagement-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border: none;
+    background: transparent;
+    color: var(--gray-700);
+    font-size: var(--font-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    border-radius: var(--radius);
+}
+
+.engagement-btn:hover {
+    color: var(--gray-700);
+    background: var(--gray-50);
+}
+
+.engagement-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.engagement-btn i {
+    font-size: 16px;
+}
+
+.engagement-btn .count {
+    font-weight: 500;
+    min-width: 16px;
+    text-align: center;
+}
+
+.engagement-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+    padding: var(--space-2) 0;
+    border-top: var(--border);
+    border-bottom: var(--border);
+}
+
+.engagement-item {
+    display: flex;
+    align-items: center;
+}
+
+.comment-btn {
+    cursor: default;
+    color: var(--gray-700);
 }
 
 .dashboard-header {
@@ -380,7 +498,142 @@ p {
     color: var(--gray-400);
 }
 
-/* Clean Messages */
+
+
+.campaigns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 0.5fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+.campaign-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--space-6);
+    border: var(--border);
+    transition: all var(--transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.campaign-header {
+    display: flex;
+    margin: var(--space-3) 0;
+    flex-direction: column;
+}
+
+.campaign-icon {
+    font-size: 24px;
+    margin-right: 5px;
+    color: var(--gray-400);
+}
+
+.campaign-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+    position: relative;
+}
+
+
+.campaign-fundraiser {
+    color: var(--gray-600);
+    font-size: var(--font-sm);
+}
+
+.campaign-description {
+    color: var(--gray-600);
+    margin-bottom: var(--space-4);
+    line-height: 1.5;
+}
+
+.campaign-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    font-size: 0.7rem;
+}
+
+.campaign-stats .raised {
+    font-weight: 600;
+    color: var(--success);
+}
+
+.campaign-stats .progress {
+    width: max-content;
+}
+
+.donation-info {
+    padding: 12px !important;
+    border-radius: var(--radius) !important;
+    margin: 12px 0 !important;
+}
+
+.stat-box {
+    text-align: center;
+    border-radius: var(--radius);
+}
+
+.stat-box:nth-child(2) {
+    border-radius: 0%;
+    border-left: 2px solid var(--gray-200);
+    border-right: 2px solid var(--gray-200);
+}
+
+.stat-box.raised {
+    color: var(--success);
+}
+
+.stat-box.backers {
+    color: var(--blue);
+}
+
+.stat-box.days-left {
+    color: var(--warning);
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: inherit;
+}
+
+.stat-label {
+    color: var(--gray-400);
+    margin-top: var(--space-1);
+    font-weight: normal;
+}
+
+.progress-bar {
+    background: var(--gray-100);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: var(--space-2);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--success);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: var(--font-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--space-3);
+}
+
+
 .message-success {
     background: var(--gray-50);
     color: var(--gray-900);
@@ -639,6 +892,13 @@ p {
     min-width: 0;
 }
 
+.campaign-info strong {
+    color: var(--text-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+
 .campaign-info h4 {
     margin: 0 0 4px 0;
     font-size: 14px;
@@ -657,33 +917,11 @@ p {
     color: var(--text-secondary);
 }
 
-.campaign-stats {
-    display: flex;
-    gap: 12px;
-    margin-top: 4px;
-    font-size: 12px;
-}
-
-.campaign-stats .raised {
-    font-weight: 600;
-    color: var(--success);
-}
-
-.campaign-stats .progress {
-    width: max-content;
-}
-
-.campaign-actions {
-    flex-shrink: 0;
-    margin-left: 12px;
-}
-
 .stick {
     position: sticky;
     top: 20px;
 }
 
-/* Top Backers List */
 .top-backers-list {
     display: flex;
     flex-direction: column;
@@ -867,6 +1105,9 @@ p {
     background: #fefce8;
 }
 
+a {
+    color: var(--blue);
+}
 
 .by {
     font-size: 14px;
@@ -876,11 +1117,18 @@ p {
 
 .by a {
     color: inherit;
-    filter: brightness(0.5);
+    filter: brightness(0.7);
 }
 
 .no-pad.status-badge {
     margin-left: 0px;
+}
+
+
+/* use inherit for a if its inside button */
+button a {
+    color: inherit;
+    text-decoration: none;
 }
 
 

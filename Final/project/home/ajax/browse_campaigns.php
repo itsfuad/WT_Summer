@@ -90,15 +90,15 @@ try {
                 <div class='campaign-description'>" . htmlspecialchars(substr($campaign['description'], 0, 150)) . "...</div>
                 
                 <div class='campaign-stats'>
-                    <div class='stat-box'>
+                    <div class='stat-box raised'>
                         <div class='stat-value'>$" . number_format($campaign['current_amount'], 0) . "</div>
                         <div class='stat-label'>Raised</div>
                     </div>
-                    <div class='stat-box'>
+                    <div class='stat-box backers'>
                         <div class='stat-value'>" . (int)$campaign['backer_count'] . "</div>
                         <div class='stat-label'>Backers</div>
                     </div>
-                    <div class='stat-box'>
+                    <div class='stat-box days-left'>
                         <div class='stat-value'>" . $daysLeft . "</div>
                         <div class='stat-label'>Days Left</div>
                     </div>
@@ -138,7 +138,7 @@ try {
         
         // Previous button
         if ($page > 1) {
-            $paginationHtml .= "<a href='#' class='btn btn-secondary page-btn' data-page='" . ($page - 1) . "'><i class='fas fa-chevron-left'></i> Previous</a>";
+            $paginationHtml .= "<a href='#' class='btn btn-outline page-btn' data-page='" . ($page - 1) . "'><i class='fas fa-chevron-left'></i> Previous</a>";
         }
         
         // Page numbers
@@ -174,7 +174,7 @@ try {
         
         // Next button
         if ($page < $totalPages) {
-            $paginationHtml .= "<a href='#' class='btn btn-secondary page-btn' data-page='" . ($page + 1) . "'>Next <i class='fas fa-chevron-right'></i></a>";
+            $paginationHtml .= "<a href='#' class='btn btn-outline page-btn' data-page='" . ($page + 1) . "'>Next <i class='fas fa-chevron-right'></i></a>";
         }
         
         $paginationHtml .= "</div>";

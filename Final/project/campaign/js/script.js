@@ -173,10 +173,9 @@ function submitDonation(e) {
             updateProgressStats(data);
 
             // Update Recent Backers list without refresh
-            try {
-                ensureBackersSection();
-                prependBackerItem(data.donation);
-            } catch (_) {}
+            ensureBackersSection();
+            prependBackerItem(data.donation);
+
             closeDonateModal();
         } else {
             showNotification(data.error || 'Donation failed', 'error');
@@ -662,7 +661,7 @@ function toggleFeature(fundId) {
                 }
             } else {
                 btn.className = 'btn btn-primary';
-                btn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                btn.innerHTML = '<i class="fas fa-star"></i> Feature';
                 // Hide featured badge
                 if (featuredBadge) {
                     featuredBadge.style.display = 'none';
@@ -710,7 +709,7 @@ function toggleFreeze(fundId) {
                     // Auto-unfeature the campaign when frozen (only if it was previously featured)
                     if (data.was_featured) {
                         featureBtn.className = 'btn btn-primary btn-disabled';
-                        featureBtn.innerHTML = '<i class="fas fa-star"></i> Mark as Featured';
+                        featureBtn.innerHTML = '<i class="fas fa-star"></i> Feature';
                         featureBtn.disabled = true;
                         
                         // Hide featured badge

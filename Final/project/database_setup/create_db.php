@@ -9,7 +9,7 @@ try {
     require_once '../config/database.php';
     
     // Create database
-    echo "<p>2. Creating database 'crowdfund_db'...</p>\n";
+    echo "<p>2. Creating database '$database'...</p>\n";
     $pdo->exec("CREATE DATABASE IF NOT EXISTS $database");
     $pdo->exec("USE $database");
     echo "<span style='color:green;'>✓ Database created/connected</span><br>\n";
@@ -202,7 +202,7 @@ try {
     echo "<div style='background:#f8d7da;padding:15px;border-radius:5px;margin:10px 0;'>\n";
     echo "<strong>❌ Error:</strong> " . htmlspecialchars($e->getMessage()) . "<br><br>\n";
     echo "<strong>🔧 Solution:</strong><br>\n";
-    echo "1. Make sure the database 'crowdfund_db' exists<br>\n";
+    echo "1. Make sure the database '$database' exists<br>\n";
     echo "3. Check MySQL service is running<br>\n";
     echo "</div>\n";
 }

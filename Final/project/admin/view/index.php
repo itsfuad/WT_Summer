@@ -47,7 +47,7 @@ $commentReports = $fundManager->getCommentReports();
                     <a href="../../profile/view/edit.php" class="btn btn-primary">
                         <i class="fas fa-user-edit"></i> Manage Profile
                     </a>
-                    <a href="../../shared/includes/logout.php" class="btn-destructive">
+                    <a href="../../shared/includes/logout.php" class="btn-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>

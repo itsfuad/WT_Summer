@@ -216,13 +216,6 @@
     border: var(--border);
 }
 
-.stat-label {
-    font-size: 0.9rem;
-    color: var(--gray-400);
-    font-weight: 500;
-    margin-bottom: 8px;
-}
-
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;

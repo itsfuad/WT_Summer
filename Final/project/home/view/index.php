@@ -66,7 +66,7 @@ $totalPages = ceil($totalFunds / $limit);
                     <i class="fas fa-tachometer-alt"></i> Go to Dashboard
                 </a>
             <?php else: ?>
-                <a href="../../login/view/index.php" class="btn btn-secondary">
+                <a href="../../login/view/index.php" class="btn btn-outline">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
                 <a href="../../signup/view/index.php" class="btn btn-primary">
@@ -109,9 +109,6 @@ $totalPages = ceil($totalFunds / $limit);
                                 >
                             </div>
                         </div>
-                        <div class="search-help">
-                            <small><i class="fas fa-info-circle"></i> Search across campaign titles, descriptions, fundraiser names, and categories</small>
-                        </div>
     
                         <div class="filter-row">
                             <div class="filter-item">
@@ -152,7 +149,7 @@ $totalPages = ceil($totalFunds / $limit);
                                     <i class="fas fa-search"></i> Search
                                 </button>
                                 <?php if ($search || $category || $status !== 'active' || $sort !== 'featured'): ?>
-                                    <button type="button" id="clearFilters" class="btn btn-large btn-secondary">
+                                    <button type="button" id="clearFilters" class="btn btn-large btn-outline">
                                         <i class="fas fa-times"></i> Clear
                                     </button>
                                 <?php endif; ?>
@@ -216,15 +213,15 @@ $totalPages = ceil($totalFunds / $limit);
                                 </div>
     
                                 <div class="campaign-stats">
-                                    <div class="stat-box">
+                                    <div class="stat-box raised">
                                         <div class="stat-value"><?php echo formatCurrency($fund['current_amount']); ?></div>
                                         <div class="stat-label">Raised</div>
                                     </div>
-                                    <div class="stat-box">
+                                    <div class="stat-box backers">
                                         <div class="stat-value"><?php echo $fund['backer_count']; ?></div>
                                         <div class="stat-label">Backers</div>
                                     </div>
-                                    <div class="stat-box">
+                                    <div class="stat-box days-left">
                                         <div class="stat-value"><?php echo $days_left; ?></div>
                                         <div class="stat-label">Days Left</div>
                                     </div>
@@ -264,7 +261,7 @@ $totalPages = ceil($totalFunds / $limit);
                     <?php if ($totalPages > 1): ?>
                         <div class="pagination">
                             <?php if ($page > 1): ?>
-                                <a href="#" class="btn btn-secondary page-btn" data-page="<?php echo $page - 1; ?>">
+                                <a href="#" class="btn btn-outline page-btn" data-page="<?php echo $page - 1; ?>">
                                     <i class="fas fa-chevron-left"></i> Previous
                                 </a>
                             <?php endif; ?>
@@ -295,7 +292,7 @@ $totalPages = ceil($totalFunds / $limit);
                             </div>
     
                             <?php if ($page < $totalPages): ?>
-                                <a href="#" class="btn btn-secondary page-btn" data-page="<?php echo $page + 1; ?>">
+                                <a href="#" class="btn btn-outline page-btn" data-page="<?php echo $page + 1; ?>">
                                     Next <i class="fas fa-chevron-right"></i>
                                 </a>
                             <?php endif; ?>
