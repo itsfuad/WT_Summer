@@ -142,12 +142,6 @@
     text-align: center;
 }
 
-.stat-label {
-    color: var(--gray-600);
-    font-size: var(--font-sm);
-    margin-bottom: 4px;
-}
-
 .stat-value {
     color: var(--gray-900);
     font-weight: 600;

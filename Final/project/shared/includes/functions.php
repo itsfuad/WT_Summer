@@ -249,10 +249,12 @@ class FundManager {
                 c.name as category_name,
                 c.icon as category_icon,
                 c.color as category_color,
+                u.name as fundraiser_name,
                 (SELECT COUNT(DISTINCT d.backer_id) FROM donations d WHERE d.fund_id = f.id AND d.payment_status = 'completed') as backer_count,
                 DATEDIFF(f.end_date, CURDATE()) as days_left
             FROM funds f
             LEFT JOIN categories c ON f.category_id = c.id
+            LEFT JOIN users u ON f.fundraiser_id = u.id
             WHERE f.fundraiser_id = ?
             ORDER BY f.created_at DESC
         ");

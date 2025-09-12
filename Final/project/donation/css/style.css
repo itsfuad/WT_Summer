@@ -165,7 +165,6 @@
     opacity: 0.5;
 }
 
-/* Donations List */
 .donations-list,
 .campaigns-list {
     display: flex;
@@ -203,12 +202,6 @@
 .donation-title a:hover,
 .campaign-title a:hover {
     color: var(--blue-600);
-}
-
-.donation-meta,
-.campaign-meta {
-    color: var(--gray-600);
-    font-size: var(--font-sm);
 }
 
 .donation-amount,

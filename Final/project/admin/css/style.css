@@ -202,17 +202,6 @@
     font-weight: 600;
 }
 
-.campaign-meta {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.campaign-meta span {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-}
-
 .category {
     background: var(--primary-light);
     color: var(--primary);
@@ -284,109 +273,9 @@
     color: var(--text-primary);
 }
 
-/* Campaigns Table */
-.campaigns-table {
-    overflow-x: auto;
-}
-
-.campaigns-table table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-}
-
-.campaigns-table th {
-    background: var(--bg-light);
-    padding: 12px;
-    text-align: left;
-    font-weight: 600;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-light);
-}
-
-.campaigns-table td {
-    padding: 16px 12px;
-    border-bottom: 1px solid var(--border-light);
-    vertical-align: top;
-}
-
-.campaign-info strong {
-    color: var(--text-primary);
-    font-weight: 600;
-    display: block;
-    margin-bottom: 4px;
-}
-
-.progress-info {
-    min-width: 200px;
-}
-
-.mini-progress {
-    width: 100%;
-    height: 6px;
-    background: var(--border-light);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 4px;
-}
-
-.mini-progress-fill {
-    height: 100%;
-    background: var(--success);
-    border-radius: 3px;
-}
-
-.progress-text {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-}
-
-.progress-text small {
-    color: var(--text-muted);
-}
-
 .no-reports {
     color: var(--text-muted);
     font-size: 0.75rem;
-}
-
-.btn-feature, .btn-freeze, .btn-unfreeze, .btn-view {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    font-size: 0.875rem;
-}
-
-.btn-feature {
-    background: var(--border-light);
-    color: var(--text-muted);
-}
-
-.btn-feature.featured {
-    background: var(--warning);
-    color: white;
-}
-
-.btn-freeze {
-    background: var(--warning-light);
-    color: var(--warning);
-}
-
-.btn-unfreeze {
-    background: var(--success-light);
-    color: var(--success);
-}
-
-.btn-view {
-    background: var(--primary-light);
-    color: var(--primary);
 }
 
 /* Reports Section */
@@ -477,42 +366,6 @@
     flex-wrap: wrap;
 }
 
-/* Buttons */
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-}
-
-.btn-danger {
-    background: var(--danger);
-    color: white;
-}
-
-.btn-danger:hover {
-    background: var(--danger-dark);
-}
-
-.btn-outline {
-    background: transparent;
-    border: 1px solid var(--border-light);
-    color: var(--text-secondary);
-}
-
-.btn-outline:hover {
-    background: var(--bg-light);
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
 /* Empty State */
 .empty-state {
     text-align: center;
@@ -590,10 +443,6 @@
     
     .filters select {
         flex: 1;
-    }
-    
-    .campaigns-table {
-        font-size: 0.75rem;
     }
     
     .report-header {
@@ -716,30 +565,6 @@
     background: #e9ecef !important;
     color: #6c757d !important;
     transform: none !important;
-}
-
-/* Primary and Small Button Styles */
-.btn-primary {
-    background: var(--primary);
-    color: white;
-}
-
-.btn-primary:hover:not(.disabled) {
-    background: var(--primary-dark);
-}
-
-.btn-success {
-    background: var(--success);
-    color: white;
-}
-
-.btn-success:hover:not(.disabled) {
-    background: var(--success-dark);
-}
-
-.btn-sm {
-    padding: 6px 12px;
-    font-size: 0.875rem;
 }
 
 /* No Data State */

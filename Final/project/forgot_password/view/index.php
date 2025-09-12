@@ -183,7 +183,6 @@ unset($_SESSION['reset_verified']);
     <link rel="stylesheet" href="../../shared/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="../../shared/css/common.css">
     <link rel="stylesheet" href="../../login/css/style.css">
-    <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js" defer></script>
 </head>
 <body>

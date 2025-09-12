@@ -1,11 +1,7 @@
 <?php
-// SMTP Configuration
-define('SMTP_HOST', 'mail.smtp2go.com');
-define('SMTP_PORT', 465); // SSL direct
-define('SMTP_USERNAME', 'crowdfund');
-define('SMTP_PASSWORD', 'c_fund_9987');
-define('SMTP_FROM_EMAIL', 'support@brainbird.org');
-define('SMTP_FROM_NAME', 'CrowdFund Support');
+require_once __DIR__ . '/env.php';
+
+EnvReader::load();
 
 class EmailManager {
 

@@ -247,3 +247,13 @@ function toggleAllPasswords() {
         toggleIcon.classList.add('fa-eye');
     }
 }
+
+// Clear password form function
+function clearPasswordForm() {
+    document.getElementById('current_password').value = '';
+    document.getElementById('new_password').value = '';
+    document.getElementById('confirm_password').value = '';
+    
+    // Show success message
+    showToast('Password form cleared', 'info');
+}

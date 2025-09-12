@@ -154,7 +154,7 @@ $days_left = getDaysLeft($fund['end_date']);
                             <button class="btn <?php echo $fund['featured'] ? 'btn-outline' : 'btn-primary'; ?>" onclick="toggleFeature(<?php echo $fund['id']; ?>)" id="feature-btn" 
                                 <?php echo $fund['status'] === 'frozen' ? 'disabled title="Cannot feature a frozen campaign"' : ''; ?>>
                                 <i class="fas fa-star"></i>
-                                <?php echo $fund['featured'] ? 'Unfeature' : 'Mark as Featured'; ?>
+                                <?php echo $fund['featured'] ? 'Unfeature' : 'Feature'; ?>
                             </button>
                             <button class="btn btn-danger" onclick="toggleFreeze(<?php echo $fund['id']; ?>)" id="freeze-btn">
                                 <i class="fas fa-pause"></i>

@@ -189,11 +189,11 @@ function renderFundForm($config) {
         <!-- Form Actions -->
         <div class="form-actions">
             <?php if ($isEdit): ?>
-                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-secondary">
+                <a href="../../campaign/view?id=<?php echo $fund['id']; ?>" class="btn btn-outline">
                     <i class="fas fa-times"></i> Cancel
                 </a>
             <?php else: ?>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.php'">
+                <button type="button" class="btn btn-outline" onclick="window.location.href='index.php'">
                     <i class="fas fa-times"></i> Cancel
                 </button>
             <?php endif; ?>
