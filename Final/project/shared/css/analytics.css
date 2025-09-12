@@ -3,7 +3,7 @@
 .analytics-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px 20px;
 }
 
 .sub-title {
@@ -298,9 +298,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .analytics-container {
-        padding: 15px;
-    }
 
     .metrics-grid {
         grid-template-columns: 1fr;
