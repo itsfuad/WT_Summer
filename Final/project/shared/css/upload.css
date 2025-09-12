@@ -1,0 +1,326 @@
+/* Modern Upload Component Styles */
+.upload-section {
+    margin-bottom: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upload-section h3 {
+    color: var(--gray-900);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.upload-section h3 i {
+    color: var(--gray-600);
+}
+
+/* Modern Click-to-Upload Image Container */
+.image-upload-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    transition: all var(--transition);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.image-upload-container:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Profile Image Upload */
+.profile-upload-container {
+    width: 256px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 3px solid var(--white);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition);
+}
+
+.profile-upload-container .profile-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 2;
+    transition: opacity var(--transition);
+}
+
+.profile-upload-container .upload-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gray-50);
+    border: 2px dashed var(--gray-300);
+    border-radius: 50%;
+    z-index: 1;
+    transition: all var(--transition);
+}
+
+/* Cover Image Upload */
+.cover-upload-container {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    border-radius: var(--radius);
+    border: var(--border);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cover-upload-container .cover-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all var(--transition);
+}
+
+/* Hover Overlay */
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    opacity: 0;
+    transition: all var(--transition);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.image-upload-container:hover .upload-overlay {
+    opacity: 1;
+}
+
+.upload-overlay i {
+    font-size: 24px;
+    margin-bottom: var(--space-1);
+}
+
+/* Hidden File Input */
+.upload-input {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+/* Default State for Empty Images */
+.upload-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    color: var(--gray-500);
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--gray-50);
+    border: 2px dashed var(--gray-300);
+    transition: all var(--transition);
+    box-sizing: border-box;
+}
+
+/* Profile specific placeholder styling */
+.profile-upload-container .upload-placeholder {
+    border-radius: 50%;
+    font-size: 12px;
+}
+
+.profile-upload-container .upload-placeholder i {
+    font-size: 24px;
+    margin-bottom: var(--space-1);
+}
+
+.image-upload-container:hover .upload-placeholder {
+    border-color: var(--primary);
+    background: var(--primary-50);
+    color: var(--primary);
+}
+
+.upload-placeholder i {
+    font-size: 32px;
+    margin-bottom: var(--space-1);
+}
+
+/* Upload Info */
+.upload-info {
+    margin-top: var(--space-3);
+    color: var(--gray-600);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Modern Remove Button */
+.image-remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--white);
+    border: 2px solid var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all var(--transition);
+    opacity: 0;
+    z-index: 10;
+}
+
+.image-upload-container:hover .image-remove-btn {
+    opacity: 1;
+}
+
+.image-remove-btn:hover {
+    background: var(--error);
+    transform: scale(1.1);
+}
+
+/* Upload Status Messages */
+.upload-status {
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    font-size: 14px;
+    display: none;
+    text-align: center;
+}
+
+.upload-status.success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.upload-status.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.upload-status.loading {
+    background: #e0f2fe;
+    color: #0c4a6e;
+    border: 1px solid #bae6fd;
+}
+
+/* Legacy Support - Keep existing classes working */
+.current-image-preview {
+    position: relative;
+    display: inline-block;
+    margin-bottom: var(--space-4);
+    text-align: center;
+}
+
+.profile-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--white);
+    box-shadow: var(--shadow);
+}
+
+.cover-preview {
+    width: 100%;
+    max-width: 400px;
+    max-height: 200px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    border: var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.upload-area {
+    margin-bottom: var(--space-4);
+}
+
+.upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.upload-label:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+/* Upload Actions */
+.upload-actions {
+    margin-top: var(--space-3);
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+    align-items: center;
+}
+
+.upload-actions .btn i {
+    font-size: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cover-upload-container {
+        max-width: 100%;
+        height: 160px;
+    }
+    
+    .profile-upload-container {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .upload-overlay {
+        font-size: 12px;
+    }
+    
+    .upload-overlay i {
+        font-size: 20px;
+    }
+}

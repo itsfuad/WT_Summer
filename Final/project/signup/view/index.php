@@ -1,3 +1,7 @@
+<?php
+    require_once '../../shared/includes/session.php';
+    requireNoLogin();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,8 +80,19 @@
 
             // If no errors, process signup
             if (empty($nameErr) && empty($emailErr) && empty($roleErr) && empty($passwordErr) && empty($confirmPasswordErr)) {
-                // In a real application, you would save to database here
-                $signupSuccess = "Account created successfully! You can now login with your credentials.";
+                // Save to database
+                require_once '../../shared/includes/functions.php';
+                $userManager = new UserManager();
+                
+                $userId = $userManager->createUser($name, $email, $password, $role);
+                
+                if ($userId) {
+                    // Redirect to login page with success message
+                    header("Location: ../../login/view/index.php?signup=success");
+                    exit();
+                } else {
+                    $emailErr = "Email already exists. Please use a different email.";
+                }
                 
                 // Clear form data
                 $name = $email = $password = $confirmPassword = $role = "";
@@ -85,17 +100,11 @@
         }
         ?>
 
-        <?php if (!empty($signupSuccess)): ?>
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i> <?php echo $signupSuccess; ?>
-            </div>
-        <?php endif; ?>
-
         <form method="post" action="">
             <div class="form-group">
                 <label for="name"><i class="fas fa-user"></i> Full Name:</label>
                 <input type="text" id="name" name="name" value="<?php echo $name; ?>"
-                       class="<?php echo !empty($nameErr) ? 'error' : ''; ?>">
+                       class="form-control <?php echo !empty($nameErr) ? 'error' : ''; ?>">
                 <?php if (!empty($nameErr)): ?>
                     <span class="error-message"><?php echo $nameErr; ?></span>
                 <?php endif; ?>
@@ -104,7 +113,7 @@
             <div class="form-group">
                 <label for="email"><i class="fas fa-envelope"></i> Email:</label>
                 <input type="email" id="email" name="email" value="<?php echo $email; ?>"
-                       class="<?php echo !empty($emailErr) ? 'error' : ''; ?>">
+                       class="form-control <?php echo !empty($emailErr) ? 'error' : ''; ?>">
                 <?php if (!empty($emailErr)): ?>
                     <span class="error-message"><?php echo $emailErr; ?></span>
                 <?php endif; ?>
@@ -135,8 +144,8 @@
                 <label for="password"><i class="fas fa-lock"></i> Password:</label>
                 <div class="password-container">
                     <input type="password" id="password" name="password"
-                           class="<?php echo !empty($passwordErr) ? 'error' : ''; ?>">
-                    <i class="fas fa-eye password-toggle" onclick="togglePassword('password')" id="password-toggle"></i>
+                           class="form-control <?php echo !empty($passwordErr) ? 'error' : ''; ?>">
+                    <i class="fas fa-eye password-toggle" onclick="toggleBothPasswords()" id="password-toggle"></i>
                 </div>
                 <?php if (!empty($passwordErr)): ?>
                     <span class="error-message"><?php echo $passwordErr; ?></span>
@@ -147,8 +156,7 @@
                 <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password:</label>
                 <div class="password-container">
                     <input type="password" id="confirmPassword" name="confirmPassword"
-                           class="<?php echo !empty($confirmPasswordErr) ? 'error' : ''; ?>">
-                    <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmPassword')" id="confirmPassword-toggle"></i>
+                           class="form-control <?php echo !empty($confirmPasswordErr) ? 'error' : ''; ?>">
                 </div>
                 <?php if (!empty($confirmPasswordErr)): ?>
                     <span class="error-message"><?php echo $confirmPasswordErr; ?></span>

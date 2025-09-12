@@ -25,3 +25,21 @@ function togglePassword(fieldId) {
         toggleIcon.classList.add('fa-eye');
     }
 }
+
+function toggleBothPasswords() {
+    const passwordField = document.getElementById('password');
+    const confirmPasswordField = document.getElementById('confirmPassword');
+    const toggleIcon = document.getElementById('password-toggle');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        confirmPasswordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        confirmPasswordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
