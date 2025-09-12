@@ -1,9 +1,12 @@
 <?php
 
-session_start();
-
+require_once '../../shared/includes/session.php';
 require_once '../../config/database.php';
 require_once '../../config/email.php';
+
+requireNoLogin();
+
+startSession();
 
 // Handle AJAX requests
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
@@ -173,6 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action'])) {
 // Clear session when accessing the page fresh
 unset($_SESSION['reset_email']);
 unset($_SESSION['reset_verified']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -324,7 +324,7 @@ $totalPages = ceil($totalFunds / $limit);
                                     <div class="campaign-info">
                                         <h4><a href="../../campaign/view?id=<?php echo $campaign['id']; ?>" target="_blank"><?php echo htmlspecialchars($campaign['title']); ?></a></h4>
                                         <p class="top-campaign-meta">
-                                            <span class="fundraiser">by <?php echo htmlspecialchars($campaign['fundraiser_name']); ?></span>
+                                            <span class="by" style="font-size: 0.7rem;">by <a href="../../profile/view?id=<?php echo $campaign['fundraiser_id']; ?>"><?php echo htmlspecialchars($campaign['fundraiser_name']); ?></a></span>
                                         </p>
                                         <div class="campaign-stats">
                                             <span class="raised"><?php echo formatCurrency($campaign['current_amount']); ?></span>

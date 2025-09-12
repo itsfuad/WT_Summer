@@ -66,6 +66,10 @@
                 if (strlen($password) < 6) {
                     $passwordErr = "Password must be at least 6 characters";
                 }
+                // password must contain at least one number and one alphabet
+                if (!preg_match("/[A-Za-z]/", $password) || !preg_match("/[0-9]/", $password)) {
+                    $passwordErr = "Password must contain at least one letter and one number";
+                }
             }
 
             // Validate confirm password

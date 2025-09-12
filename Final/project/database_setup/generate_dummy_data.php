@@ -15,38 +15,24 @@ try {
     }
     echo "<span style='color:green;'>✓ All required tables exist</span><br>\n";
 
-    // ---------- Bangladeshi names ----------
     $fundraiser_names = [
-        'Rafiq Ahmed', 'Tanjim Karim', 'Shamima Akter', 'Rumana Begum',
-        'Jahid Hasan', 'Farhana Hossain', 'Imran Khan', 'Nusrat Jahan',
-        'Sabbir Rahman', 'Parvez Hossain', 'Mehnaz Chowdhury', 'Sadia Islam',
-        'Tahsin Ahmed', 'Nabila Akhter', 'Raihanul Islam', 'Mahfuzur Rahman',
-        'Shaila Sultana', 'Fahim Hasan', 'Rifat Chowdhury', 'Sohana Akter',
-        'Tanvir Hossain', 'Afsana Parvin', 'Imtiaz Ahmed', 'Nusrat Sultana',
-        'Rashedul Islam', 'Shirin Akter', 'Saiful Islam', 'Mousumi Rahman',
-        'Arifur Rahman', 'Naznin Akter', 'Rakib Hossain', 'Moushumi Sultana',
-        'Shakil Ahmed', 'Taslima Begum', 'Jannat Ara', 'Hasib Chowdhury',
-        'Tahmid Rahman', 'Rumana Akhter', 'Noman Hossain', 'Farzana Rahman',
-        'Rashed Khan', 'Salma Akter', 'Tanveer Ahmed', 'Mahamudul Hasan',
-        'Nadia Chowdhury', 'Rabiul Islam', 'Sadia Khan', 'Firoz Ahmed', 'Parveen Akhter'
+        'Abdur Rahman', 'Sajid Hossain', 'Mahmudul Hasan', 'Kamrul Islam',
+        'Rafiq Chowdhury', 'Tanvir Khan', 'Sabbir Ahmed', 'Arif Mahmud',
+        'Shahriar Kabir', 'Habibur Rahman', 'Jahirul Islam', 'Khaled Mahmud',
+        'Shamim Reza', 'Maruf Hasan', 'Naeem Hossain', 'Asif Rahman',
+        'Sumon Ahmed', 'Masud Karim', 'Touhidul Alam', 'Biplob Hossain',
+        'Rubel Khan', 'Mamun Chowdhury', 'Anisur Rahman', 'Hasanuzzaman'
     ];
 
     $backer_names = [
-        'Rakib Hossain', 'Moushumi Sultana', 'Arifur Rahman', 'Naznin Akter',
-        'Shakil Ahmed', 'Taslima Begum', 'Fahim Hasan', 'Jannat Ara',
-        'Rashedul Islam', 'Sabrina Khan', 'Hasib Chowdhury', 'Shirin Akter',
-        'Tanvir Hossain', 'Afsana Parvin', 'Imtiaz Ahmed', 'Nusrat Sultana',
-        'Rifat Hossain', 'Mahbuba Akter', 'Saiful Islam', 'Mousumi Rahman',
-        'Rakib Ahmed', 'Tanjim Karim', 'Shamima Akter', 'Rumana Begum',
-        'Jahid Hasan', 'Farhana Hossain', 'Imran Khan', 'Nusrat Jahan',
-        'Sabbir Rahman', 'Parvez Hossain', 'Mehnaz Chowdhury', 'Sadia Islam',
-        'Tahsin Ahmed', 'Nabila Akhter', 'Raihanul Islam', 'Mahfuzur Rahman',
-        'Shaila Sultana', 'Fahim Hasan', 'Rifat Chowdhury', 'Sohana Akter',
-        'Tanvir Hossain', 'Afsana Parvin', 'Imtiaz Ahmed', 'Nusrat Sultana',
-        'Rashedul Islam', 'Shirin Akter', 'Saiful Islam', 'Mousumi Rahman',
-        'Arifur Rahman', 'Naznin Akter', 'Rakib Hossain', 'Moushumi Sultana',
-        'Shakil Ahmed', 'Taslima Begum', 'Jannat Ara', 'Hasib Chowdhury'
+        'Sharmin Akter', 'Nusrat Jahan', 'Farzana Sultana', 'Maliha Chowdhury',
+        'Rumana Akhter', 'Lamia Rahman', 'Sumaiya Akter', 'Jannatul Ferdous',
+        'Sanjida Sultana', 'Taslima Begum', 'Naznin Haque', 'Parveen Jahan',
+        'Mitu Rahman', 'Adiba Akter', 'Marufa Chowdhury', 'Shaila Sultana',
+        'Tamanna Rahman', 'Shamima Khatun', 'Lubna Yasmin', 'Shirin Akter',
+        'Nabila Akhter', 'Roksana Begum', 'Mahbuba Sultana', 'Sadia Islam'
     ];
+
 
     $used_emails = [];
     function generateUniqueEmail($name, &$used_emails) {
@@ -237,6 +223,8 @@ try {
     echo "- ".count($fund_ids)." Fund campaigns<br>";
     echo "- Likes, donations, comments<br>";
     echo "</div>";
+
+    echo "<p><a href='../home/view/index.php' style='padding:10px 15px;background:#28a745;color:#fff;text-decoration:none;border-radius:5px;'>Go to Homepage</a></p>\n";
 
 } catch(Exception $e){
     echo "<div style='background:#f8d7da;padding:15px;border-radius:5px;margin:10px 0;'>";

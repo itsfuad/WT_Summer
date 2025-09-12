@@ -9,12 +9,6 @@ try {
     // First, connect without selecting a database to create it
     echo "<p>1. Connecting to MySQL server...</p>\n";
     
-    // Create database
-    echo "<p>2. Creating database '$database'...</p>\n";
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS $database");
-    $pdo->exec("USE $database");
-    echo "<span style='color:green;'>✓ Database created/connected</span><br>\n";
-    
     // Drop existing tables if they exist (in correct order due to foreign keys)
     echo "<p>3. Cleaning up existing tables...</p>\n";
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
