@@ -185,20 +185,42 @@ php database_setup/test.php
 
 ## 👥 User Roles
 
+### Common Features (Available to All Users)
+1. **User Registration** - Sign up for an account with role selection
+2. **User Login** - Secure authentication with session management
+3. **User Logout** - Safe session termination and cleanup
+4. **Password Reset** - OTP-based password recovery via email
+5. **Profile Management** - View, edit, and update personal information
+6. **Browse Campaigns** - Access and explore all public fundraising campaigns
+
+### Guest (Non-authenticated Users)
+1. **Browse Public Campaigns** - View all active campaigns without registration
+2. **View Campaign Details** - Access complete campaign information and comments
+3. **Search and Filter Campaigns** - Find campaigns by keywords, category, or status
+4. **View Campaign Statistics** - Monitor progress, backers count, and days remaining
+5. **View Public Profiles** - Access fundraiser and backer public profile pages
+6. **Social Sharing** - Share campaign links on social media platforms
+
 ### Fundraiser
-- Create and manage campaigns
-- View analytics and donation data
-- Communicate with backers
-- Edit campaign details
+1. **Create Campaigns** - Design new fundraising campaigns with media uploads
+2. **Edit Campaign Details** - Modify campaign information, descriptions, and images
+3. **Campaign Analytics** - Access detailed performance metrics with interactive charts
+4. **Track Campaign Performance** - Monitor donations, backers, engagement, and goal progress
+5. **Donor Communication** - Engage with supporters through comments and campaign updates
+6. **Campaign Status Management** - Organize campaigns by categories and track completion status
 
 ### Backer
-- Browse and search campaigns
-- Make donations
-- Track donation history
-- Engage with campaigns (likes, comments)
+1. **Make Donations** - Contribute to campaigns with optional anonymity and personalized messages
+2. **Donation History** - Comprehensive analytics dashboard showing contribution patterns
+3. **Track Supported Campaigns** - Monitor progress of all backed campaigns with filtering options
+4. **Social Engagement** - Like campaigns and participate in comment discussions
+5. **Donation Analytics Dashboard** - Visual charts showing donation trends and category breakdown
+6. **Campaign Filtering by Donation Status** - Sort and filter campaigns by donation date and amount
 
 ### Administrator
-- Moderate content and users
-- Feature/freeze campaigns
-- View platform analytics
-- Manage reported content
+1. **Content Moderation** - Review and manage reported campaigns and user comments
+2. **Feature/Unfeature Campaigns** - Promote outstanding campaigns on platform homepage
+3. **Freeze/Unfreeze Campaigns** - Suspend campaigns that violate platform policies
+4. **Platform Analytics** - Monitor comprehensive platform statistics and user activity
+5. **User Management** - Oversee user accounts, roles, and platform-wide activities
+6. **Report Management** - Handle user reports and take appropriate moderation actions
