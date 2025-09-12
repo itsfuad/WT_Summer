@@ -54,8 +54,8 @@
             $password = trim($_POST["password"]);
             if (empty($password)) {
                 $passwordErr = "Password is required";
-            } elseif (strlen($password) < 6) {
-                $passwordErr = "Password must be at least 6 characters";
+            } elseif (strlen($password) < 8) {
+                $passwordErr = "Password must be at least 8 characters long";
             }
 
             // If no errors, check login

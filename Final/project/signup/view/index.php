@@ -63,8 +63,8 @@
                 $passwordErr = "Password is required";
             } else {
                 $password = trim($_POST["password"]);
-                if (strlen($password) < 6) {
-                    $passwordErr = "Password must be at least 6 characters";
+                if (strlen($password) < 8) {
+                    $passwordErr = "Password must be at least 8 characters long";
                 }
                 // password must contain at least one number and one alphabet
                 if (!preg_match("/[A-Za-z]/", $password) || !preg_match("/[0-9]/", $password)) {
