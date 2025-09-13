@@ -152,6 +152,8 @@ function redirectBasedOnRole(): string {
     if (!$user) {
         return '../../home/view/index.php';
     }
-
-    return "../../" . $user['role'] . "/view/index.php";
+  
+    $role = $user['role'];
+    
+    return "../../$role/view/index.php";
 }
