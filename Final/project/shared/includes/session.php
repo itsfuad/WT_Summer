@@ -67,16 +67,8 @@ function redirectBasedOnRole() {
     if (!$user) {
         return '../../home/view/index.php';
     }
+
+    $role = $user['role'];
     
-    switch ($user['role']) {
-        case 'admin':
-            return '../../admin/view/index.php';
-        case 'fundraiser':
-            return '../../fundraiser/view/index.php'; // Will be renamed to fundraiser later
-        case 'backer':
-            return '../../backer/view/index.php';
-        default:
-            return '../../home/view/index.php';
-    }
+    return "../../$role/view/index.php";
 }
-?>
