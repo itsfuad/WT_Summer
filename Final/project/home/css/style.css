@@ -1,30 +1,117 @@
 @import url('../../shared/css/common.css');
 
-.header-main {
+.main-nav {
     background: var(--white);
-    border-bottom: var(--border);
-    padding: var(--space-6) 0;
-    text-align: center;
+    padding: calc(var(--space-3) + 10px) 0; /* extra top/bottom spacing */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 0 0 12px 12px; /* rounded bottom edges */
+    transition: all 0.3s ease;
 }
 
-.header-main h1 {
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    display: flex;
+    justify-content: space-between; /* logo left, menu/buttons right */
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+    transition: transform 0.3s ease;
+}
+
+.nav-logo i {
+    font-size: 22px;
+}
+
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.nav-actions .btn,
+.nav-actions .btn-destructive {
+    padding: 10px 20px;
+    font-size: var(--font-sm);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-actions .btn:hover,
+.nav-actions .btn-destructive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.nav-actions .btn-destructive {
+    background: #e91e63;
+    color: #fff;
+}
+
+.nav-actions .btn-destructive:hover {
+    background: #ad1457;
+}
+
+.page-hero {
+    background: var(--gray-50);
+    border-bottom: var(--border);
+    padding: var(--space-8) var(--space-6);
+    text-align: center;
+    margin: calc(var(--space-6) + 20px) auto;
+    border-radius: 0 0 10px 10px;
+}
+
+.page-hero h1 {
     margin-bottom: var(--space-2);
     font-size: 28px;
     color: var(--gray-900);
 }
 
-.header-main p {
+.page-hero p {
     font-size: var(--font-base);
     color: var(--gray-600);
-    margin-bottom: var(--space-4);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.header-actions {
-    display: flex;
-    gap: var(--space-3);
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-3);
+    }
+
+    .nav-actions {
+        flex-direction: column;
+        gap: var(--space-2);
+        width: 100%;
+    }
+
+    .nav-actions .btn,
+    .nav-actions .btn-destructive {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 .welcome-text {

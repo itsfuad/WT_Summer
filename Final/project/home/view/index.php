@@ -54,19 +54,32 @@ $totalPages = ceil($totalFunds / $limit);
     <script src="../js/script.js"></script>
 </head>
 <body>
-    <div class="header-main">
-        <h1><i class="fas fa-hand-holding-usd"></i> CrowdFund</h1>
-        <p>Discover amazing projects and help bring them to life</p>
-        <div class="header-actions">
+<!-- Header -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <a href="index.php" class="nav-logo">
+            <i class="fas fa-hand-holding-usd"></i>
+            <span>CrowdFund</span>
+        </a>
+
+        <div class="nav-actions">
             <?php if ($isLoggedIn): ?>
                 <span class="welcome-text">
-                    <i class="fas fa-user"></i> Welcome, <?php echo htmlspecialchars($user['name']); ?>!
+                    <i class="fas fa-user"></i>
+                    Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>">
+                        <?php echo htmlspecialchars($user['name']); ?>
+                    </a>!
                 </span>
+
                 <a href="../../<?php echo $user['role']; ?>/view/index.php" class="btn btn-primary">
-                    <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+
+                <a href="../../shared/includes/logout.php" class="btn-destructive">
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             <?php else: ?>
-                <a href="../../login/view/index.php" class="btn btn-outline">
+                <a href="../../login/view/index.php" class="btn btn-secondary">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
                 <a href="../../signup/view/index.php" class="btn btn-primary">
@@ -75,6 +88,13 @@ $totalPages = ceil($totalFunds / $limit);
             <?php endif; ?>
         </div>
     </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+    <h1>Discover Amazing Projects</h1>
+    <p>Explore thousands of campaigns and help bring creative ideas to life.</p>
+</div>
 
     <div class="container">
         <?php if (!$isLoggedIn): ?>

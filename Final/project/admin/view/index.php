@@ -31,29 +31,50 @@ $commentReports = $fundManager->getCommentReports();
     <script src="../js/script.js" defer></script>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <div class="header-content">
-                <a href="../../home/view/index.php" class="logo">
-                    <i class="fas fa-hand-holding-heart"></i>
-                    CrowdFund
-                </a>
-                <div class="user-info">
-                    <span class="welcome_title">Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>"><?php echo htmlspecialchars($user['name']); ?></a>!</span>
-                    <a href="../../home/view/index.php" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Browse Campaigns
-                    </a>
-                    <a href="../../profile/view/edit.php" class="btn btn-primary">
-                        <i class="fas fa-user-edit"></i> Manage Profile
-                    </a>
-                    <a href="../../shared/includes/logout.php" class="btn-danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </div>
-            </div>
-        </div>
+<!-- Admin Header -->
+<nav class="main-nav">
+    <div class="nav-container">
+        <!-- Logo -->
+        <a href="../../home/view/index.php" class="nav-logo">
+            <i class="fas fa-hand-holding-heart"></i>
+            <span>CrowdFund</span>
+        </a>
 
+        <!-- User Actions -->
+        <div class="nav-actions">
+            <span class="welcome-text">
+                <i class="fas fa-user-shield"></i>
+                Welcome, <a href="../../profile/view?id=<?php echo $user['id']; ?>">
+                    <?php echo htmlspecialchars($user['name']); ?>
+                </a> (Admin)!
+            </span>
+
+            <a href="../../admin/view/index.php" class="btn btn-primary">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="../../admin/view/users.php" class="btn btn-primary">
+                <i class="fas fa-users-cog"></i> Manage Users
+            </a>
+            <a href="../../admin/view/campaigns.php" class="btn btn-primary">
+                <i class="fas fa-bullhorn"></i> Manage Campaigns
+            </a>
+            <a href="../../admin/view/settings.php" class="btn btn-primary">
+                <i class="fas fa-cogs"></i> Settings
+            </a>
+            <a href="../../shared/includes/logout.php" class="btn-destructive">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="page-hero">
+    <h1>Admin Dashboard</h1>
+    <p>Control users, campaigns, and system settings to keep CrowdFund running smoothly.</p>
+</div>
+
+</div>
         <!-- Platform Statistics -->
         <div class="metrics-grid">
             <div class="metric-card">
