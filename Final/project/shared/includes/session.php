@@ -1,127 +1,137 @@
 <?php
-// Simple session management functions
-function startSession() {
-    if (session_status() == PHP_SESSION_NONE) {
+
+function startSession(): void {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 }
 
-function loginUser($user, $rememberMe = false) {
+function loginUser(array $user, bool $rememberMe = false): void {
     startSession();
-    $_SESSION['user_id'] = $user['id'];
-    $_SESSION['user_name'] = $user['name'];
+
+    $_SESSION['user_id']    = $user['id'];
+    $_SESSION['user_name']  = $user['name'];
     $_SESSION['user_email'] = $user['email'];
-    $_SESSION['user_role'] = $user['role'];
-    $_SESSION['logged_in'] = true;
-    
-    // Set remember me cookie if requested
+    $_SESSION['user_role']  = $user['role'];
+    $_SESSION['logged_in']  = true;
+
     if ($rememberMe) {
         setRememberMeCookie($user);
     }
 }
 
-function setRememberMeCookie($user) {
-    // Create a unique token for this login session
+function setRememberMeCookie(array $user): void {
     $token = bin2hex(random_bytes(32));
-    
-    // Store token with user info (you might want to store this in database for production)
+
     $rememberData = [
         'user_id' => $user['id'],
-        'token' => $token,
+        'token'   => $token,
         'expires' => time() + (30 * 24 * 60 * 60) // 30 days
     ];
-    
-    // Set cookie for 30 days
-    setcookie('remember_me', base64_encode(json_encode($rememberData)), time() + (30 * 24 * 60 * 60), '/');
+
+    setcookie(
+        'remember_me',
+        base64_encode(json_encode($rememberData)),
+        $rememberData['expires'],
+        '/',
+        '',
+        false,
+        true // HTTPOnly
+    );
 }
 
-function checkRememberMeCookie() {
-    if (isset($_COOKIE['remember_me']) && !isLoggedIn()) {
+function checkRememberMeCookie(): bool {
+    static $checking = false;
+
+    if ($checking) {
+        return false; // prevent recursion
+    }
+    $checking = true;
+
+    startSession();
+
+    if (!empty($_COOKIE['remember_me']) && empty($_SESSION['logged_in'])) {
         $rememberData = json_decode(base64_decode($_COOKIE['remember_me']), true);
-        
-        if ($rememberData && $rememberData['expires'] > time()) {
-            // In production, verify token against database
-            // For now, we'll just restore the session
+
+        if (is_array($rememberData) && $rememberData['expires'] > time()) {
             require_once '../../config/database.php';
-            
+            global $pdo; // ✅ make $pdo visible inside this function
+
             try {
                 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
                 $stmt->execute([$rememberData['user_id']]);
-                $user = $stmt->fetch();
-                
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
                 if ($user) {
-                    // Restore session without remember me to avoid infinite loop
                     loginUser($user, false);
+                    $checking = false;
                     return true;
                 }
             } catch (Exception $e) {
-                // Clear invalid cookie
                 clearRememberMeCookie();
             }
         } else {
-            // Clear expired cookie
             clearRememberMeCookie();
         }
     }
+
+    $checking = false;
     return false;
 }
 
-function clearRememberMeCookie() {
+
+function clearRememberMeCookie(): void {
     setcookie('remember_me', '', time() - 3600, '/');
 }
 
-function logoutUser() {
+function logoutUser(): void {
     startSession();
-    
-    // Clear all session variables
-    $_SESSION = array();
-    
-    // Delete the session cookie if it exists
+
+    $_SESSION = [];
+
     if (ini_get("session.use_cookies")) {
-        setcookie(session_name(), '', time() - 42000);
+        setcookie(session_name(), '', time() - 42000, '/');
     }
-    
-    // Clear remember me cookie
+
     clearRememberMeCookie();
-    
-    // Destroy the session
+
     session_destroy();
 }
 
-function isLoggedIn() {
+
+function isLoggedIn(): bool {
     startSession();
-    
-    // Check session first
-    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+
+    if (!empty($_SESSION['logged_in'])) {
         return true;
     }
-    
-    // Check remember me cookie if session is not active
+
     return checkRememberMeCookie();
 }
 
-function getCurrentUser() {
+function getCurrentUser(): ?array {
     startSession();
+
     if (!isLoggedIn()) {
         return null;
     }
-    
+
     return [
-        'id' => $_SESSION['user_id'],
-        'name' => $_SESSION['user_name'],
-        'email' => $_SESSION['user_email'],
-        'role' => $_SESSION['user_role']
+        'id'    => $_SESSION['user_id'] ?? null,
+        'name'  => $_SESSION['user_name'] ?? null,
+        'email' => $_SESSION['user_email'] ?? null,
+        'role'  => $_SESSION['user_role'] ?? null
     ];
 }
 
-function requireLogin() {
+function requireLogin(): void {
     if (!isLoggedIn()) {
         header('Location: ../../login/view/index.php');
         exit();
     }
 }
 
-function requireRole($role) {
+function requireRole(string $role): void {
     $user = getCurrentUser();
     if (!$user || $user['role'] !== $role) {
         header('Location: ../../home/view/index.php');
@@ -129,7 +139,7 @@ function requireRole($role) {
     }
 }
 
-function requireNoLogin() {
+function requireNoLogin(): void {
     if (isLoggedIn()) {
         $redirectUrl = redirectBasedOnRole();
         header("Location: $redirectUrl");
@@ -137,7 +147,7 @@ function requireNoLogin() {
     }
 }
 
-function redirectBasedOnRole() {
+function redirectBasedOnRole(): string {
     $user = getCurrentUser();
     if (!$user) {
         return '../../home/view/index.php';
