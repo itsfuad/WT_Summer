@@ -6,74 +6,6 @@
     margin: 0 auto;
 }
 
-/* Header */
-.header {
-    background: var(--white);
-    border: var(--border);
-    border-radius: var(--radius);
-    padding: var(--space-6) var(--space-8);
-    margin-bottom: var(--space-8);
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-}
-
-.back-btn {
-    color: var(--gray-900);
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius);
-    border: var(--border);
-    transition: background-color var(--transition), border-color var(--transition);
-}
-
-.back-btn:hover {
-    border-color: var(--gray-400);
-}
-
-.header h1 {
-    color: var(--gray-900);
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.header h1 i {
-    color: var(--gray-400);
-    margin-right: var(--space-2);
-}
-
-/* Alerts */
-.alert {
-    padding: var(--space-4);
-    border-radius: var(--radius);
-    margin-bottom: var(--space-4);
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    font-weight: 500;
-    border: var(--border);
-}
-
-.alert-success {
-    background: #f0fdf4;
-    color: #14532d;
-    border-color: #86efac;
-}
-
-.alert-error {
-    background: #fef2f2;
-    color: #7f1d1d;
-    border-color: #fecaca;
-}
-
-/* Form */
 .create-fund-form {
     background: var(--white);
     border: var(--border);
@@ -158,19 +90,6 @@
     margin-top: var(--space-2);
 }
 
-/* Terms & Conditions */
-.terms-checkbox {
-    margin-top: var(--space-6);
-    padding: var(--space-4);
-    background: var(--gray-50);
-    border-radius: var(--radius);
-    border: var(--border);
-}
-
-.terms-checkbox .checkbox-container {
-    margin: 0;
-}
-
 .terms-checkbox .checkbox-label {
     font-size: var(--font-sm);
     line-height: 1.5;
@@ -200,12 +119,6 @@
 
     .create-fund-container {
         max-width: 100%;
-    }
-
-    .header {
-        flex-direction: column;
-        text-align: center;
-        padding: var(--space-6);
     }
 
     .header h1 {

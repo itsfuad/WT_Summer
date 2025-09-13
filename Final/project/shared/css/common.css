@@ -172,61 +172,55 @@ p {
     border-color: var(--error);
 }
 
-/* Clean Checkbox */
+
+
 .checkbox-container {
-    display: flex;
+    display: flex !important;
     align-items: center;
-    gap: var(--space-3);
     cursor: pointer;
+    gap: 8px;
 }
 
 .checkbox-container input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
+    display: none;
 }
 
 .checkmark {
-    width: 16px;
-    height: 16px;
-    background: var(--white);
-    border: var(--border);
+    width: 15px !important;
+    height: 15px !important;
+    border: 2px solid #d1d5db !important;
     border-radius: 3px;
-    transition: all var(--transition);
     position: relative;
+    transition: all 0.15s ease;
+    background-color: white !important;
     flex-shrink: 0;
+    display: inline-block !important;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkmark {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkmark::after {
+    content: "" !important;
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 3px;
+    height: 7px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: block !important;
 }
 
 .checkbox-container:hover .checkmark {
-    border-color: var(--primary);
+    border-color: #000000 !important;
 }
 
-.checkbox-container input:checked~.checkmark {
-    background: var(--primary);
-    border-color: var(--primary);
-}
-
-.checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-    left: 5px;
-    top: 2px;
-    width: 3px;
-    height: 7px;
-    border: solid var(--white);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-.checkbox-container input:checked~.checkmark:after {
-    display: block;
-}
-
-.checkbox-label {
-    font-size: var(--font-sm);
-    color: var(--gray-900);
+.checkbox-container i {
+    color: #6b7280;
 }
 
 .btn {
@@ -410,7 +404,7 @@ p {
 
 .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
@@ -477,8 +471,39 @@ p {
     background: var(--white);
     border-radius: var(--radius);
     padding: var(--space-6) var(--space-8);
-    margin-bottom: var(--space-8);
 }
+
+.header {
+    background: var(--white);
+    padding: var(--space-6) 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+
+.back-btn {
+  color: var(--gray-900);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  border: var(--border);
+  background: var(--white);
+}
+
+.back-btn:hover {
+  background: var(--gray-50);
+}
+
+
+
+
 
 .header-content {
     display: flex;
@@ -498,6 +523,29 @@ p {
     color: var(--gray-400);
 }
 
+
+.alert {
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-weight: 500;
+    border: var(--border);
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #14532d;
+    border-color: #86efac;
+}
+
+.alert-error {
+    background: #fef2f2;
+    color: #7f1d1d;
+    border-color: #fecaca;
+}
 
 
 .campaigns-grid {
@@ -600,16 +648,51 @@ p {
     color: var(--warning);
 }
 
-.stat-value {
-    font-size: 18px;
-    font-weight: 700;
-    color: inherit;
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+.stat-item {
+    background: var(--gray-50);
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    text-align: center;
 }
 
 .stat-label {
-    color: var(--gray-400);
-    margin-top: var(--space-1);
-    font-weight: normal;
+    font-size: 12px;
+    color: var(--gray-600);
+    font-weight: 500;
+    margin-bottom: var(--space-1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none !important;
+    gap: var(--space-1);
+}
+
+.stat-value.status-active {
+    color: var(--success);
+}
+
+.stat-value.status-inactive {
+    color: var(--error);
+}
+
+.stat-value.status-suspended {
+    color: var(--warning);
 }
 
 .progress-bar {

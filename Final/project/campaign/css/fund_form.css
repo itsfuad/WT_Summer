@@ -6,81 +6,6 @@
     margin: 0 auto;
 }
 
-/* Header */
-.header {
-    background: var(--white);
-    border: var(--border);
-    border-radius: var(--radius);
-    padding: var(--space-6) var(--space-8);
-    margin-bottom: var(--space-8);
-    box-shadow: var(--shadow);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-}
-
-.header-left {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
-.header-left h1 {
-    color: var(--gray-900);
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0;
-}
-
-.header-actions {
-    display: flex;
-    gap: var(--space-3);
-    flex-wrap: wrap;
-}
-
-.back-btn {
-    color: var(--gray-900);
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius);
-    border: var(--border);
-    transition: background-color var(--transition), border-color var(--transition);
-}
-
-.back-btn:hover {
-    border-color: var(--gray-400);
-    background-color: var(--gray-50);
-}
-
-/* Alerts */
-.alert {
-    border-radius: var(--radius);
-    padding: var(--space-4) var(--space-6);
-    margin-bottom: var(--space-6);
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    font-weight: 500;
-}
-
-.alert-success {
-    background-color: var(--green-50);
-    border: 1px solid var(--green-200);
-    color: var(--green-800);
-}
-
-.alert-error {
-    background-color: var(--red-50);
-    border: 1px solid var(--red-200);
-    color: var(--red-800);
-}
-
 /* Form Styles */
 .create-fund-form,
 .edit-fund-form {
@@ -211,12 +136,6 @@
         max-width: 100%;
     }
     
-    .header {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-    }
-    
     .header-actions {
         justify-content: center;
     }
@@ -236,9 +155,6 @@
 }
 
 @media (max-width: 480px) {
-    .header {
-        padding: var(--space-4);
-    }
     
     .create-fund-form,
     .edit-fund-form {

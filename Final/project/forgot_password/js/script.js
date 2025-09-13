@@ -66,8 +66,8 @@ function validatePassword(password, confirmPassword = null) {
     if (!password) {
         return "Password is required";
     }
-    if (password.length < 6) {
-        return "Password must be at least 6 characters";
+    if (password.length < 8) {
+        return "Password must be at least 8 characters long";
     }
     if (confirmPassword !== null && password !== confirmPassword) {
         return "Passwords do not match";

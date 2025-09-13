@@ -116,14 +116,9 @@ $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running :
                     <div class="metric-value"><?php echo formatCurrency($avg_daily_raise); ?></div>
                     <div class="metric-label">Daily Average</div>
                     <div class="metric-progress">
-                                            <div class="campaign-info">
-                        <div class="status-badge">
-                            <span class="status-badge status-<?php echo $fund['status']; ?>">
-                                Status: <?php echo ucfirst($fund['status']); ?>
-                            </span>
+                        <div class="campaign-info">
+                            <?php echo $days_running; ?> days running • <?php echo $days_left; ?> days left
                         </div>
-                        <?php echo $days_running; ?> days running • <?php echo $days_left; ?> days left
-                    </div>
                     </div>
                 </div>
             </div>
@@ -245,26 +240,26 @@ $avg_daily_raise = $days_running > 0 ? $fund['current_amount'] / $days_running :
         <!-- Campaign Performance -->
         <div class="performance-card">
             <h3><i class="fas fa-chart-bar"></i> Campaign Performance Summary</h3>
-            <div class="performance-grid">
-                <div class="performance-item">
-                    <div class="performance-label">Total Campaign Duration</div>
-                    <div class="performance-value"><?php echo $total_duration; ?> days</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Total Campaign Duration</div>
+                    <div class="stat-value"><?php echo $total_duration; ?> days</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Days Running</div>
-                    <div class="performance-value"><?php echo $days_running; ?> days</div>
+                <div class="stat-item">
+                    <div class="stat-label">Days Running</div>
+                    <div class="stat-value"><?php echo $days_running; ?> days</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Days Remaining</div>
-                    <div class="performance-value"><?php echo $days_left; ?> days</div>
+                <div class="stat-item">
+                    <div class="stat-label">Days Remaining</div>
+                    <div class="stat-value"><?php echo $days_left; ?> days</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Completion Rate</div>
-                    <div class="performance-value"><?php echo $percentage; ?>%</div>
+                <div class="stat-item">
+                    <div class="stat-label">Completion Rate</div>
+                    <div class="stat-value"><?php echo $percentage; ?>%</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Projected Total</div>
-                    <div class="performance-value">
+                <div class="stat-item">
+                    <div class="stat-label">Projected Total</div>
+                    <div class="stat-value">
                         <?php 
                         $daily_rate = $avg_daily_raise;
                         $projected = $fund['current_amount'] + ($daily_rate * $days_left);

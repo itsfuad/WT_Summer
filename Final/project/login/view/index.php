@@ -54,8 +54,8 @@
             $password = trim($_POST["password"]);
             if (empty($password)) {
                 $passwordErr = "Password is required";
-            } elseif (strlen($password) < 6) {
-                $passwordErr = "Password must be at least 6 characters";
+            } elseif (strlen($password) < 8) {
+                $passwordErr = "Password must be at least 8 characters long";
             }
 
             // If no errors, check login
@@ -69,9 +69,11 @@
                 $user = $userManager->authenticate($email, $password);
                 
                 if ($user) {
-                    // Start session and store user data
-                    loginUser($user);
+                    // Check if remember me is checked
+                    $rememberMe = isset($_POST['remember_me']) ? true : false;
                     
+                    // Start session and store user data
+                    loginUser($user, $rememberMe);
                     // Redirect based on user role
                     $redirectUrl = redirectBasedOnRole();
                     header("Location: $redirectUrl");
@@ -121,7 +123,17 @@
                 <?php if (!empty($passwordErr)): ?>
                     <span class="error-message"><?php echo $passwordErr; ?></span>
                 <?php endif; ?>
-            </div>            <?php if (!empty($loginErr)): ?>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="remember_me" id="remember_me">
+                    <span class="checkmark"></span>
+                    Remember me for 30 days
+                </label>
+            </div>
+            
+            <?php if (!empty($loginErr)): ?>
                 <div style="color: #ff4757; text-align: center; margin-bottom: 15px;">
                     <i class="fas fa-exclamation-triangle"></i> <?php echo $loginErr; ?>
                 </div>

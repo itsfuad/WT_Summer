@@ -57,29 +57,18 @@ $days_left = getDaysLeft($fund['end_date']);
 <body>
     
     <div class="campaign-container <?php echo $fund['status'] === 'frozen' ? 'frozen' : ''; ?>">
-        <!-- Navigation Bar -->
-        <nav class="nav-bar">
-            <div class="nav-content">
-                <div class="nav-left">
-                    <a href="../../home/view/index.php" class="nav-brand">
-                        <i class="fas fa-hand-holding-heart"></i>
-                        CrowdFund
-                    </a>
-                </div>
-                <div class="nav-right">
-                    <?php if (!$user): ?>
-                        <div class="auth-links">
-                            <a href="../../login/view/index.php" class="nav-link">Login</a>
-                            <a href="../../signup/view/index.php" class="nav-link">Sign Up</a>
-                        </div>
-                    <?php else: ?>
-                        <div class="user-menu">
-                            <a href="../../<?php echo $userRole; ?>/view/index.php" class="nav-link">Back to Dashboard</a>
-                        </div>
-                    <?php endif; ?>
+        <div class="header">
+            <div class="header-left">
+                <a href="../../home/view/index.php" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            <div class="header-actions">
+                <div class="sub-title">
+                    <i class="fas fa-info-circle"></i> Campaign Information
                 </div>
             </div>
-        </nav>
+        </div>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -367,15 +356,16 @@ $days_left = getDaysLeft($fund['end_date']);
         <div class="modal-content" style="background:#fff; border-radius:12px; padding:20px; width:100%; max-width:420px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
                 <h3 style="margin:0;">Donate to <?php echo htmlspecialchars($fund['title']); ?></h3>
-                <button onclick="closeDonateModal()" class="btn btn-outline btn-sm">Close</button>
             </div>
             <form onsubmit="submitDonation(event)">
                 <label for="donation-amount">Amount</label>
                 <input type="number" step="0.01" min="1" id="donation-amount" class="form-control" placeholder="Enter amount" required>
                 <label for="donation-comment" style="margin-top:12px;">Comment (optional)</label>
                 <textarea id="donation-comment" class="form-control" rows="2" placeholder="Say something nice (optional)"></textarea>
-                <label style="display:flex; align-items:center; gap:8px; margin-top:12px;">
-                    <input type="checkbox" id="donation-anonymous"> Donate anonymously
+                <label class="checkbox-container">
+                    <input type="checkbox" name="remember_me" id="donation-anonymous">
+                    <span class="checkmark"></span>
+                    Donate anonymously
                 </label>
                 <div style="display:flex; gap:8px; margin-top:16px;">
                     <button type="button" class="btn btn-outline" onclick="closeDonateModal()">Cancel</button>

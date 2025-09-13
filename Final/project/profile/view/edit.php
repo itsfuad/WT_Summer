@@ -115,8 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if (empty($newPassword)) {
             $passwordErrors['new_password'] = "New password is required";
-        } elseif (strlen($newPassword) < 6) {
-            $passwordErrors['new_password'] = "Password must be at least 6 characters long";
+        } elseif (strlen($newPassword) < 8) {
+            $passwordErrors['new_password'] = "Password must be at least 8 characters long";
         }
         
         if (empty($confirmPassword)) {
@@ -304,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php if (isset($passwordErrors['new_password'])): ?>
                     <span class="error-message"><?php echo $passwordErrors['new_password']; ?></span>
                 <?php endif; ?>
-                <small>Password must be at least 6 characters</small>
+                <small>Password must be at least 8 characters long</small>
             </div>
             
             <div class="form-group">
