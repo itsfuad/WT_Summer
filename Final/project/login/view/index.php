@@ -69,8 +69,11 @@
                 $user = $userManager->authenticate($email, $password);
                 
                 if ($user) {
+                    // Check if remember me is checked
+                    $rememberMe = isset($_POST['remember_me']) ? true : false;
+                    
                     // Start session and store user data
-                    loginUser($user);
+                    loginUser($user, $rememberMe);
                     // Redirect based on user role
                     $redirectUrl = redirectBasedOnRole();
                     header("Location: $redirectUrl");
@@ -120,7 +123,17 @@
                 <?php if (!empty($passwordErr)): ?>
                     <span class="error-message"><?php echo $passwordErr; ?></span>
                 <?php endif; ?>
-            </div>            <?php if (!empty($loginErr)): ?>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="remember_me" id="remember_me">
+                    <span class="checkmark"></span>
+                    Remember me for 30 days
+                </label>
+            </div>
+            
+            <?php if (!empty($loginErr)): ?>
                 <div style="color: #ff4757; text-align: center; margin-bottom: 15px;">
                     <i class="fas fa-exclamation-triangle"></i> <?php echo $loginErr; ?>
                 </div>
